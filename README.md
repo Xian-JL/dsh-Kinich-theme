@@ -32,14 +32,17 @@ root directory:
 克隆或下载本仓库，在仓库根目录执行：
 
 ```powershell
+pnpm install --prod
 dsh plugin --profile web add .
 dsh web
 ```
 
-No build step or dependency installation is required for this runtime-only
-repository. The compiled Host and Client bundles are included in `lib/`.
+No build step is required for this runtime-only repository. The compiled Host
+and Client bundles are included in `lib/`; `pnpm install --prod` installs the
+two Host runtime dependencies.
 
-本仓库已包含 `lib/` 运行文件，无需执行 `pnpm install` 或自行构建。
+本仓库已包含 `lib/` 运行文件，无需自行构建；`pnpm install --prod` 用于安装
+两个 Host 运行依赖。
 
 ## Use / 使用
 

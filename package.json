@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A Kinich-themed UI plugin for DeepSeek Harness 0.1.1-rc.2.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -40,18 +40,14 @@
   "engines": {
     "node": "^22.19.0 || >=24.0.0"
   },
-  "peerDependencies": {
+  "dependencies": {
     "@deepseek-ai/dsh-settings": "0.1.1-rc.2",
-    "@deepseek-ai/schemastery": "3.18.1",
+    "@deepseek-ai/schemastery": "3.18.1"
+  },
+  "peerDependencies": {
     "react": "^18.2.0"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/dsh-settings": {
-      "optional": true
-    },
-    "@deepseek-ai/schemastery": {
-      "optional": true
-    },
     "react": {
       "optional": true
     }

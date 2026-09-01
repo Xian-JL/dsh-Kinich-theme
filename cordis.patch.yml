@@ -1,0 +1,5 @@
+# Bundle layer for dsh-kinich-theme.
+# `dsh plugin --profile web add <package>` appends this bundle to the Web profile.
+- insert:
+    - id: dsh-kinich-theme
+      name: dsh-kinich-theme

@@ -2,19 +2,6 @@ node_modules/
 dist/
 coverage/
 
-src/
-tests/
-docs/
-scripts/
-assets/
-previews/
-
-pnpm-lock.yaml
-tsconfig*.json
-tsdown.config.ts
-vitest.config.ts
-AGENTS.md
-
 *.tgz
 *.zip
 *.log

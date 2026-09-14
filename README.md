@@ -1,69 +1,111 @@
-# dsh-Kinich-theme
+# Kinich Theme for DeepSeek Harness
 
-A Kinich-themed enhanced day/night UI plugin for DeepSeek Harness Web.
+Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
-基于《原神》基尼奇视觉元素制作的 DeepSeek Harness Web 日夜双模式增强主题插件。
+- Repository: https://github.com/Xian-JL/dsh-Kinich-theme
+- npm: `dsh-kinich-theme`
+- Stable release: `1.0.0`
+- Target runtime: `@deepseek-ai/dsh@0.1.5-rc.1` Web
 
-## Compatibility / 兼容性
+> This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
 
-- DeepSeek Harness: `0.1.1-rc.2`
-- Profile: `web`
-- Node.js: `^22.19.0 || >=24.0.0`
-
-Other DSH versions have not been verified.
-
-仅验证 DeepSeek Harness `0.1.1-rc.2`，其他版本不保证兼容。
-
-## Features / 功能
-
-- Kinich-inspired light and dark semantic theme tokens.
-- Ajaw branding and continuous pixel animation.
-- Drag-and-drop Ajaw positioning with persisted coordinates.
-- Ajaw 0–360° rotation and horizontal mirroring.
-- Optional Kinich character art with position and transparency controls.
-- Optional Natlan ornament and pixel texture with intensity controls.
-- Responsive hiding of large decorations on narrow screens.
-
-## Install / 安装
-
-Clone or download this repository, then run the following commands from its
-root directory:
-
-克隆或下载本仓库，在仓库根目录执行：
+## Install
 
 ```powershell
-pnpm install --prod
-dsh plugin --profile web add .
+dsh plugin --profile web add dsh-kinich-theme
+```
+
+Then launch DSH Web:
+
+```powershell
 dsh web
 ```
 
-No build step is required for this runtime-only repository. The compiled Host
-and Client bundles are included in `lib/`; `pnpm install --prod` installs the
-two Host runtime dependencies.
+No local clone, build step, or esbuild installation is required for normal users. The npm package ships prebuilt `lib/index.js` and `lib/client.js`.
 
-本仓库已包含 `lib/` 运行文件，无需自行构建；`pnpm install --prod` 用于安装
-两个 Host 运行依赖。
+## Update
 
-## Use / 使用
+```powershell
+dsh plugin --profile web add dsh-kinich-theme@latest
+```
 
-- Use **Settings → Appearance** to switch between light, dark, and system modes.
-- Use **Settings → General → Kinich theme** to configure decorations.
-- Drag Ajaw directly on the page to change its position; release to save.
+## Uninstall
 
-## License and assets / 许可与素材
+```powershell
+dsh plugin --profile web remove dsh-kinich-theme
+```
 
-Original plugin code is provided under the terms in [LICENSE](./LICENSE).
-Third-party visual assets are excluded from that code license. Sources and
-processing notes are listed in [THIRD_PARTY_ASSETS.md](./THIRD_PARTY_ASSETS.md).
+## Features
 
-公开再分发前，请确认第三方素材的授权范围。素材已嵌入 `lib/client.js`，因此
-不上传原始图片并不能消除素材再分发要求。
+### Three complete visual modes
 
-Genshin Impact and its related characters and visual elements belong to their
-respective rights holders. This is an unofficial fan-made plugin and is not
-affiliated with or endorsed by HoYoverse.
+- **Jungle** — deep forest greens, organic ambience, firefly-like motion.
+- **Phlogiston** — dark lime/orange energy language with stronger edge glow.
+- **Sunlit** — lighter stone-and-gold presentation optimized for long sessions.
 
-## Credits
+### Visual intensity
 
-Maintained by [Xian-JL](https://github.com/Xian-JL). Developed with assistance
-from OpenAI Codex.
+Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual mode.
+
+### Ajaw Companion 2.0
+
+- Idle / hover / reaction / dragging states.
+- Session-aware thinking and completion feedback.
+- Drag position, mirror, rotation, and reset controls.
+- Double-click interaction and lightweight idle moods.
+
+### DSH-native integration
+
+- Kinich/Ajaw sidebar branding.
+- Blank-session Hero branding.
+- Native DSH settings integration.
+- Live DSH semantic-token overrides.
+- Dynamic environment effects with `prefers-reduced-motion` support.
+
+## Settings
+
+Open DSH **Settings → General → Kinich Theme** to configure:
+
+- Jungle / Phlogiston / Sunlit
+- Minimal / Balanced / Immersive
+- Kinich character layer
+- Ajaw companion
+- Natlan ornament / texture
+- Dynamic environment motion
+
+## Compatibility
+
+`v1.0.0` targets the current stable DSH Web line used for this release:
+
+```text
+@deepseek-ai/dsh 0.1.5-rc.1
+Node.js ^22.19.0 || >=24.0.0
+```
+
+DeepSeek Harness is still evolving quickly. If a future DSH release changes plugin APIs, use the latest Kinich Theme release that explicitly lists support for that DSH version.
+
+## Development
+
+```powershell
+npm install
+npm run verify
+```
+
+The source tree is modular under `src/`; `esbuild` produces the prebuilt Host and Client bundles in `lib/`.
+
+## Project structure
+
+```text
+src/       Modular Host / Client / shared source
+assets/    Source visual assets used to generate the runtime bundle
+scripts/   Build and verification tooling
+lib/       Prebuilt DSH runtime entrypoints
+```
+
+## Credits and third-party assets
+
+See [`THIRD_PARTY_ASSETS.md`](./THIRD_PARTY_ASSETS.md). The MIT license covers the original plugin code and documentation only; third-party characters, artwork, trademarks, and visual materials remain subject to their respective rights and terms.
+
+## License
+
+Original plugin code and documentation: MIT. See [`LICENSE`](./LICENSE).

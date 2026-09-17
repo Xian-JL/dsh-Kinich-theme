@@ -1,4 +1,4 @@
-# Kinich Theme v1.0.0
+# Kinich Theme v1.1.0
 
 First stable public release of Kinich Theme for DeepSeek Harness Web.
 

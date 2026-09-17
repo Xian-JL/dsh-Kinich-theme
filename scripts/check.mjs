@@ -14,6 +14,9 @@ const overlaySource = await readFile(resolve(ROOT, "src/client/overlay/kinich-ov
 const settingsUiSource = await readFile(resolve(ROOT, "src/client/settings/kinich-settings-row.js"), "utf8");
 const brandSource = await readFile(resolve(ROOT, "src/client/components/brand.js"), "utf8");
 const themeSource = await readFile(resolve(ROOT, "src/client/theme/tokens.js"), "utf8");
+const balanceRouteSource = await readFile(resolve(ROOT, "src/host/balance-route.js"), "utf8");
+const balanceStoreSource = await readFile(resolve(ROOT, "src/client/balance/balance-store.js"), "utf8");
+const balancePolicySource = await readFile(resolve(ROOT, "src/client/balance/policy.js"), "utf8");
 
 const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
@@ -22,10 +25,14 @@ const sourceFiles = [
   "src/shared/settings.js",
   "src/host/settings-schema.js",
   "src/host/index.js",
+  "src/host/balance-route.js",
   "src/client/assets.generated.js",
   "src/client/locales.js",
   "src/client/settings/decode.js",
   "src/client/components/brand.js",
+  "src/client/balance/balance-store.js",
+  "src/client/balance/policy.js",
+  "src/client/balance/use-balance.js",
   "src/client/hooks/use-kinich-settings.js",
   "src/client/overlay/kinich-overlay.js",
   "src/client/session/status-store.js",
@@ -35,6 +42,7 @@ const sourceFiles = [
   "src/client/styles.generated.js",
   "src/client/styles.js",
   "src/client/theme/tokens.js",
+  "src/client/version.generated.js",
   "src/client/index.js",
 ];
 
@@ -48,7 +56,7 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(packageJson.version === "1.0.0", "package.json must be version 1.0.0");
+assert(packageJson.version === "1.1.0", "package.json must be version 1.1.0");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
 assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.1", "@deepseek-ai/schemastery must remain a runtime dependency for local link mode");
@@ -108,15 +116,36 @@ assert(decodeSource.includes("DEFAULT_KINICH_SETTINGS"), "Client decoder no long
 assert(overlaySource.includes("requestAnimationFrame"), "Ajaw drag/reaction rendering does not use requestAnimationFrame");
 assert(overlaySource.includes('data-state'), "Ajaw product interaction states missing");
 assert(overlaySource.includes('triggerReaction'), "Ajaw click reaction missing");
-assert(settingsUiSource.includes("PresetCards"), "Visual-mode card UI missing");
 assert(settingsUiSource.includes("ThemePreview"), "Settings live preview missing");
+assert(!settingsUiSource.includes("PresetCards"), "Stage 3 settings must expose the Jungle design only");
+assert(settingsUiSource.includes("BalanceMonitorPreview"), "Balance monitor settings shell missing");
+assert(settingsUiSource.includes('value.visualStyle !== "jungle"'), "Legacy visual-mode compatibility prompt missing");
 assert(settingsUiSource.includes('updateMany("ajaw-reset"'), "Ajaw reset action missing");
 assert(brandSource.includes("dsh-kinich-brand-shell__orbit"), "Layered brand emblem missing");
 assert(client.includes("sidebar.brand.name"), "Sidebar brand name slot missing");
 assert(client.includes("conversation.composer.dock"), "Session-state bridge slot missing");
 assert(overlaySource.includes("getKinichSessionState"), "Ajaw session-state feedback missing");
-assert(overlaySource.includes("onDoubleClick"), "Ajaw Companion 2.0 double-click interaction missing");
+assert(overlaySource.includes('"aria-controls": balanceDialogId'), "Accessible Ajaw balance trigger missing");
+assert(balanceRouteSource.includes('path: BALANCE_PATH'), "Authenticated balance route registration missing");
+assert(balanceRouteSource.includes('authorization: `Bearer ${credential.value}`'), "Host-side DeepSeek authorization missing");
+assert(balanceRouteSource.includes('new URL("/user/balance"'), "Official DeepSeek balance endpoint missing");
+assert(balanceRouteSource.includes('CACHE_TTL_MS = 60_000'), "Host balance cache must remain 60 seconds");
+assert(balanceRouteSource.includes('REQUEST_TIMEOUT_MS = 10_000'), "Host balance timeout must remain 10 seconds");
+assert(balanceStoreSource.includes('setInterval'), "Client 60-second balance polling missing");
+assert(balancePolicySource.includes('currency !== "CNY"'), "CNY-only red-alert threshold missing");
+assert(overlaySource.includes('data-overheated'), "Ajaw red-alert state missing");
+assert(overlaySource.includes('refreshBalance({ force: true })'), "Ajaw click/manual balance refresh missing");
+assert(overlaySource.includes('dsh-kinich-welcome'), "Preview-aligned Jungle welcome composition missing");
+assert(overlaySource.includes('dsh-kinich-character-frame'), "Preview-aligned Kinich character frame missing");
+assert(overlaySource.includes('role: "dialog"'), "Ajaw balance popover semantics missing");
+assert(!overlaySource.includes('"aria-hidden": "true", className: "dsh-kinich-overlay"'), "Interactive overlay must not be hidden from assistive technology");
 assert(overlaySource.includes("dsh-kinich-ambient-motion"), "Dynamic ambient motion layer missing");
+assert(overlaySource.includes("dsh-kinich-ambient-motion__canopy"), "Jungle canopy motion layer missing");
+assert(overlaySource.includes("dsh-kinich-ambient-motion__ribbon"), "Jungle energy ribbon layer missing");
+assert(overlaySource.includes("dsh-kinich-ambient-motion__glint"), "Jungle glint motion layer missing");
+assert((await readFile(resolve(ROOT, "src/client/styles.css"), "utf8")).includes("dsh-kinich-character-hero-drift"), "Kinich character loop animation missing");
+assert(overlaySource.includes("length: 24"), "Jungle firefly layer must render 24 particles");
+assert(!(await readFile(resolve(ROOT, "src/client/styles.css"), "utf8")).includes("dsh-kinich-ornament-drift"), "Natlan ornament drift must remain removed");
 
 if (errors.length) {
   console.error(`Kinich verification failed (${errors.length} issue${errors.length === 1 ? "" : "s"}):`);
@@ -128,7 +157,7 @@ console.log("Kinich verification passed.");
 console.log(`- version: ${packageJson.version}`);
 console.log("- build: esbuild Host/Client contract preserved");
 console.log("- settings: shared schema + backwards-compatible decode");
-console.log("- product UI: Jungle / Phlogiston / Sunlit live token modes");
-console.log("- product UI: session feedback + branded sidebar + visual intensity");
-console.log("- Ajaw: Companion 2.0 with DSH session state, idle moods, click/double-click + rAF drag");
+console.log("- product UI: Jungle workspace with legacy mode data compatibility");
+console.log("- product UI: modern settings hierarchy + branded sidebar + visual intensity");
+console.log("- Ajaw: live official balance, stale/error states, CNY<10 red-alert lock, and rAF drag");
 console.log("- DSH slots/settings/theme/assets contract preserved");

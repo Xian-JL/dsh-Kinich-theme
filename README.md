@@ -4,7 +4,7 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - npm: `dsh-kinich-theme`
-- Stable release: `1.0.0`
+- Stable release: `1.1.0`
 - Target runtime: `@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
@@ -35,13 +35,13 @@ dsh plugin --profile web add dsh-kinich-theme@latest
 dsh plugin --profile web remove dsh-kinich-theme
 ```
 
-## Features
+## Astra optimized features
 
-### Three complete visual modes
+### Modern Jungle workspace
 
-- **Jungle** — deep forest greens, organic ambience, firefly-like motion.
-- **Phlogiston** — dark lime/orange energy language with stronger edge glow.
-- **Sunlit** — lighter stone-and-gold presentation optimized for long sessions.
+- Jungle is the only active design target. Legacy Phlogiston/Sunlit values remain decodable but are outside this visual pass.
+- The welcome page now follows the approved editorial layout: left-side welcome copy, framed upper-right Kinich art, a lower composer, and bottom-right Ajaw.
+- Restrained rainforest lighting, Natlan geometry, and Genshin-inspired warm-gold linework remain part of the theme identity.
 
 ### Visual intensity
 
@@ -52,7 +52,9 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 - Idle / hover / reaction / dragging states.
 - Session-aware thinking and completion feedback.
 - Drag position, mirror, rotation, and reset controls.
-- Double-click interaction and lightweight idle moods.
+- Live balance for the configured official DeepSeek API account with a 60-second refresh cycle.
+- CNY balances below `¥10` lock Ajaw in a static red-alert state while keeping the balance bubble and refresh available; DSH model calls are not blocked.
+- The API key is resolved only on the Host and never sent to the browser.
 
 ### DSH-native integration
 
@@ -66,7 +68,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 
 Open DSH **Settings → General → Kinich Theme** to configure:
 
-- Jungle / Phlogiston / Sunlit
+- Jungle (legacy modes remain configuration-compatible only)
 - Minimal / Balanced / Immersive
 - Kinich character layer
 - Ajaw companion
@@ -75,7 +77,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.0.0` targets the current stable DSH Web line used for this release:
+`v1.1.0` targets the current stable DSH Web line used for this release:
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

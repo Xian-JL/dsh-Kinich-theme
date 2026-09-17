@@ -22,6 +22,6 @@ export function HeroBrandMark({ size, className }) { return /* @__PURE__ */ (0, 
 export function SidebarBrandName() {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { className: "dsh-kinich-sidebar-brand-name", children: [
 		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "KINICH" }),
-		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("small", { children: "NATLAN INTERFACE" })
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("small", { children: "JUNGLE · DSH" })
 	] });
 }

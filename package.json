@@ -1,7 +1,7 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.0.0",
-  "description": "Interactive Kinich & Ajaw theme for DeepSeek Harness Web with live visual modes, session feedback, themed sidebar, visual intensity, and dynamic ambient effects.",
+  "version": "1.1.0",
+  "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "main": "lib/index.js",
@@ -58,7 +58,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "verify": "npm run build && npm run check",
+    "verify": "npm run build && npm run check && npm run test:stage4",
+	"test:stage4": "node scripts/test-stage4.mjs",
     "setup": "npm install --omit=dev"
   },
   "keywords": [

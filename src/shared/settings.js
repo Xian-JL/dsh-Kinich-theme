@@ -7,7 +7,7 @@ export const CHARACTER_POSITIONS = Object.freeze(["corner", "edge"]);
 export const DECORATION_INTENSITIES = Object.freeze(["soft", "standard"]);
 export const CHARACTER_OPACITIES = Object.freeze(["low", "medium", "high"]);
 
-const AJAW_DEFAULT_POSITION = Object.freeze({ x: 96.5, y: 16 });
+const AJAW_DEFAULT_POSITION = Object.freeze({ x: 94, y: 84 });
 
 /** Single source of truth for every persisted setting. */
 export const KINICH_SETTING_DEFINITIONS = Object.freeze({
@@ -21,7 +21,7 @@ export const KINICH_SETTING_DEFINITIONS = Object.freeze({
 	characterOpacity: Object.freeze({ kind: "choice", default: "medium", options: CHARACTER_OPACITIES }),
 	characterPosition: Object.freeze({ kind: "choice", default: "corner", options: CHARACTER_POSITIONS }),
 	ornamentIntensity: Object.freeze({ kind: "choice", default: "standard", options: DECORATION_INTENSITIES }),
-	showCharacter: Object.freeze({ kind: "boolean", default: false }),
+	showCharacter: Object.freeze({ kind: "boolean", default: true }),
 	showOrnament: Object.freeze({ kind: "boolean", default: true }),
 	showTexture: Object.freeze({ kind: "boolean", default: true }),
 	textureIntensity: Object.freeze({ kind: "choice", default: "standard", options: DECORATION_INTENSITIES })

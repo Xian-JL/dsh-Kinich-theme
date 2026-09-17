@@ -4,7 +4,7 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - npm：`dsh-kinich-theme`
-- 正式版本：`1.0.0`
+- 正式版本：`1.1.0`
 - 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
@@ -35,13 +35,13 @@ dsh plugin --profile web add dsh-kinich-theme@latest
 dsh plugin --profile web remove dsh-kinich-theme
 ```
 
-## 主要功能
+## Astra 优化版主要功能
 
-### 三套完整视觉模式
+### Jungle 现代界面
 
-- **Jungle**：深绿雨林、自然环境氛围与萤火动态。
-- **Phlogiston**：深色 + 荧光绿/橙色的燃素能量语言。
-- **Sunlit**：浅石色、金绿配色，适合长时间阅读。
+- 以 Jungle 为当前唯一设计目标；旧版 Phlogiston / Sunlit 配置仍可读取，但不再参与本轮视觉设计。
+- 欢迎页采用左侧编辑式文案、右上菱形基尼奇立绘、下沉输入框和右下阿乔构图。
+- 保留原神式暖金细线、纳塔几何纹样和克制的雨林光感。
 
 ### 视觉强度
 
@@ -52,7 +52,9 @@ dsh plugin --profile web remove dsh-kinich-theme
 - Idle / Hover / Reacting / Dragging 状态。
 - 根据 DSH 会话运行与完成状态反馈。
 - 支持拖拽、镜像、旋转、复位。
-- 双击互动与轻量随机待机状态。
+- 点击显示当前 DeepSeek 官方 API 账户余额，60 秒自动刷新。
+- CNY 余额低于 `¥10` 时进入红温锁定：停止待机、悬停、拖动和会话反馈，但余额气泡及刷新仍可使用，也不会阻断 DSH 模型调用。
+- API Key 只在 Host 侧解析，不会发送到浏览器。
 
 ### 原生 DSH 集成
 
@@ -66,7 +68,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 进入 **Settings → General → Kinich Theme**，可调整：
 
-- Jungle / Phlogiston / Sunlit
+- Jungle（旧模式只保留配置兼容）
 - Minimal / Balanced / Immersive
 - 基尼奇角色层
 - 阿乔伙伴
@@ -75,7 +77,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.0.0` 正式面向：
+`v1.1.0` 正式面向：
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

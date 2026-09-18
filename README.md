@@ -4,7 +4,7 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - npm: `dsh-kinich-theme`
-- Stable release: `1.1.0`
+- Development release: `1.2.0`
 - Target runtime: `@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
@@ -53,7 +53,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 - Session-aware thinking and completion feedback.
 - Drag position, mirror, rotation, and reset controls.
 - Live balance for the configured official DeepSeek API account with a 60-second refresh cycle.
-- CNY balances below `¥10` lock Ajaw in a static red-alert state while keeping the balance bubble and refresh available; DSH model calls are not blocked.
+- Below CNY `¥10`, Ajaw changes in exactly two ways: red tint and double animation speed. Click, drag, moods, and session feedback continue normally.
 - The API key is resolved only on the Host and never sent to the browser.
 
 ### DSH-native integration
@@ -77,7 +77,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.1.0` targets the current stable DSH Web line used for this release:
+`v1.2.0` targets the current stable DSH Web line used for this release:
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

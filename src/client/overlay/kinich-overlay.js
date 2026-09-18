@@ -7,6 +7,7 @@ import { getKinichThemeTokens, KINICH_THEME_SOURCE } from "../theme/tokens.js";
 import { getKinichSessionState, subscribeKinichSessionState } from "../session/status-store.js";
 import { refreshBalance } from "../balance/balance-store.js";
 import { useBalance } from "../balance/use-balance.js";
+import { KINICH_CLICK_BURST_EVENT, KINICH_INTERACTION_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
 
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
 function displayAjawPosition(position) {
@@ -50,6 +51,62 @@ function useSessionFeedback() {
 	return state;
 }
 
+function useInteractionFeedback(sessionState) {
+	const [feedback, setFeedback] = (0, react.useState)("idle");
+	const timerRef = (0, react.useRef)(null);
+	(0, react.useEffect)(() => {
+		if (timerRef.current !== null) { clearTimeout(timerRef.current); timerRef.current = null; }
+		if (sessionState === "running" || sessionState === "complete" || sessionState === "error") {
+			setFeedback(sessionState);
+			if (sessionState !== "running") timerRef.current = setTimeout(() => setFeedback("idle"), sessionState === "error" ? 3200 : 1800);
+		}
+		return () => { if (timerRef.current !== null) clearTimeout(timerRef.current); };
+	}, [sessionState]);
+	(0, react.useEffect)(() => {
+		if (typeof document === "undefined") return;
+		const receive = event => {
+			if (event.detail?.state !== "sending") return;
+			setFeedback("sending");
+			if (timerRef.current !== null) clearTimeout(timerRef.current);
+			timerRef.current = setTimeout(() => { setFeedback(current => current === "sending" ? "idle" : current); timerRef.current = null; }, 1200);
+		};
+		document.addEventListener(KINICH_INTERACTION_EVENT, receive);
+		return () => document.removeEventListener(KINICH_INTERACTION_EVENT, receive);
+	}, []);
+	return feedback;
+}
+
+function useClickBursts(overlayRef) {
+	const [bursts, setBursts] = (0, react.useState)([]);
+	const nextIdRef = (0, react.useRef)(0);
+	const timersRef = (0, react.useRef)(new Map());
+	(0, react.useEffect)(() => {
+		if (typeof document === "undefined" || typeof window === "undefined") return;
+		const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+		const receive = event => {
+			if (reducedMotion?.matches || document.visibilityState !== "visible") return;
+			const rect = overlayRef.current?.getBoundingClientRect();
+			if (!rect || !Number.isFinite(event.detail?.clientX) || !Number.isFinite(event.detail?.clientY)) return;
+			const point = toOverlayPoint(event.detail?.clientX, event.detail?.clientY, rect);
+			if (!point) return;
+			const id = ++nextIdRef.current;
+			setBursts(current => [...current.slice(-3), { id, ...point }]);
+			const timer = setTimeout(() => {
+				setBursts(current => current.filter(item => item.id !== id));
+				timersRef.current.delete(id);
+			}, 320);
+			timersRef.current.set(id, timer);
+		};
+		document.addEventListener(KINICH_CLICK_BURST_EVENT, receive);
+		return () => {
+			document.removeEventListener(KINICH_CLICK_BURST_EVENT, receive);
+			for (const timer of timersRef.current.values()) clearTimeout(timer);
+			timersRef.current.clear();
+		};
+	}, [overlayRef]);
+	return bursts;
+}
+
 function text(t, key, fallback) { return typeof t === "function" ? t(key) : fallback; }
 
 export function KinichOverlay({ settings, theme, t }) {
@@ -57,6 +114,7 @@ export function KinichOverlay({ settings, theme, t }) {
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	useKinichThemePresentation(theme, value.visualStyle, value.visualIntensity);
 	const sessionState = useSessionFeedback();
+	const interactionFeedback = useInteractionFeedback(sessionState);
 	const balance = useBalance();
 	const overheated = balance.overheated === true;
 	const [ajawPosition, setAjawPosition] = (0, react.useState)(() => displayAjawPosition(value.ajawPosition));
@@ -65,6 +123,8 @@ export function KinichOverlay({ settings, theme, t }) {
 	const [reacting, setReacting] = (0, react.useState)(false);
 	const [idleMood, setIdleMood] = (0, react.useState)("idle");
 	const [balanceOpen, setBalanceOpen] = (0, react.useState)(false);
+	const overlayRef = (0, react.useRef)(null);
+	const clickBursts = useClickBursts(overlayRef);
 	const dragRef = (0, react.useRef)(null);
 	const frameRef = (0, react.useRef)(null);
 	const pendingPositionRef = (0, react.useRef)(null);
@@ -74,14 +134,6 @@ export function KinichOverlay({ settings, theme, t }) {
 	const clusterRef = (0, react.useRef)(null);
 
 	(0, react.useEffect)(() => { if (dragRef.current === null) setAjawPosition(displayAjawPosition(value.ajawPosition)); }, [value.ajawPosition.x, value.ajawPosition.y]);
-	(0, react.useEffect)(() => {
-		if (!overheated) return;
-		dragRef.current = null;
-		setDragging(false);
-		setHovered(false);
-		setReacting(false);
-		setIdleMood("idle");
-	}, [overheated]);
 	(0, react.useEffect)(() => () => {
 		if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
 		if (reactionTimerRef.current !== null) clearTimeout(reactionTimerRef.current);
@@ -100,7 +152,7 @@ export function KinichOverlay({ settings, theme, t }) {
 	}, [balanceOpen]);
 
 	(0, react.useEffect)(() => {
-		if (!value.animateAjaw || overheated || sessionState !== "idle" || dragging || reacting || balanceOpen) return;
+		if (!value.animateAjaw || sessionState !== "idle" || dragging || reacting || balanceOpen) return;
 		let cancelled = false;
 		const schedule = () => {
 			const delay = 14000 + Math.floor(Math.random() * 10000);
@@ -112,10 +164,9 @@ export function KinichOverlay({ settings, theme, t }) {
 		};
 		schedule();
 		return () => { cancelled = true; if (moodTimerRef.current !== null) clearTimeout(moodTimerRef.current); };
-	}, [value.animateAjaw, overheated, sessionState, dragging, reacting, balanceOpen]);
+	}, [value.animateAjaw, sessionState, dragging, reacting, balanceOpen]);
 
 	const triggerReaction = () => {
-		if (overheated) return;
 		setReacting(false);
 		requestAnimationFrame(() => setReacting(true));
 		if (reactionTimerRef.current !== null) clearTimeout(reactionTimerRef.current);
@@ -132,7 +183,7 @@ export function KinichOverlay({ settings, theme, t }) {
 		if (frameRef.current === null) frameRef.current = requestAnimationFrame(flushAjawFrame);
 	};
 	const startAjawDrag = event => {
-		if (overheated || !snapshot.writable || event.button !== 0) return;
+		if (!snapshot.writable || event.button !== 0) return;
 		const overlay = event.currentTarget.closest(".dsh-kinich-overlay");
 		if (overlay === null) return;
 		const overlayRect = overlay.getBoundingClientRect();
@@ -186,14 +237,15 @@ export function KinichOverlay({ settings, theme, t }) {
 		triggerReaction();
 	};
 
-	const ajawState = overheated ? "overheated" : dragging ? "dragging" : sessionState === "running" ? "thinking" : sessionState === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
-	const moodBubble = ajawState === "thinking" ? "…" : ajawState === "success" ? "✓" : ajawState === "sleeping" ? "zZ" : ajawState === "excited" ? "!" : ajawState === "dragging" ? "↕" : reacting ? "★" : hovered ? "¥" : "";
+	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : sessionState === "error" ? "error" : sessionState === "running" ? "thinking" : sessionState === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
+	const moodBubble = ajawState === "sending" ? "↗" : ajawState === "thinking" ? "…" : ajawState === "success" ? "✓" : ajawState === "error" ? "!" : ajawState === "sleeping" ? "zZ" : ajawState === "excited" ? "!" : ajawState === "dragging" ? "↕" : reacting ? "★" : hovered ? "¥" : "";
 	const balanceDialogId = "dsh-kinich-balance-bubble";
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
 	const statusFallback = balance.status === "ready" ? "余额已同步" : balance.status === "loading" ? "正在读取余额" : "余额暂不可用";
 
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: "dsh-kinich-overlay",
+		ref: overlayRef,
 		"data-ajaw": String(value.animateAjaw),
 		"data-ambient-motion": String(value.ambientMotion),
 		"data-character": String(value.showCharacter),
@@ -203,16 +255,40 @@ export function KinichOverlay({ settings, theme, t }) {
 		"data-ornament": String(value.showOrnament),
 		"data-ornament-intensity": value.ornamentIntensity,
 		"data-session-state": sessionState,
+		"data-interaction-feedback": interactionFeedback,
 		"data-overheated": String(overheated),
 		"data-texture": String(value.showTexture),
 		"data-texture-intensity": value.textureIntensity,
 		"data-visual-style": value.visualStyle,
 		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				"aria-hidden": "true",
+				className: "dsh-kinich-click-layer",
+				children: clickBursts.map(burst => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+					className: "dsh-kinich-click-burst",
+					style: { left: `${burst.x}px`, top: `${burst.y}px` },
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__core" }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__ring" }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__arc" }),
+						...Array.from({ length: 10 }, (_, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", {
+							className: "dsh-kinich-click-burst__fragment",
+							style: { "--burst-angle": `${index * 36 + (index % 2 ? 7 : -5)}deg`, "--burst-distance": `${22 + index % 3 * 5}px`, "--burst-delay": `${index % 4 * 9}ms` }
+						}, index))
+					]
+				}, burst.id))
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				"aria-live": "polite",
+				"aria-atomic": "true",
+				className: "dsh-kinich-interaction-status",
+				role: "status",
+				children: interactionFeedback === "sending" ? text(t, "feedback.sending", "正在传递指令") : interactionFeedback === "running" ? text(t, "feedback.running", "正在探索") : interactionFeedback === "complete" ? text(t, "feedback.complete", "探索完成") : interactionFeedback === "error" ? text(t, "feedback.error", "本次行动未完成") : ""
+			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", { "aria-hidden": "true", className: "dsh-kinich-welcome", children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-welcome__eyebrow", children: "◆ KINICH & AJAW" }),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("h1", { children: [text(t, "welcome.line1", "从这里，"), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("br", {}), text(t, "welcome.line2", "开启新的探索。") ] }),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", { children: [text(t, "welcome.copy1", "将想法交给对话，让复杂问题逐渐清晰。"), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("br", {}), text(t, "welcome.copy2", "阿乔会替你留意账户余额。")] }),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-welcome__motto", children: text(t, "welcome.motto", "思考 · 创造 · 探索") })
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", { children: [text(t, "welcome.copy1", "将想法交给对话，让复杂问题逐渐清晰。"), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("br", {}), text(t, "welcome.copy2", "阿乔会替你留意账户余额。")] })
 			] }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { "aria-hidden": "true", className: "dsh-kinich-decoration", children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-atmosphere" }),
@@ -247,7 +323,7 @@ export function KinichOverlay({ settings, theme, t }) {
 						"aria-expanded": balanceOpen,
 						"aria-label": text(t, "balance.open", "Open API balance"),
 						className: "dsh-kinich-ajaw-idle",
-						"data-draggable": String(snapshot.writable && !overheated),
+						"data-draggable": String(snapshot.writable),
 						"data-dragging": String(dragging),
 						"data-state": ajawState,
 						onClick: toggleBalance,
@@ -297,7 +373,7 @@ export function KinichOverlay({ settings, theme, t }) {
 								text(t, statusKey, statusFallback)
 							] }),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-bubble__note", children: overheated
-								? text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温锁定。")
+								? text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
 								: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。") })
 						]
 					})

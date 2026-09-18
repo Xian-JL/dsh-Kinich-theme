@@ -17,6 +17,9 @@ const themeSource = await readFile(resolve(ROOT, "src/client/theme/tokens.js"), 
 const balanceRouteSource = await readFile(resolve(ROOT, "src/host/balance-route.js"), "utf8");
 const balanceStoreSource = await readFile(resolve(ROOT, "src/client/balance/balance-store.js"), "utf8");
 const balancePolicySource = await readFile(resolve(ROOT, "src/client/balance/policy.js"), "utf8");
+const interactionSource = await readFile(resolve(ROOT, "src/client/interaction/interaction-bridge.js"), "utf8");
+const sessionBridgeSource = await readFile(resolve(ROOT, "src/client/session/session-state-bridge.js"), "utf8");
+const stylesSource = await readFile(resolve(ROOT, "src/client/styles.css"), "utf8");
 
 const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
@@ -34,6 +37,7 @@ const sourceFiles = [
   "src/client/balance/policy.js",
   "src/client/balance/use-balance.js",
   "src/client/hooks/use-kinich-settings.js",
+  "src/client/interaction/interaction-bridge.js",
   "src/client/overlay/kinich-overlay.js",
   "src/client/session/status-store.js",
   "src/client/session/session-state-bridge.js",
@@ -56,7 +60,7 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(packageJson.version === "1.1.0", "package.json must be version 1.1.0");
+assert(packageJson.version === "1.2.0", "package.json must be version 1.2.0");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
 assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.1", "@deepseek-ai/schemastery must remain a runtime dependency for local link mode");
@@ -134,6 +138,12 @@ assert(balanceRouteSource.includes('REQUEST_TIMEOUT_MS = 10_000'), "Host balance
 assert(balanceStoreSource.includes('setInterval'), "Client 60-second balance polling missing");
 assert(balancePolicySource.includes('currency !== "CNY"'), "CNY-only red-alert threshold missing");
 assert(overlaySource.includes('data-overheated'), "Ajaw red-alert state missing");
+assert(!overlaySource.includes("dsh-kinich-welcome__motto"), "Removed welcome motto returned");
+assert(!overlaySource.includes("overheated || !snapshot.writable"), "Low balance must not disable Ajaw dragging");
+assert(!overlaySource.includes("!value.animateAjaw || overheated"), "Low balance must not disable Ajaw moods");
+assert(!stylesSource.includes("data-overheated='true'] .dsh-kinich-ajaw-idle__spark { animation: none"), "Low balance must not freeze Ajaw animation");
+assert(stylesSource.includes("red tint + 2x animation speed"), "Low-balance two-change contract missing");
+assert(stylesSource.includes("animation-duration: .3s"), "Low-balance idle animation must run at 2x speed");
 assert(overlaySource.includes('refreshBalance({ force: true })'), "Ajaw click/manual balance refresh missing");
 assert(overlaySource.includes('dsh-kinich-welcome'), "Preview-aligned Jungle welcome composition missing");
 assert(overlaySource.includes('dsh-kinich-character-frame'), "Preview-aligned Kinich character frame missing");
@@ -143,9 +153,26 @@ assert(overlaySource.includes("dsh-kinich-ambient-motion"), "Dynamic ambient mot
 assert(overlaySource.includes("dsh-kinich-ambient-motion__canopy"), "Jungle canopy motion layer missing");
 assert(overlaySource.includes("dsh-kinich-ambient-motion__ribbon"), "Jungle energy ribbon layer missing");
 assert(overlaySource.includes("dsh-kinich-ambient-motion__glint"), "Jungle glint motion layer missing");
-assert((await readFile(resolve(ROOT, "src/client/styles.css"), "utf8")).includes("dsh-kinich-character-hero-drift"), "Kinich character loop animation missing");
+assert(stylesSource.includes("dsh-kinich-character-hero-drift"), "Kinich character loop animation missing");
 assert(overlaySource.includes("length: 24"), "Jungle firefly layer must render 24 particles");
-assert(!(await readFile(resolve(ROOT, "src/client/styles.css"), "utf8")).includes("dsh-kinich-ornament-drift"), "Natlan ornament drift must remain removed");
+assert(!stylesSource.includes("dsh-kinich-ornament-drift"), "Natlan ornament drift must remain removed");
+assert(client.includes("installInteractionBridge"), "Host interaction bridge is not installed");
+assert(interactionSource.includes("kinich:interaction-feedback"), "Interaction feedback event contract missing");
+assert(interactionSource.includes("data.kinichPressed") || interactionSource.includes("dataset.kinichPressed"), "Tactile action feedback missing");
+assert(sessionBridgeSource.includes('setKinichSessionState("error")'), "Session error feedback missing");
+assert(overlaySource.includes("dsh-kinich-interaction-status"), "Accessible interaction status missing");
+assert(overlaySource.includes('aria-live'), "Interaction feedback must announce state changes");
+assert(!overlaySource.includes("dsh-kinich-interaction-rail"), "Rejected composer progress rail must remain removed");
+assert(overlaySource.includes('interactionFeedback === "sending" ? "sending"'), "Ajaw sending state priority missing");
+assert(stylesSource.includes("task feedback is allowed to override"), "Red-alert task-state overrides missing");
+assert(stylesSource.includes("v1.2 — Kinich interaction feedback"), "Kinich interaction feedback styles missing");
+assert(interactionSource.includes("kinich:click-burst"), "Pointer burst event contract missing");
+assert(overlaySource.includes("dsh-kinich-click-layer"), "Stable pointer-burst layer missing");
+assert(overlaySource.includes("dsh-kinich-click-burst__fragment"), "Pointer burst fragment layer missing");
+assert(overlaySource.includes("length: 10"), "Pointer burst must render exactly ten fragments");
+assert(stylesSource.includes("72px maximum"), "Pointer burst size contract missing");
+assert(stylesSource.includes("dsh-kinich-click-fragment 265ms"), "Pointer burst timing contract missing");
+assert(!stylesSource.includes("single-art cinematic depth"), "Rejected v1.3 cinematic depth layer leaked into v1.2");
 
 if (errors.length) {
   console.error(`Kinich verification failed (${errors.length} issue${errors.length === 1 ? "" : "s"}):`);
@@ -159,5 +186,5 @@ console.log("- build: esbuild Host/Client contract preserved");
 console.log("- settings: shared schema + backwards-compatible decode");
 console.log("- product UI: Jungle workspace with legacy mode data compatibility");
 console.log("- product UI: modern settings hierarchy + branded sidebar + visual intensity");
-console.log("- Ajaw: live official balance, stale/error states, CNY<10 red-alert lock, and rAF drag");
+console.log("- Ajaw: live official balance, CNY<10 red tint + 2x motion, full interaction, and rAF drag");
 console.log("- DSH slots/settings/theme/assets contract preserved");

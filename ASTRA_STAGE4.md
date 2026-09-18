@@ -8,7 +8,7 @@ This checkpoint completes the Jungle-only product pass and the live Ajaw balance
 - Official DeepSeek `GET /user/balance` lookup for the active `llm-deepseek` credential reference.
 - 60-second Host cache and Client polling, single-flight request deduplication, 10-second timeout, manual refresh floor, focus/visibility refresh, and stale-last-good display.
 - Statuses: `ready`, `unbound`, `unsupported`, `auth-error`, `rate-limited`, and `unavailable`.
-- CNY `< ¥10` red-alert lock. The lock freezes every decorative/interactive Ajaw action except opening, closing, and refreshing the balance bubble. It does not interrupt DSH model calls.
+- CNY `< ¥10` red-hot state. It changes Ajaw only by applying a red tint and halving animation durations; all interactions and session feedback continue normally, and DSH model calls are never interrupted.
 - Preview-aligned Jungle welcome composition, framed Kinich art, lower composer, lower-right Ajaw, and edge-aware popover.
 - Layered Jungle motion: 24 rising fireflies, stronger canopy breathing, two clearer diagonal ribbons, five enlarged diamond glints, and a 6-second Kinich character loop. The Natlan ornament remains static.
 - Motion safety: Minimal intensity, the dynamic-environment switch, and `prefers-reduced-motion` disable the added loops.

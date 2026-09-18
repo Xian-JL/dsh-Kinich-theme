@@ -4,7 +4,7 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - npm：`dsh-kinich-theme`
-- 正式版本：`1.1.0`
+- 开发版本：`1.2.0`
 - 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
@@ -53,7 +53,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 - 根据 DSH 会话运行与完成状态反馈。
 - 支持拖拽、镜像、旋转、复位。
 - 点击显示当前 DeepSeek 官方 API 账户余额，60 秒自动刷新。
-- CNY 余额低于 `¥10` 时进入红温锁定：停止待机、悬停、拖动和会话反馈，但余额气泡及刷新仍可使用，也不会阻断 DSH 模型调用。
+- CNY 余额低于 `¥10` 时，阿乔只发生两项变化：整体变红、动画速度翻倍；点击、拖动、情绪和会话反馈全部照常工作。
 - API Key 只在 Host 侧解析，不会发送到浏览器。
 
 ### 原生 DSH 集成
@@ -77,7 +77,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.1.0` 正式面向：
+`v1.2.0` 正式面向：
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

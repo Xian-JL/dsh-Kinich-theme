@@ -1,22 +1,23 @@
-# Kinich Theme v1.1.0
+# Kinich Theme v1.2.0 — Interaction Feedback
 
-First stable public release of Kinich Theme for DeepSeek Harness Web.
+Development release rebuilt directly from the published GitHub `v1.1.0` baseline.
 
 ## Highlights
 
-- Jungle / Phlogiston / Sunlit visual modes
-- Minimal / Balanced / Immersive visual intensity
-- Ajaw Companion 2.0
-- DSH session-state visual feedback
-- Kinich/Ajaw sidebar and blank-session Hero branding
-- Dynamic environment effects with reduced-motion support
-- Native DSH settings and semantic-token integration
-- Prebuilt runtime package with one-command installation
+- Preserves the complete v1.1.0 Jungle environment and motion composition
+- Adds restrained press and text-focus feedback to existing DSH controls
+- Adds send, running, completion, and error states driven by real interaction/session signals
+- Keeps textual status announcements available to assistive technology without placing a floating capsule or decorative line over the composer
+- Makes Ajaw distinguish sending, thinking, completion, and error even while the low-balance red-alert base state is active
+- Honors reduced-motion preferences
+- Adds a compact code-drawn Kinich pixel burst at primary mouse-click coordinates without changing the cursor or intercepting Host interaction
+- Removes the welcome motto that overlapped native DSH copy
+- Refines low balance to only tint Ajaw red and double its animation speed, with every interaction preserved
 
 ## Install
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme
+dsh plugin --profile web add "https://github.com/Xian-JL/dsh-Kinich-theme/releases/download/v1.2.0/dsh-kinich-theme-1.2.0.tgz"
 ```
 
 Then:

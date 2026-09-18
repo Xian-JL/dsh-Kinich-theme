@@ -1682,8 +1682,7 @@ body:has([data-phase='hero']) .wSkVaW_composerHero {
   transform: translateY(118px);
 }
 
-.dsh-kinich-welcome__eyebrow,
-.dsh-kinich-welcome__motto {
+.dsh-kinich-welcome__eyebrow {
   display: block;
   color: var(--kinich-gold);
   font-size: 10px;
@@ -1704,22 +1703,11 @@ body:has([data-phase='hero']) .wSkVaW_composerHero {
 .dsh-kinich-welcome h1 { background: linear-gradient(180deg, var(--dsw-alias-label-primary) 0 49%, var(--kinich-accent) 49% 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 .dsh-kinich-welcome p {
-  margin: 0 0 64px;
+  margin: 0;
   color: var(--dsw-alias-label-secondary);
   font-size: 13px;
   line-height: 1.9;
 }
-
-.dsh-kinich-welcome__motto::before,
-.dsh-kinich-welcome__motto::after {
-  content: '';
-  display: inline-block;
-  width: 38px;
-  height: 1px;
-  margin: 0 12px 3px 0;
-  background: linear-gradient(90deg, var(--kinich-gold), transparent);
-}
-.dsh-kinich-welcome__motto::after { margin: 0 0 3px 12px; transform: scaleX(-1); }
 
 .dsh-kinich-character-frame {
   position: absolute;
@@ -1792,24 +1780,9 @@ body:has([data-phase='hero']) .dsh-kinich-character-frame .dsh-kinich-character 
 @keyframes dsh-kinich-balance-spin { to { transform: rotate(360deg); } }
 
 .dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle {
-  opacity: 1;
-  cursor: pointer;
   filter: saturate(1.18) sepia(.12) hue-rotate(320deg) drop-shadow(0 0 16px rgba(255,79,62,.58));
 }
-.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle__sprite img,
-.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle__status-ring,
-.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle__spark { animation: none !important; }
 .dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle__status-ring { opacity: .95; border-color: #ff6457; box-shadow: 0 0 20px rgba(255,71,57,.48), inset 0 0 12px rgba(255,71,57,.22); }
-.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-balance-bubble {
-  background: linear-gradient(135deg, rgba(255,75,57,.13), transparent 58%), var(--kinich-danger-surface);
-  border-color: rgba(255,112,96,.54);
-}
-.dsh-kinich-balance-bubble[data-overheated='true'] .dsh-kinich-balance-bubble__amount,
-.dsh-kinich-balance-bubble[data-overheated='true'] .dsh-kinich-balance-bubble__status { color: var(--kinich-danger); }
-.dsh-kinich-balance-bubble[data-overheated='true'] .dsh-kinich-balance-bubble__status-dot { background: #ff6658; box-shadow: 0 0 10px rgba(255,77,62,.65); }
-.dsh-kinich-balance-setting[data-overheated='true'] { border-color: rgba(255,104,88,.42); background: linear-gradient(135deg, rgba(255,75,57,.09), transparent 58%), var(--dsw-alias-bg-layer-2); }
-.dsh-kinich-balance-setting[data-overheated='true'] .dsh-kinich-balance-setting__readout strong { color: var(--kinich-danger); }
-.dsh-kinich-balance-setting[data-overheated='true'] .dsh-kinich-balance-setting__status-dot { background: #ff6658; }
 
 @media (max-width: 1100px) {
   .dsh-kinich-welcome { left: clamp(250px, 25vw, 320px); width: 38vw; }
@@ -1931,3 +1904,194 @@ body:has([data-phase='hero']) .dsh-kinich-overlay[data-ambient-motion='true'] .d
   .dsh-kinich-character,
   .dsh-kinich-ornament { animation: none !important; will-change: auto !important; }
 }
+
+/* ============================================================
+ * v1.2 — Kinich interaction feedback
+ * Deliberately leaves the approved v1.1 environment unchanged.
+ * ============================================================ */
+[data-kinich-focus='true'] {
+  outline: none !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--kinich-accent, #c5e86c) 13%, transparent) !important;
+  transition: box-shadow 180ms ease;
+}
+
+[data-kinich-pressed='true'] {
+  transform: translateY(1px) scale(.985) !important;
+  filter: brightness(1.08) saturate(1.04);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--kinich-accent, #c5e86c) 48%, transparent) !important;
+  transition-duration: 70ms !important;
+}
+
+.dsh-kinich-interaction-status {
+  position: fixed !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.dsh-kinich-ajaw-idle[data-state='error'] .dsh-kinich-ajaw-idle__bubble { opacity: .96; color: #2a0d09; background: #ff7769; border-color: #ffc1b8; transform: translateY(0) scale(1); }
+.dsh-kinich-ajaw-idle[data-state='error'] .dsh-kinich-ajaw-idle__status-ring { opacity: .9; border-color: #ff6859; box-shadow: 0 0 16px rgba(255, 83, 67, .42); }
+.dsh-kinich-ajaw-idle[data-state='sending'] .dsh-kinich-ajaw-idle__bubble,
+.dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__bubble,
+.dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__bubble,
+.dsh-kinich-ajaw-idle[data-state='error'] .dsh-kinich-ajaw-idle__bubble { opacity: .96; transform: translateY(0) scale(1); }
+.dsh-kinich-ajaw-idle[data-state='sending'] .dsh-kinich-ajaw-idle__status-ring { opacity: .9; border-color: var(--kinich-gold, #beaa7a); border-style: dashed; box-shadow: 0 0 13px rgba(190,170,122,.38); }
+.dsh-kinich-ajaw-idle[data-state='sending'] .dsh-kinich-ajaw-idle__bubble { color: #211b0d; background: #e1c77f; border-color: #fff0bd; }
+.dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__status-ring { opacity: .9; border-color: #bfe968; border-style: dotted; box-shadow: 0 0 15px rgba(197,232,108,.42); }
+.dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__bubble { color: #142007; background: #bfe968; border-color: #eaffac; }
+.dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__status-ring { opacity: .95; border: 2px double #d8f68d; box-shadow: 0 0 17px rgba(197,232,108,.52); }
+.dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__bubble { color: #112006; background: #d8f68d; border-color: #f3ffc8; }
+.dsh-kinich-ajaw-idle[data-state='error'] .dsh-kinich-ajaw-idle__status-ring { border-style: solid; }
+
+/* Red alert remains the base state, but task feedback is allowed to override
+   the badge/ring so sending, thinking, success and error stay distinguishable. */
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='sending'] .dsh-kinich-ajaw-idle__status-ring { border-color: #e1c77f; border-style: dashed; box-shadow: 0 0 14px rgba(225,199,127,.48); }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__status-ring { border-color: #bfe968; border-style: dotted; box-shadow: 0 0 15px rgba(191,233,104,.5); }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__status-ring { border: 2px double #d8f68d; box-shadow: 0 0 17px rgba(216,246,141,.56); }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='error'] .dsh-kinich-ajaw-idle__status-ring { border-color: #ff6859; border-style: solid; box-shadow: 0 0 18px rgba(255,83,67,.58); }
+
+@keyframes dsh-kinich-feedback-mark {
+  0%, 100% { opacity: .42; transform: rotate(45deg) scale(.72); }
+  50% { opacity: 1; transform: rotate(45deg) scale(1); }
+}
+@keyframes dsh-kinich-feedback-complete {
+  0% { opacity: .5; transform: rotate(45deg) scale(.45); }
+  60% { opacity: 1; transform: rotate(45deg) scale(1.22); }
+  100% { opacity: .9; transform: rotate(45deg) scale(1); }
+}
+@keyframes dsh-kinich-feedback-rail {
+  0% { transform: translateX(-72%); opacity: 0; }
+  25% { opacity: .85; }
+  78% { opacity: .42; }
+  100% { transform: translateX(72%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-kinich-pressed='true'] { transform: none !important; }
+}
+
+/* Local pointer burst: code-drawn Kinich pixel feedback, 72px maximum. */
+.dsh-kinich-click-layer {
+  position: absolute;
+  z-index: 42;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dsh-kinich-click-burst {
+  position: absolute;
+  display: block;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+  contain: layout style;
+  filter: drop-shadow(0 0 5px rgba(197, 232, 108, .44));
+}
+
+.dsh-kinich-click-burst > i {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.dsh-kinich-click-burst__core {
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  background: #efffc1;
+  border: 2px solid #c5e86c;
+  box-shadow: 0 0 0 2px rgba(197, 232, 108, .18), 0 0 11px rgba(197, 232, 108, .72);
+  transform: rotate(45deg) scale(.2);
+  animation: dsh-kinich-click-core 260ms cubic-bezier(.18,.72,.2,1) both;
+}
+
+.dsh-kinich-click-burst__ring {
+  left: -19px;
+  top: -19px;
+  width: 38px;
+  height: 38px;
+  border: 1px dashed rgba(197, 232, 108, .9);
+  box-shadow: inset 0 0 0 1px rgba(190, 170, 122, .12), 0 0 8px rgba(197, 232, 108, .24);
+  transform: rotate(45deg) scale(.24);
+  animation: dsh-kinich-click-ring 270ms cubic-bezier(.16,.68,.24,1) both;
+}
+
+.dsh-kinich-click-burst__arc {
+  left: 3px;
+  top: -24px;
+  width: 26px;
+  height: 6px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent 0 8%, #8bcf58 8% 27%, #d8f68d 27% 70%, #6bbd65 70% 86%, transparent 86%);
+  clip-path: polygon(0 67%, 14% 33%, 32% 33%, 32% 0, 72% 0, 72% 33%, 88% 33%, 100% 67%, 78% 67%, 78% 100%, 22% 100%, 22% 67%);
+  transform: rotate(42deg) translateX(-5px) scaleX(.38);
+  transform-origin: left center;
+  animation: dsh-kinich-click-arc 245ms steps(4, end) 22ms both;
+}
+
+.dsh-kinich-click-burst__fragment {
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  opacity: 0;
+  background: #a8df62;
+  box-shadow: 0 0 5px rgba(197, 232, 108, .58);
+  transform: rotate(var(--burst-angle)) translateX(7px) rotate(45deg) scale(.45);
+  animation: dsh-kinich-click-fragment 265ms cubic-bezier(.16,.72,.24,1) var(--burst-delay) both;
+}
+.dsh-kinich-click-burst__fragment:nth-of-type(4n + 1),
+.dsh-kinich-click-burst__fragment:nth-of-type(4n + 4) {
+  width: 3px;
+  height: 3px;
+  background: #d8bd70;
+  box-shadow: 0 0 4px rgba(216, 189, 112, .52);
+}
+.dsh-kinich-click-burst__fragment:nth-of-type(3n + 2) { background: #5fc58b; }
+
+@keyframes dsh-kinich-click-core {
+  0% { opacity: 0; transform: rotate(45deg) scale(.2); }
+  28% { opacity: 1; transform: rotate(45deg) scale(1.18); }
+  64% { opacity: .92; transform: rotate(45deg) scale(.78); }
+  100% { opacity: 0; transform: rotate(45deg) scale(.22); }
+}
+@keyframes dsh-kinich-click-ring {
+  0% { opacity: 0; transform: rotate(45deg) scale(.24); }
+  34% { opacity: .92; }
+  100% { opacity: 0; transform: rotate(45deg) scale(1.12); }
+}
+@keyframes dsh-kinich-click-arc {
+  0% { opacity: 0; transform: rotate(42deg) translateX(-5px) scaleX(.38); }
+  35% { opacity: .95; }
+  100% { opacity: 0; transform: rotate(42deg) translateX(7px) scaleX(1); }
+}
+@keyframes dsh-kinich-click-fragment {
+  0% { opacity: 0; transform: rotate(var(--burst-angle)) translateX(7px) rotate(45deg) scale(.45); }
+  24% { opacity: .96; }
+  100% { opacity: 0; transform: rotate(var(--burst-angle)) translateX(var(--burst-distance)) rotate(45deg) scale(.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsh-kinich-click-layer { display: none !important; }
+}
+
+/* Low balance changes Ajaw in exactly two ways: red tint + 2x animation speed. */
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle__sprite img { animation-duration: .3s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='reacting'] .dsh-kinich-ajaw-idle__sprite img { animation-duration: .21s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__sprite img { animation-duration: .19s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__sprite img,
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='excited'] .dsh-kinich-ajaw-idle__sprite img { animation-duration: .31s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='sleeping'] .dsh-kinich-ajaw-idle__sprite img { animation-duration: .7s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='reacting'] .dsh-kinich-ajaw-idle__spark { animation-duration: .36s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='reacting'] .dsh-kinich-ajaw-idle__spark--two { animation-delay: 40ms; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__status-ring { animation-duration: .55s; }
+.dsh-kinich-overlay[data-overheated='true'] .dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__status-ring { animation-duration: .45s; }

@@ -1,5 +1,5 @@
 ﻿param(
-    [string]$Version = "1.2.0",
+    [string]$Version = "1.2.1",
     [string]$Repository = "Xian-JL/dsh-Kinich-theme"
 )
 
@@ -90,4 +90,3 @@ try {
 finally {
     Pop-Location
 }
-

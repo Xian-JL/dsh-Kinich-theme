@@ -1,23 +1,18 @@
-# Kinich Theme v1.2.0 — Interaction Feedback
+# Kinich Theme v1.2.1 — Workspace Interaction Hotfix
 
-Development release rebuilt directly from the published GitHub `v1.1.0` baseline.
+Hotfix for the published `v1.2.0` interaction layer.
 
 ## Highlights
 
-- Preserves the complete v1.1.0 Jungle environment and motion composition
-- Adds restrained press and text-focus feedback to existing DSH controls
-- Adds send, running, completion, and error states driven by real interaction/session signals
-- Keeps textual status announcements available to assistive technology without placing a floating capsule or decorative line over the composer
-- Makes Ajaw distinguish sending, thinking, completion, and error even while the low-balance red-alert base state is active
-- Honors reduced-motion preferences
-- Adds a compact code-drawn Kinich pixel burst at primary mouse-click coordinates without changing the cursor or intercepting Host interaction
-- Removes the welcome motto that overlapped native DSH copy
-- Refines low balance to only tint Ajaw red and double its animation speed, with every interaction preserved
+- Restores workspace switching from the welcome-page selector
+- Restores conversation creation from workspace-row add buttons
+- Runs decorative click feedback only after DSH Host actions finish
+- Preserves all v1.2.0 visuals, Ajaw balance behavior, and session feedback
 
 ## Install
 
 ```powershell
-dsh plugin --profile web add "https://github.com/Xian-JL/dsh-Kinich-theme/releases/download/v1.2.0/dsh-kinich-theme-1.2.0.tgz"
+dsh plugin --profile web add "https://github.com/Xian-JL/dsh-Kinich-theme/releases/download/v1.2.1/dsh-kinich-theme-1.2.1.tgz"
 ```
 
 Then:

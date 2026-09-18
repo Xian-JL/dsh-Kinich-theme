@@ -60,7 +60,7 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(packageJson.version === "1.2.0", "package.json must be version 1.2.0");
+assert(packageJson.version === "1.2.1", "package.json must be version 1.2.1");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
 assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.1", "@deepseek-ai/schemastery must remain a runtime dependency for local link mode");
@@ -167,6 +167,9 @@ assert(overlaySource.includes('interactionFeedback === "sending" ? "sending"'), 
 assert(stylesSource.includes("task feedback is allowed to override"), "Red-alert task-state overrides missing");
 assert(stylesSource.includes("v1.2 — Kinich interaction feedback"), "Kinich interaction feedback styles missing");
 assert(interactionSource.includes("kinich:click-burst"), "Pointer burst event contract missing");
+assert(interactionSource.includes('document.addEventListener("click", click);'), "Host click feedback must run after DSH handlers");
+assert(!interactionSource.includes('document.addEventListener("click", click, true);'), "Host click feedback must not intercept capture phase");
+assert(interactionSource.includes("setTimeout(() =>"), "Decorative click mutations must be deferred");
 assert(overlaySource.includes("dsh-kinich-click-layer"), "Stable pointer-burst layer missing");
 assert(overlaySource.includes("dsh-kinich-click-burst__fragment"), "Pointer burst fragment layer missing");
 assert(overlaySource.includes("length: 10"), "Pointer burst must render exactly ten fragments");

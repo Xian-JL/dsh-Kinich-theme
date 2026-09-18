@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 — Workspace Interaction Hotfix
+
+- Deferred click-burst rendering and tactile button mutations until after DSH Host click handling completes.
+- Restored workspace switching from the welcome-page workspace selector.
+- Restored conversation creation from each workspace row's add button in the sidebar.
+- Preserved the v1.2.0 pointer effect, Ajaw balance popover, and task feedback behavior.
+
 ## 1.2.0 — Kinich Interaction Feedback
 
 - Rebased directly from the published GitHub `v1.1.0` release; its approved environmental lighting, ribbons, particles, composition, and six-second character loop remain unchanged.

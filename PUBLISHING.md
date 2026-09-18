@@ -1,4 +1,4 @@
-# Publishing v1.2.0 via GitHub Releases
+# Publishing v1.2.1 via GitHub Releases
 
 The project distributes prebuilt npm tarballs through public GitHub Release assets. npm publishing is not required.
 

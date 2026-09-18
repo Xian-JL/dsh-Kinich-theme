@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isSendAction, toOverlayPoint } from "../src/client/interaction/interaction-bridge.js";
+import { isSendAction, shouldQueuePointerBurst, toOverlayPoint } from "../src/client/interaction/interaction-bridge.js";
 
 function action({ type = "button", aria = "", title = "", testId = "", text = "" } = {}) {
 	return {
@@ -18,5 +18,8 @@ assert.equal(isSendAction(null), false);
 assert.deepEqual(toOverlayPoint(140, 90, { left: 100, top: 50, width: 200, height: 100 }), { x: 40, y: 40 });
 assert.equal(toOverlayPoint(50, 90, { left: 100, top: 50, width: 200, height: 100 }), null);
 assert.equal(toOverlayPoint(Number.NaN, 90, { left: 100, top: 50, width: 200, height: 100 }), null);
+assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 1), true);
+assert.equal(shouldQueuePointerBurst(null, 1), false);
+assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 0), false);
 
 console.log("Kinich interaction feedback tests passed.");

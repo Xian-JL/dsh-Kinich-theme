@@ -4,7 +4,7 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - npm：`dsh-kinich-theme`
-- 开发版本：`1.2.0`
+- 当前版本：`1.2.1`
 - 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
@@ -77,7 +77,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.2.0` 正式面向：
+`v1.2.1` 正式面向：
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

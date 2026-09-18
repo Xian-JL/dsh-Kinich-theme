@@ -4,7 +4,7 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - npm: `dsh-kinich-theme`
-- Development release: `1.2.0`
+- Current release: `1.2.1`
 - Target runtime: `@deepseek-ai/dsh@0.1.5-rc.1` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
@@ -77,7 +77,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.2.0` targets the current stable DSH Web line used for this release:
+`v1.2.1` targets the current stable DSH Web line used for this release:
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1

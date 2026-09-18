@@ -32,6 +32,10 @@ export function toOverlayPoint(clientX, clientY, rect) {
 	return x >= 0 && y >= 0 && x <= rect.width && y <= rect.height ? { x, y } : null;
 }
 
+export function shouldQueuePointerBurst(pointer, clickDetail) {
+	return pointer !== null && clickDetail > 0;
+}
+
 export function announceKinichInteraction(state, source = "host") {
 	if (typeof document === "undefined") return;
 	document.dispatchEvent(new CustomEvent(KINICH_INTERACTION_EVENT, { detail: { state, source } }));
@@ -40,6 +44,7 @@ export function announceKinichInteraction(state, source = "host") {
 export function installInteractionBridge() {
 	if (typeof document === "undefined") return () => {};
 	let focusedInput = null;
+	let pendingPointer = null;
 	const pressTimers = new WeakMap();
 	const setFocused = input => {
 		if (focusedInput && focusedInput !== input) delete focusedInput.dataset.kinichFocus;
@@ -53,20 +58,33 @@ export function installInteractionBridge() {
 		if (!input) return;
 		queueMicrotask(() => { if (!getTextInput(document.activeElement)) setFocused(null); });
 	};
-	const pointerDown = event => {
-		if (event.button === 0 && event.pointerType !== "touch") {
-			document.dispatchEvent(new CustomEvent(KINICH_CLICK_BURST_EVENT, { detail: { clientX: event.clientX, clientY: event.clientY } }));
-		}
-		const action = getAction(event.target);
-		if (!action || action.closest(".dsh-kinich-overlay")) return;
+	const pulseAction = action => {
+		if (!action?.isConnected || action.closest(".dsh-kinich-overlay")) return;
 		action.dataset.kinichPressed = "true";
 		const previous = pressTimers.get(action);
 		if (previous) clearTimeout(previous);
 		pressTimers.set(action, setTimeout(() => { delete action.dataset.kinichPressed; pressTimers.delete(action); }, 190));
 	};
+	const pointerDown = event => {
+		pendingPointer = event.button === 0 && event.pointerType !== "touch"
+			? { clientX: event.clientX, clientY: event.clientY }
+			: null;
+	};
+	const pointerCancel = () => { pendingPointer = null; };
 	const click = event => {
 		const action = getAction(event.target);
 		if (isSendAction(action)) announceKinichInteraction("sending", "pointer");
+		const pointer = pendingPointer;
+		const queueBurst = shouldQueuePointerBurst(pointer, event.detail);
+		pendingPointer = null;
+		// DSH owns workspace/menu actions. Run decorative mutations only after the
+		// Host click has completed so React can switch workspaces or create chats.
+		setTimeout(() => {
+			pulseAction(action);
+			if (queueBurst) {
+				document.dispatchEvent(new CustomEvent(KINICH_CLICK_BURST_EVENT, { detail: pointer }));
+			}
+		}, 0);
 	};
 	const keyDown = event => {
 		if (event.key !== "Enter" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
@@ -75,14 +93,16 @@ export function installInteractionBridge() {
 	document.addEventListener("focusin", focusIn, true);
 	document.addEventListener("focusout", focusOut, true);
 	document.addEventListener("pointerdown", pointerDown, true);
-	document.addEventListener("click", click, true);
+	document.addEventListener("pointercancel", pointerCancel, true);
+	document.addEventListener("click", click);
 	document.addEventListener("keydown", keyDown, true);
 	return () => {
 		setFocused(null);
 		document.removeEventListener("focusin", focusIn, true);
 		document.removeEventListener("focusout", focusOut, true);
 		document.removeEventListener("pointerdown", pointerDown, true);
-		document.removeEventListener("click", click, true);
+		document.removeEventListener("pointercancel", pointerCancel, true);
+		document.removeEventListener("click", click);
 		document.removeEventListener("keydown", keyDown, true);
 	};
 }

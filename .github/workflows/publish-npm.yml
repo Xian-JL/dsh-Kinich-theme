@@ -1,0 +1,35 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Upgrade npm
+        run: npm install --global npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify package
+        run: npm run verify
+
+      - name: Publish package
+        run: npm publish --access public

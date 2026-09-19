@@ -18,6 +18,7 @@ const balanceRouteSource = await readFile(resolve(ROOT, "src/host/balance-route.
 const balanceStoreSource = await readFile(resolve(ROOT, "src/client/balance/balance-store.js"), "utf8");
 const balancePolicySource = await readFile(resolve(ROOT, "src/client/balance/policy.js"), "utf8");
 const interactionSource = await readFile(resolve(ROOT, "src/client/interaction/interaction-bridge.js"), "utf8");
+const sessionCompatSource = await readFile(resolve(ROOT, "src/client/session/compat.js"), "utf8");
 const sessionBridgeSource = await readFile(resolve(ROOT, "src/client/session/session-state-bridge.js"), "utf8");
 const stylesSource = await readFile(resolve(ROOT, "src/client/styles.css"), "utf8");
 
@@ -39,6 +40,7 @@ const sourceFiles = [
   "src/client/hooks/use-kinich-settings.js",
   "src/client/interaction/interaction-bridge.js",
   "src/client/overlay/kinich-overlay.js",
+	"src/client/session/compat.js",
   "src/client/session/status-store.js",
   "src/client/session/session-state-bridge.js",
   "src/client/settings/controls.js",
@@ -60,11 +62,15 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(packageJson.version === "1.2.1", "package.json must be version 1.2.1");
+assert(packageJson.version === "1.2.2", "package.json must be version 1.2.2");
+assert(packageJson.dsh?.manifestVersion === 1, "DSH public manifest version must be 1");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
-assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.1", "@deepseek-ai/schemastery must remain a runtime dependency for local link mode");
+assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.2", "@deepseek-ai/schemastery must match the DSH 0.1.6 settings runtime");
 assert(packageJson.devDependencies?.esbuild === "0.28.2", "esbuild 0.28.2 must remain the development bundler");
+assert(packageJson.engines?.dsh === "^0.1.5-rc.1 || ^0.1.6-alpha.1", "Top-level DSH compatibility range must cover 0.1.5 and 0.1.6");
+assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"] === "^0.1.5-rc.1 || ^0.1.6-alpha.1", "Settings peer range must cover DSH 0.1.6");
+assert(!packageJson.dsh?.client?.inject?.includes("@deepseek-ai/dsh-client-runtime"), "Removed DSH client-runtime package must not be injected");
 
 assert(packageJson.repository?.url === "git+https://github.com/Xian-JL/dsh-Kinich-theme.git", "Public GitHub repository metadata missing");
 assert(packageJson.homepage === "https://github.com/Xian-JL/dsh-Kinich-theme#readme", "Public homepage metadata missing");
@@ -159,7 +165,12 @@ assert(!stylesSource.includes("dsh-kinich-ornament-drift"), "Natlan ornament dri
 assert(client.includes("installInteractionBridge"), "Host interaction bridge is not installed");
 assert(interactionSource.includes("kinich:interaction-feedback"), "Interaction feedback event contract missing");
 assert(interactionSource.includes("data.kinichPressed") || interactionSource.includes("dataset.kinichPressed"), "Tactile action feedback missing");
-assert(sessionBridgeSource.includes('setKinichSessionState("error")'), "Session error feedback missing");
+for (const field of ["promptError", "openError", "lastAgentError"]) {
+  assert(sessionCompatSource.includes(field), `DSH 0.1.6 session error field missing: ${field}`);
+}
+assert(sessionCompatSource.includes("retainedBy?.mainView"), "DSH 0.1.6 main-view session selection missing");
+assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "error")'), "Keyed session error feedback missing");
+assert(overlaySource.includes("useSessions(selectMainViewSessionId)"), "Overlay is not bound to the DSH 0.1.6 main-view session");
 assert(overlaySource.includes("dsh-kinich-interaction-status"), "Accessible interaction status missing");
 assert(overlaySource.includes('aria-live'), "Interaction feedback must announce state changes");
 assert(!overlaySource.includes("dsh-kinich-interaction-rail"), "Rejected composer progress rail must remain removed");
@@ -190,4 +201,5 @@ console.log("- settings: shared schema + backwards-compatible decode");
 console.log("- product UI: Jungle workspace with legacy mode data compatibility");
 console.log("- product UI: modern settings hierarchy + branded sidebar + visual intensity");
 console.log("- Ajaw: live official balance, CNY<10 red tint + 2x motion, full interaction, and rAF drag");
+console.log("- compatibility: DSH 0.1.5 and 0.1.6-alpha.2 session APIs supported");
 console.log("- DSH slots/settings/theme/assets contract preserved");

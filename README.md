@@ -4,8 +4,8 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - npm: `dsh-kinich-theme`
-- Current release: `1.2.1`
-- Target runtime: `@deepseek-ai/dsh@0.1.5-rc.1` Web
+- Current release: `1.2.2`
+- Target runtimes: `@deepseek-ai/dsh@0.1.5-rc.1` and `0.1.6-alpha.2` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
 
@@ -77,12 +77,14 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.2.1` targets the current stable DSH Web line used for this release:
+`v1.2.2` supports both the previous DSH Web release line and the current 0.1.6 preview:
 
 ```text
-@deepseek-ai/dsh 0.1.5-rc.1
+@deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2
 Node.js ^22.19.0 || >=24.0.0
 ```
+
+The 0.1.6 compatibility layer understands the new `promptError`, `openError`, and `lastAgentError` session fields and isolates Ajaw feedback by the session retained in DSH's main view. Legacy 0.1.5 snapshots remain supported.
 
 DeepSeek Harness is still evolving quickly. If a future DSH release changes plugin APIs, use the latest Kinich Theme release that explicitly lists support for that DSH version.
 

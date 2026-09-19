@@ -5,6 +5,7 @@ import { DEFAULT_KINICH_SETTINGS } from "../../shared/settings.js";
 import { useKinichSettings } from "../hooks/use-kinich-settings.js";
 import { getKinichThemeTokens, KINICH_THEME_SOURCE } from "../theme/tokens.js";
 import { getKinichSessionState, subscribeKinichSessionState } from "../session/status-store.js";
+import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
 import { useBalance } from "../balance/use-balance.js";
 import { KINICH_CLICK_BURST_EVENT, KINICH_INTERACTION_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
@@ -45,9 +46,18 @@ function useKinichThemePresentation(theme, style, intensity) {
 	}, [style, intensity]);
 }
 
-function useSessionFeedback() {
-	const [state, setState] = (0, react.useState)(getKinichSessionState);
-	(0, react.useEffect)(() => subscribeKinichSessionState(setState), []);
+function useSessionFeedback(sessionId) {
+	const [state, setState] = (0, react.useState)(() => getKinichSessionState(sessionId));
+	(0, react.useEffect)(() => {
+		setState(getKinichSessionState(sessionId));
+		return subscribeKinichSessionState(changedSessionId => {
+			if (sessionId === undefined || changedSessionId === sessionId) setState(getKinichSessionState(sessionId));
+		});
+	}, [sessionId]);
+	(0, react.useEffect)(() => {
+		if (typeof document === "undefined") return;
+		document.body.dataset.kinichSessionState = state;
+	}, [state]);
 	return state;
 }
 
@@ -109,11 +119,12 @@ function useClickBursts(overlayRef) {
 
 function text(t, key, fallback) { return typeof t === "function" ? t(key) : fallback; }
 
-export function KinichOverlay({ settings, theme, t }) {
+export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	useKinichThemePresentation(theme, value.visualStyle, value.visualIntensity);
-	const sessionState = useSessionFeedback();
+	const mainSessionId = typeof useSessions === "function" ? useSessions(selectMainViewSessionId) : undefined;
+	const sessionState = useSessionFeedback(mainSessionId);
 	const interactionFeedback = useInteractionFeedback(sessionState);
 	const balance = useBalance();
 	const overheated = balance.overheated === true;

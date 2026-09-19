@@ -1,18 +1,19 @@
-# Kinich Theme v1.2.1 — Workspace Interaction Hotfix
+# Kinich Theme v1.2.2 — DSH 0.1.6 Compatibility
 
-Hotfix for the published `v1.2.0` interaction layer.
+Compatibility update for DSH Web `0.1.6-alpha.2`, retaining support for the 0.1.5 release line.
 
 ## Highlights
 
-- Restores workspace switching from the welcome-page selector
-- Restores conversation creation from workspace-row add buttons
-- Runs decorative click feedback only after DSH Host actions finish
-- Preserves all v1.2.0 visuals, Ajaw balance behavior, and session feedback
+- Recognizes the new 0.1.6 session error fields
+- Keeps Ajaw task feedback bound to the visible main-view session
+- Prevents secondary sessions or subagents from overwriting the visible Ajaw state
+- Removes the obsolete DSH client-runtime injection
+- Preserves all approved v1.2.1 visuals, balance behavior, and interaction fixes
 
 ## Install
 
 ```powershell
-dsh plugin --profile web add "https://github.com/Xian-JL/dsh-Kinich-theme/releases/download/v1.2.1/dsh-kinich-theme-1.2.1.tgz"
+dsh plugin --profile web add dsh-kinich-theme@1.2.2
 ```
 
 Then:
@@ -23,7 +24,7 @@ dsh web
 
 ## Compatibility
 
-- DeepSeek Harness Web: `0.1.5-rc.1`
+- DeepSeek Harness Web: `0.1.5-rc.1`, `0.1.5-rc.2`, or `0.1.6-alpha.2`
 - Node.js: `^22.19.0 || >=24.0.0`
 
 ## Important asset notice

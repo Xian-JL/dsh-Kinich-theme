@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.2 — DSH 0.1.6 Compatibility
+
+- Added explicit compatibility for `@deepseek-ai/dsh@0.1.6-alpha.2` while preserving the 0.1.5 release line.
+- Updated Ajaw session feedback for the new `promptError`, `openError`, and `lastAgentError` fields.
+- Isolated session feedback by session ID and selected the session retained by DSH's main view, preventing subagent or secondary-session activity from replacing the visible Ajaw state.
+- Removed the obsolete `@deepseek-ai/dsh-client-runtime` client injection and widened the optional settings peer range.
+- Updated the Schemastery runtime dependency to the version used by DSH 0.1.6 settings.
+- Added dedicated compatibility tests for new/legacy session snapshots, multi-session selection, state isolation, and package metadata.
+
 ## 1.2.1 — Workspace Interaction Hotfix
 
 - Deferred click-burst rendering and tactile button mutations until after DSH Host click handling completes.

@@ -4,8 +4,8 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - npm：`dsh-kinich-theme`
-- 当前版本：`1.2.1`
-- 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` Web
+- 当前版本：`1.2.2`
+- 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` 与 `0.1.6-alpha.2` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
 
@@ -77,12 +77,14 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.2.1` 正式面向：
+`v1.2.2` 同时支持上一代 DSH Web 与当前 0.1.6 预览版：
 
 ```text
-@deepseek-ai/dsh 0.1.5-rc.1
+@deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2
 Node.js ^22.19.0 || >=24.0.0
 ```
+
+0.1.6 兼容层已适配新版 `promptError`、`openError`、`lastAgentError` 会话错误字段，并按 DSH 主视图实际保留的会话隔离阿乔反馈；旧版 0.1.5 会话快照仍可正常使用。
 
 DeepSeek Harness 仍处于快速迭代阶段。未来 DSH API 发生变化时，请使用明确声明兼容对应 DSH 版本的 Kinich Theme 版本。
 

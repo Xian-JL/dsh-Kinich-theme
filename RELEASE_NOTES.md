@@ -1,19 +1,21 @@
-# Kinich Theme v1.2.2 — DSH 0.1.6 Compatibility
+# Kinich Theme v1.3.1 — Click Burst Visibility Hotfix
 
-Compatibility update for DSH Web `0.1.6-alpha.2`, retaining support for the 0.1.5 release line.
+Release candidate hotfix for the v1.3 presentation-only upgrade. Host, balance, session, settings, and DSH action behavior remain on the verified v1.2.2 contract.
 
 ## Highlights
 
-- Recognizes the new 0.1.6 session error fields
-- Keeps Ajaw task feedback bound to the visible main-view session
-- Prevents secondary sessions or subagents from overwriting the visible Ajaw state
-- Removes the obsolete DSH client-runtime injection
-- Preserves all approved v1.2.1 visuals, balance behavior, and interaction fixes
+- Continuous Kinich and Ajaw transitions between conversation and welcome compositions
+- Temporary welcome-page Ajaw docking and orientation without overwriting user settings
+- Automatic closing of an already-open balance popover when entering the welcome page
+- High-refresh, bounded Web Animations click feedback with no overlay rerender per click
+- Unified Jungle presentation and a real packaged-character settings preview
+- Preserved multi-session, balance, low-balance, workspace, and DSH compatibility contracts
+- Fixed the v1.3.0 click burst being clipped to a 1 px point by an accidental paint-containment rule
 
 ## Install
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme@1.2.2
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 Then:

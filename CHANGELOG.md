@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.1 — Click Burst Visibility Hotfix
+
+- Removed accidental paint containment from the 1 px click-burst origin so the ring, energy arc, and fragments are no longer clipped to a tiny white point.
+- Added a regression assertion that forbids paint containment on the burst origin while preserving the bounded Web Animations pool and high-refresh rendering path.
+
+## 1.3.0 — Visual System and Feedback Upgrade
+
+- Unified the Jungle presentation around a clearer Kinich visual hierarchy across the welcome page, conversations, branding, settings, and the balance popover.
+- Added an explicit presentation-only page phase model for continuous welcome/conversation transitions without changing DSH routing or persisted settings.
+- Made Kinich move, scale, and fade continuously between conversation and welcome compositions using the existing single illustration.
+- Made Ajaw travel from the user's current position to a temporary lower-right welcome dock, close an already-open balance popover, preserve low-balance state and animation preference, and temporarily face left without overwriting saved position, rotation, or flip.
+- Added interruption-safe reverse transitions and reduced-motion terminal states.
+- Replaced React state-driven click particles with a bounded four-slot Web Animations pool so rapid clicks no longer rerender the full overlay or use quantized low-frame movement.
+- Replaced the settings preview placeholder with the existing packaged Kinich illustration; no new third-party assets were added.
+- Added presentation, transition, pooling, cleanup, and feature-freeze verification coverage while preserving the v1.2.2 Host, balance, session, and interaction contracts.
+
 ## 1.2.2 — DSH 0.1.6 Compatibility
 
 - Added explicit compatibility for `@deepseek-ai/dsh@0.1.6-alpha.2` while preserving the 0.1.5 release line.

@@ -3,8 +3,8 @@
 Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
-- npm: `dsh-kinich-theme`
-- Current release: `1.2.2`
+- Distribution: GitHub Release tarball
+- Current release: `1.3.1`
 - Target runtimes: `@deepseek-ai/dsh@0.1.5-rc.1` and `0.1.6-alpha.2` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
@@ -12,7 +12,7 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 ## Install
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 Then launch DSH Web:
@@ -21,12 +21,13 @@ Then launch DSH Web:
 dsh web
 ```
 
-No local clone, build step, or esbuild installation is required for normal users. The npm package ships prebuilt `lib/index.js` and `lib/client.js`.
+No local clone, build step, npm login, or esbuild installation is required for normal users. The release tarball ships prebuilt `lib/index.js` and `lib/client.js`.
 
 ## Update
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme@latest
+dsh plugin --profile web remove dsh-kinich-theme
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 ## Uninstall
@@ -77,7 +78,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.2.2` supports both the previous DSH Web release line and the current 0.1.6 preview:
+`v1.3.1` supports both the previous DSH Web release line and the current 0.1.6 preview:
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2

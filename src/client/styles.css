@@ -1916,8 +1916,7 @@ body:has([data-phase='hero']) .dsh-kinich-overlay[data-ambient-motion='true'] .d
 }
 
 [data-kinich-pressed='true'] {
-  transform: translateY(1px) scale(.985) !important;
-  filter: brightness(1.08) saturate(1.04);
+  filter: none;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--kinich-accent, #c5e86c) 48%, transparent) !important;
   transition-duration: 70ms !important;
 }

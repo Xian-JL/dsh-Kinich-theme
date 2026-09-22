@@ -3,8 +3,8 @@
 面向 DeepSeek Harness Web 的 **基尼奇（Kinich）& 阿乔（Ajaw）交互主题插件**。
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
-- npm：`dsh-kinich-theme`
-- 当前版本：`1.2.2`
+- 分发方式：GitHub Release 安装包
+- 当前版本：`1.3.1`
 - 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` 与 `0.1.6-alpha.2` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
@@ -12,7 +12,7 @@
 ## 安装
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 随后启动：
@@ -21,12 +21,13 @@ dsh plugin --profile web add dsh-kinich-theme
 dsh web
 ```
 
-普通用户无需克隆仓库、运行构建或安装 esbuild；npm 包中已经包含预构建的 `lib/index.js` 与 `lib/client.js`。
+普通用户无需克隆仓库、登录 npm、运行构建或安装 esbuild；Release 安装包中已经包含预构建的 `lib/index.js` 与 `lib/client.js`。
 
 ## 更新
 
 ```powershell
-dsh plugin --profile web add dsh-kinich-theme@latest
+dsh plugin --profile web remove dsh-kinich-theme
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 ## 卸载
@@ -77,7 +78,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.2.2` 同时支持上一代 DSH Web 与当前 0.1.6 预览版：
+`v1.3.1` 同时支持上一代 DSH Web 与当前 0.1.6 预览版：
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2

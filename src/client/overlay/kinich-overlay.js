@@ -9,8 +9,18 @@ import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
 import { useBalance } from "../balance/use-balance.js";
 import { KINICH_CLICK_BURST_EVENT, KINICH_INTERACTION_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
+import {
+	CLICK_BURST_FRAGMENT_COUNT,
+	CLICK_BURST_POOL_SIZE,
+	clickBurstFragmentMotion,
+	clickBurstPoolSlot,
+	playClickBurst
+} from "../interaction/click-burst.js";
+import { useKinichPagePhase } from "../presentation/hero-phase.js";
+import { isKinichHeroTarget } from "../presentation/phase-model.js";
 
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+const HERO_AJAW_POSITION = Object.freeze({ x: 95, y: 90 });
 function displayAjawPosition(position) {
 	return position.x >= 96 && position.y <= 20 ? { x: 94, y: 84 } : position;
 }
@@ -86,10 +96,9 @@ function useInteractionFeedback(sessionState) {
 	return feedback;
 }
 
-function useClickBursts(overlayRef) {
-	const [bursts, setBursts] = (0, react.useState)([]);
-	const nextIdRef = (0, react.useRef)(0);
-	const timersRef = (0, react.useRef)(new Map());
+function useClickBurstLayer(overlayRef) {
+	const layerRef = (0, react.useRef)(null);
+	const sequenceRef = (0, react.useRef)(0);
 	(0, react.useEffect)(() => {
 		if (typeof document === "undefined" || typeof window === "undefined") return;
 		const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -99,22 +108,17 @@ function useClickBursts(overlayRef) {
 			if (!rect || !Number.isFinite(event.detail?.clientX) || !Number.isFinite(event.detail?.clientY)) return;
 			const point = toOverlayPoint(event.detail?.clientX, event.detail?.clientY, rect);
 			if (!point) return;
-			const id = ++nextIdRef.current;
-			setBursts(current => [...current.slice(-3), { id, ...point }]);
-			const timer = setTimeout(() => {
-				setBursts(current => current.filter(item => item.id !== id));
-				timersRef.current.delete(id);
-			}, 320);
-			timersRef.current.set(id, timer);
+			const generation = ++sequenceRef.current;
+			const slot = clickBurstPoolSlot(generation);
+			playClickBurst(layerRef.current?.children[slot], point, generation);
 		};
 		document.addEventListener(KINICH_CLICK_BURST_EVENT, receive);
 		return () => {
 			document.removeEventListener(KINICH_CLICK_BURST_EVENT, receive);
-			for (const timer of timersRef.current.values()) clearTimeout(timer);
-			timersRef.current.clear();
+			for (const animation of layerRef.current?.getAnimations({ subtree: true }) ?? []) animation.cancel();
 		};
 	}, [overlayRef]);
-	return bursts;
+	return layerRef;
 }
 
 function text(t, key, fallback) { return typeof t === "function" ? t(key) : fallback; }
@@ -128,14 +132,17 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const interactionFeedback = useInteractionFeedback(sessionState);
 	const balance = useBalance();
 	const overheated = balance.overheated === true;
+	const pagePhase = useKinichPagePhase();
+	const heroTarget = isKinichHeroTarget(pagePhase);
 	const [ajawPosition, setAjawPosition] = (0, react.useState)(() => displayAjawPosition(value.ajawPosition));
 	const [dragging, setDragging] = (0, react.useState)(false);
+	const [heroAjawOverride, setHeroAjawOverride] = (0, react.useState)(false);
 	const [hovered, setHovered] = (0, react.useState)(false);
 	const [reacting, setReacting] = (0, react.useState)(false);
 	const [idleMood, setIdleMood] = (0, react.useState)("idle");
 	const [balanceOpen, setBalanceOpen] = (0, react.useState)(false);
 	const overlayRef = (0, react.useRef)(null);
-	const clickBursts = useClickBursts(overlayRef);
+	const clickLayerRef = useClickBurstLayer(overlayRef);
 	const dragRef = (0, react.useRef)(null);
 	const frameRef = (0, react.useRef)(null);
 	const pendingPositionRef = (0, react.useRef)(null);
@@ -145,6 +152,11 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const clusterRef = (0, react.useRef)(null);
 
 	(0, react.useEffect)(() => { if (dragRef.current === null) setAjawPosition(displayAjawPosition(value.ajawPosition)); }, [value.ajawPosition.x, value.ajawPosition.y]);
+	(0, react.useEffect)(() => {
+		if (pagePhase !== "entering-hero") return;
+		setBalanceOpen(false);
+		setHeroAjawOverride(false);
+	}, [pagePhase]);
 	(0, react.useEffect)(() => () => {
 		if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
 		if (reactionTimerRef.current !== null) clearTimeout(reactionTimerRef.current);
@@ -198,8 +210,14 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		const overlay = event.currentTarget.closest(".dsh-kinich-overlay");
 		if (overlay === null) return;
 		const overlayRect = overlay.getBoundingClientRect();
-		const centerX = overlayRect.left + ajawPosition.x / 100 * overlayRect.width;
-		const centerY = overlayRect.top + ajawPosition.y / 100 * overlayRect.height;
+		const buttonRect = event.currentTarget.getBoundingClientRect();
+		const centerX = buttonRect.left + buttonRect.width / 2;
+		const centerY = buttonRect.top + buttonRect.height / 2;
+		const startingPosition = heroTarget && !heroAjawOverride ? HERO_AJAW_POSITION : ajawPosition;
+		if (heroTarget && !heroAjawOverride) {
+			setAjawPosition(startingPosition);
+			setHeroAjawOverride(true);
+		}
 		dragRef.current = {
 			halfHeight: event.currentTarget.offsetHeight / 2,
 			halfWidth: event.currentTarget.offsetWidth / 2,
@@ -207,7 +225,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 			offsetY: event.clientY - centerY,
 			overlayRect,
 			pointerId: event.pointerId,
-			position: ajawPosition,
+			position: startingPosition,
 			originClientX: event.clientX,
 			originClientY: event.clientY,
 			moved: false
@@ -249,6 +267,9 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	};
 
 	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : sessionState === "error" ? "error" : sessionState === "running" ? "thinking" : sessionState === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
+	const presentedAjawPosition = heroTarget && !dragging && !heroAjawOverride ? HERO_AJAW_POSITION : ajawPosition;
+	const presentedAjawFlip = heroTarget && !heroAjawOverride ? 1 : value.ajawFlipped ? -1 : 1;
+	const presentedAjawRotation = heroTarget && !heroAjawOverride ? 0 : value.ajawRotation;
 	const moodBubble = ajawState === "sending" ? "↗" : ajawState === "thinking" ? "…" : ajawState === "success" ? "✓" : ajawState === "error" ? "!" : ajawState === "sleeping" ? "zZ" : ajawState === "excited" ? "!" : ajawState === "dragging" ? "↕" : reacting ? "★" : hovered ? "¥" : "";
 	const balanceDialogId = "dsh-kinich-balance-bubble";
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
@@ -265,6 +286,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		"data-intensity": value.visualIntensity,
 		"data-ornament": String(value.showOrnament),
 		"data-ornament-intensity": value.ornamentIntensity,
+		"data-page-phase": pagePhase,
 		"data-session-state": sessionState,
 		"data-interaction-feedback": interactionFeedback,
 		"data-overheated": String(overheated),
@@ -275,19 +297,25 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				"aria-hidden": "true",
 				className: "dsh-kinich-click-layer",
-				children: clickBursts.map(burst => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+				ref: clickLayerRef,
+				children: Array.from({ length: CLICK_BURST_POOL_SIZE }, (_, slot) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 					className: "dsh-kinich-click-burst",
-					style: { left: `${burst.x}px`, top: `${burst.y}px` },
+					hidden: true,
 					children: [
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__core" }),
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__ring" }),
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", { className: "dsh-kinich-click-burst__arc" }),
-						...Array.from({ length: 10 }, (_, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", {
+						...Array.from({ length: CLICK_BURST_FRAGMENT_COUNT }, (_, index) => {
+							const motion = clickBurstFragmentMotion(index);
+							return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("i", {
 							className: "dsh-kinich-click-burst__fragment",
-							style: { "--burst-angle": `${index * 36 + (index % 2 ? 7 : -5)}deg`, "--burst-distance": `${22 + index % 3 * 5}px`, "--burst-delay": `${index % 4 * 9}ms` }
-						}, index))
+							"data-angle": String(motion.angle),
+							"data-distance": String(motion.distance),
+							"data-delay": String(motion.delay)
+						}, index);
+						})
 					]
-				}, burst.id))
+				}, slot))
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				"aria-live": "polite",
@@ -318,15 +346,15 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 			] }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "dsh-kinich-ajaw-cluster",
-				"data-bubble-side": ajawPosition.x < 50 ? "right" : "left",
-				"data-bubble-vertical": ajawPosition.y < 30 ? "down" : "up",
+				"data-bubble-side": presentedAjawPosition.x < 50 ? "right" : "left",
+				"data-bubble-vertical": presentedAjawPosition.y < 30 ? "down" : "up",
 				"data-open": String(balanceOpen),
 				ref: clusterRef,
 				style: {
-					left: `${ajawPosition.x}%`,
-					top: `${ajawPosition.y}%`,
-					"--ajaw-flip": value.ajawFlipped ? -1 : 1,
-					"--ajaw-rotation": `${value.ajawRotation}deg`
+					left: `${presentedAjawPosition.x}%`,
+					top: `${presentedAjawPosition.y}%`,
+					"--ajaw-flip": presentedAjawFlip,
+					"--ajaw-rotation": `${presentedAjawRotation}deg`
 				},
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {

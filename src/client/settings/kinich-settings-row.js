@@ -1,6 +1,6 @@
 import * as react from "react";
 import * as react_jsx_runtime from "react/jsx-runtime";
-import { AJAW_MARK_DATA_URI } from "../assets.generated.js";
+import { AJAW_MARK_DATA_URI, KINICH_CHARACTER_DATA_URI } from "../assets.generated.js";
 import { PLUGIN_VERSION } from "../version.generated.js";
 import { DEFAULT_KINICH_SETTINGS } from "../../shared/settings.js";
 import { useKinichSettings } from "../hooks/use-kinich-settings.js";
@@ -31,7 +31,7 @@ function ThemePreview({ value, t }) {
 				className: "dsh-kinich-live-preview__stage",
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-live-preview__grid" }),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-live-preview__character" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", { alt: "", className: "dsh-kinich-live-preview__character-image", src: KINICH_CHARACTER_DATA_URI }),
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", { alt: "", className: "dsh-kinich-live-preview__ajaw", src: AJAW_MARK_DATA_URI })
 				]
 			})

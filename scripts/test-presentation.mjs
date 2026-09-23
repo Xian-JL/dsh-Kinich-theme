@@ -18,6 +18,7 @@ import {
 	clickBurstPoolSlot,
 	playClickBurst
 } from "../src/client/interaction/click-burst.js";
+import { getKinichThemeTokens } from "../src/client/theme/tokens.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const overlay = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
@@ -36,6 +37,23 @@ assert.equal(isKinichHeroTarget("hero"), true);
 assert.equal(isKinichHeroTarget("leaving-hero"), false);
 assert.equal(KINICH_HERO_TRANSITION_MS, 760);
 assert.ok(KINICH_REDUCED_TRANSITION_MS <= 120);
+
+function luminance(hex) {
+	const channels = hex.slice(1).match(/.{2}/g).map(part => parseInt(part, 16) / 255);
+	const [red, green, blue] = channels.map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+	return red * 0.2126 + green * 0.7152 + blue * 0.0722;
+}
+function contrast(first, second) {
+	const values = [luminance(first), luminance(second)].sort((a, b) => b - a);
+	return (values[0] + 0.05) / (values[1] + 0.05);
+}
+const jungleTokens = getKinichThemeTokens("jungle");
+for (const scheme of ["light", "dark"]) {
+	for (const textToken of ["--dsw-alias-label-tertiary", "--dsw-alias-label-caption"]) {
+		assert.ok(contrast(jungleTokens[textToken][scheme], jungleTokens["--dsw-alias-bg-layer-1"][scheme]) >= 4.5,
+			`${scheme} ${textToken} should remain readable on the main settings surface`);
+	}
+}
 
 assert.equal(CLICK_BURST_POOL_SIZE, 4);
 assert.equal(CLICK_BURST_FRAGMENT_COUNT, 10);
@@ -93,4 +111,4 @@ assert.ok(presentationStyles.includes("overflow: visible"), "Click fragments mus
 assert.equal(/\.dsh-kinich-click-burst\s*\{[^}]*contain:\s*[^;}]*paint/s.test(presentationStyles), false, "Paint containment would clip the burst to its 1px origin");
 assert.equal(presentationStyles.includes("steps("), false, "v1.3 click presentation must not quantize motion into low-frame steps");
 
-console.log("Kinich v1.3 presentation and high-refresh feedback tests passed.");
+console.log("Kinich presentation and high-refresh feedback tests passed.");

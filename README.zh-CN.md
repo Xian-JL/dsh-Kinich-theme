@@ -3,8 +3,8 @@
 面向 DeepSeek Harness Web 的 **基尼奇（Kinich）& 阿乔（Ajaw）交互主题插件**。
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
-- 分发方式：GitHub Release 安装包
-- 当前版本：`1.3.1`
+- 分发方式：npm（GitHub Release 安装包可作备用）
+- 当前版本：`1.4.0`
 - 目标运行环境：`@deepseek-ai/dsh@0.1.5-rc.1` 与 `0.1.6-alpha.2` Web
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
@@ -12,7 +12,7 @@
 ## 安装
 
 ```powershell
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+dsh plugin --profile web add dsh-kinich-theme@latest
 ```
 
 随后启动：
@@ -21,13 +21,19 @@ dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/release
 dsh web
 ```
 
-普通用户无需克隆仓库、登录 npm、运行构建或安装 esbuild；Release 安装包中已经包含预构建的 `lib/index.js` 与 `lib/client.js`。
+普通用户无需克隆仓库、登录 npm、运行构建或安装 esbuild；npm 包和 Release 安装包均包含预构建的 `lib/index.js` 与 `lib/client.js`。
+
+备用的 GitHub Release 安装方式：
+
+```powershell
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+```
 
 ## 更新
 
 ```powershell
 dsh plugin --profile web remove dsh-kinich-theme
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+dsh plugin --profile web add dsh-kinich-theme@latest
 ```
 
 ## 卸载
@@ -53,6 +59,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 - Idle / Hover / Reacting / Dragging 状态。
 - 根据 DSH 会话运行与完成状态反馈。
 - 支持拖拽、镜像、旋转、复位。
+- 聚焦阿乔后可用方向键以 8 px 步长调整位置；Shift 加速，Home 复位位置。拖动时位置即时跟随指针。
 - 点击显示当前 DeepSeek 官方 API 账户余额，60 秒自动刷新。
 - CNY 余额低于 `¥10` 时，阿乔只发生两项变化：整体变红、动画速度翻倍；点击、拖动、情绪和会话反馈全部照常工作。
 - API Key 只在 Host 侧解析，不会发送到浏览器。
@@ -64,6 +71,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 - 原生 Settings 设置项。
 - DSH Semantic Token 实时覆盖。
 - 动态环境效果，并支持 `prefers-reduced-motion`。
+- 保存、余额手动刷新和会话反馈均有明确状态文字；发送状态来自真实会话快照。
 
 ## 设置入口
 
@@ -78,7 +86,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.3.1` 同时支持上一代 DSH Web 与当前 0.1.6 预览版：
+`v1.4.0` 同时支持上一代 DSH Web 与当前 0.1.6 预览版：
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2
@@ -97,6 +105,7 @@ npm run verify
 ```
 
 源码位于 `src/`，使用 esbuild 生成 `lib/` 中的 Host / Client 预构建运行文件。
+桌面端视觉与动效规则见 [`docs/DESIGN_AND_MOTION.md`](./docs/DESIGN_AND_MOTION.md)。
 
 ## 素材与署名
 

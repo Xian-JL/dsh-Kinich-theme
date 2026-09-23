@@ -45,6 +45,7 @@ const sourceFiles = [
   "src/client/hooks/use-kinich-settings.js",
   "src/client/interaction/interaction-bridge.js",
   "src/client/interaction/click-burst.js",
+	"src/client/overlay/position.js",
   "src/client/overlay/kinich-overlay.js",
 	"src/client/presentation/hero-phase.js",
 	"src/client/presentation/phase-model.js",
@@ -70,7 +71,7 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(packageJson.version === "1.3.1", "package.json must be version 1.3.1");
+assert(/^\d+\.\d+\.\d+$/.test(packageJson.version), "package.json must use a release version");
 assert(packageJson.dsh?.manifestVersion === 1, "DSH public manifest version must be 1");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
@@ -172,6 +173,7 @@ assert(overlaySource.includes("length: 24"), "Jungle firefly layer must render 2
 assert(!stylesSource.includes("dsh-kinich-ornament-drift"), "Natlan ornament drift must remain removed");
 assert(client.includes("installInteractionBridge"), "Host interaction bridge is not installed");
 assert(interactionSource.includes("kinich:interaction-feedback"), "Interaction feedback event contract missing");
+assert(!interactionSource.includes('document.addEventListener("keydown", keyDown'), "Global Enter should not announce a message send");
 assert(interactionSource.includes("data.kinichPressed") || interactionSource.includes("dataset.kinichPressed"), "Tactile action feedback missing");
 for (const field of ["promptError", "openError", "lastAgentError"]) {
   assert(sessionCompatSource.includes(field), `DSH 0.1.6 session error field missing: ${field}`);

@@ -50,7 +50,7 @@ assert.equal(getKinichSessionState("main"), "running");
 clearKinichSessionState("main");
 assert.equal(getKinichSessionState("main"), "idle");
 
-assert.equal(packageJson.version, "1.3.1");
+assert.equal(packageJson.version, (await import("../src/client/version.generated.js")).PLUGIN_VERSION);
 assert.equal(packageJson.dsh.manifestVersion, 1);
 assert.equal(packageJson.engines.dsh, "^0.1.5-rc.1 || ^0.1.6-alpha.1");
 assert.equal(packageJson.dsh.client.inject.includes("@deepseek-ai/dsh-client-runtime"), false);

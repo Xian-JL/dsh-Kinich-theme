@@ -29,7 +29,7 @@ body[data-kinich-style='jungle']:not([data-ds-dark-theme]) {
   --kinich-accent: #668b25;
   --kinich-accent-strong: #506f1d;
   --kinich-bone: #f8f9ef;
-  --kinich-gold: #947947;
+  --kinich-gold: #766137;
   --kinich-glow: rgba(102, 139, 37, .16);
   --kinich-jade-glow: rgba(36, 127, 115, .14);
   --kinich-panel-tint: rgba(36, 127, 115, .04);
@@ -217,7 +217,6 @@ body:has([data-phase='hero']) .dsh-kinich-character-frame {
   transition:
     transform var(--kinich-scene-duration) var(--kinich-scene-ease),
     opacity 560ms ease;
-  will-change: transform, opacity;
 }
 
 .dsh-kinich-character-frame::before,
@@ -313,7 +312,11 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
   transition:
     left var(--kinich-scene-duration) var(--kinich-scene-ease),
     top var(--kinich-scene-duration) var(--kinich-scene-ease);
-  will-change: left, top;
+}
+
+.dsh-kinich-ajaw-cluster[data-dragging='true'] {
+  transition: none;
+  will-change: transform;
 }
 
 .dsh-kinich-ajaw-idle {
@@ -326,7 +329,6 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
 .dsh-kinich-ajaw-idle__sprite {
   border-radius: var(--kinich-cut-sm);
   transition: transform 650ms var(--kinich-scene-ease);
-  will-change: transform;
 }
 
 .dsh-kinich-ajaw-idle__status-ring {
@@ -460,14 +462,15 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
   transform: translate3d(0, 0, 0);
   overflow: visible;
   contain: layout style;
-  will-change: transform;
 }
 
 .dsh-kinich-click-burst > i {
   animation: none;
-  will-change: transform, opacity;
   backface-visibility: hidden;
 }
+
+.dsh-kinich-click-burst:not([hidden]) { will-change: transform; }
+.dsh-kinich-click-burst:not([hidden]) > i { will-change: transform, opacity; }
 
 .dsh-kinich-click-burst__core {
   background: color-mix(in srgb, var(--kinich-accent) 78%, #fff);

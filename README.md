@@ -3,8 +3,8 @@
 Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
-- Distribution: GitHub Release tarball
-- Current release: `1.3.1`
+- Distribution: npm, with a GitHub Release tarball as a fallback
+- Current release: `1.4.0`
 - Target runtimes: `@deepseek-ai/dsh@0.1.5-rc.1` and `0.1.6-alpha.2` Web
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
@@ -12,7 +12,7 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web.
 ## Install
 
 ```powershell
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+dsh plugin --profile web add dsh-kinich-theme@latest
 ```
 
 Then launch DSH Web:
@@ -21,13 +21,19 @@ Then launch DSH Web:
 dsh web
 ```
 
-No local clone, build step, npm login, or esbuild installation is required for normal users. The release tarball ships prebuilt `lib/index.js` and `lib/client.js`.
+No local clone, build step, npm login, or esbuild installation is required for normal users. Both distributions ship prebuilt `lib/index.js` and `lib/client.js`.
+
+GitHub Release fallback:
+
+```powershell
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+```
 
 ## Update
 
 ```powershell
 dsh plugin --profile web remove dsh-kinich-theme
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+dsh plugin --profile web add dsh-kinich-theme@latest
 ```
 
 ## Uninstall
@@ -53,6 +59,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 - Idle / hover / reaction / dragging states.
 - Session-aware thinking and completion feedback.
 - Drag position, mirror, rotation, and reset controls.
+- Arrow-key positioning in 8 px steps, Shift for faster movement, and Home to reset the position. Dragging follows the pointer immediately.
 - Live balance for the configured official DeepSeek API account with a 60-second refresh cycle.
 - Below CNY `¥10`, Ajaw changes in exactly two ways: red tint and double animation speed. Click, drag, moods, and session feedback continue normally.
 - The API key is resolved only on the Host and never sent to the browser.
@@ -64,6 +71,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 - Native DSH settings integration.
 - Live DSH semantic-token overrides.
 - Dynamic environment effects with `prefers-reduced-motion` support.
+- Clear save, manual balance refresh, and session feedback; sending is derived from the actual session snapshot.
 
 ## Settings
 
@@ -78,7 +86,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.3.1` supports both the previous DSH Web release line and the current 0.1.6 preview:
+`v1.4.0` supports both the previous DSH Web release line and the current 0.1.6 preview:
 
 ```text
 @deepseek-ai/dsh 0.1.5-rc.1 / 0.1.5-rc.2 / 0.1.6-alpha.2
@@ -97,6 +105,7 @@ npm run verify
 ```
 
 The source tree is modular under `src/`; `esbuild` produces the prebuilt Host and Client bundles in `lib/`.
+Desktop visual and motion rules are documented in [`docs/DESIGN_AND_MOTION.md`](./docs/DESIGN_AND_MOTION.md).
 
 ## Project structure
 

@@ -8,7 +8,8 @@ import { getKinichSessionState, subscribeKinichSessionState } from "../session/s
 import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
 import { useBalance } from "../balance/use-balance.js";
-import { KINICH_CLICK_BURST_EVENT, KINICH_INTERACTION_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
+import { KINICH_CLICK_BURST_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
+import { nudgeAjawPosition } from "./position.js";
 import {
 	CLICK_BURST_FRAGMENT_COUNT,
 	CLICK_BURST_POOL_SIZE,
@@ -76,23 +77,14 @@ function useInteractionFeedback(sessionState) {
 	const timerRef = (0, react.useRef)(null);
 	(0, react.useEffect)(() => {
 		if (timerRef.current !== null) { clearTimeout(timerRef.current); timerRef.current = null; }
-		if (sessionState === "running" || sessionState === "complete" || sessionState === "error") {
+		if (sessionState === "sending" || sessionState === "running" || sessionState === "complete" || sessionState === "error") {
 			setFeedback(sessionState);
-			if (sessionState !== "running") timerRef.current = setTimeout(() => setFeedback("idle"), sessionState === "error" ? 3200 : 1800);
+			if (sessionState !== "sending" && sessionState !== "running") timerRef.current = setTimeout(() => setFeedback("idle"), sessionState === "error" ? 3200 : 1800);
+		} else {
+			setFeedback("idle");
 		}
 		return () => { if (timerRef.current !== null) clearTimeout(timerRef.current); };
 	}, [sessionState]);
-	(0, react.useEffect)(() => {
-		if (typeof document === "undefined") return;
-		const receive = event => {
-			if (event.detail?.state !== "sending") return;
-			setFeedback("sending");
-			if (timerRef.current !== null) clearTimeout(timerRef.current);
-			timerRef.current = setTimeout(() => { setFeedback(current => current === "sending" ? "idle" : current); timerRef.current = null; }, 1200);
-		};
-		document.addEventListener(KINICH_INTERACTION_EVENT, receive);
-		return () => document.removeEventListener(KINICH_INTERACTION_EVENT, receive);
-	}, []);
 	return feedback;
 }
 
@@ -141,15 +133,24 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const [reacting, setReacting] = (0, react.useState)(false);
 	const [idleMood, setIdleMood] = (0, react.useState)("idle");
 	const [balanceOpen, setBalanceOpen] = (0, react.useState)(false);
+	const [manualRefreshStatus, setManualRefreshStatus] = (0, react.useState)("idle");
 	const overlayRef = (0, react.useRef)(null);
 	const clickLayerRef = useClickBurstLayer(overlayRef);
 	const dragRef = (0, react.useRef)(null);
 	const frameRef = (0, react.useRef)(null);
 	const pendingPositionRef = (0, react.useRef)(null);
+	const keyboardPositionRef = (0, react.useRef)(null);
 	const reactionTimerRef = (0, react.useRef)(null);
 	const moodTimerRef = (0, react.useRef)(null);
 	const ignoreClickRef = (0, react.useRef)(false);
 	const clusterRef = (0, react.useRef)(null);
+	const ajawButtonRef = (0, react.useRef)(null);
+	(0, react.useLayoutEffect)(() => {
+		const cluster = clusterRef.current;
+		if (dragging || !cluster || cluster.style.transition !== "none") return;
+		cluster.style.transform = "";
+		requestAnimationFrame(() => { if (cluster.isConnected) cluster.style.transition = ""; });
+	}, [dragging, ajawPosition]);
 
 	(0, react.useEffect)(() => { if (dragRef.current === null) setAjawPosition(displayAjawPosition(value.ajawPosition)); }, [value.ajawPosition.x, value.ajawPosition.y]);
 	(0, react.useEffect)(() => {
@@ -164,7 +165,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	}, []);
 	(0, react.useEffect)(() => {
 		if (!balanceOpen || typeof document === "undefined") return;
-		const closeOnEscape = event => { if (event.key === "Escape") setBalanceOpen(false); };
+		const closeOnEscape = event => { if (event.key === "Escape") { setBalanceOpen(false); ajawButtonRef.current?.focus(); } };
 		const closeOutside = event => { if (!clusterRef.current?.contains(event.target)) setBalanceOpen(false); };
 		document.addEventListener("keydown", closeOnEscape);
 		document.addEventListener("pointerdown", closeOutside);
@@ -199,7 +200,11 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		frameRef.current = null;
 		const next = pendingPositionRef.current;
 		pendingPositionRef.current = null;
-		if (next !== null) setAjawPosition(next);
+		const drag = dragRef.current;
+		if (next === null || drag === null || clusterRef.current === null) return;
+		const dx = (next.x - drag.startingPosition.x) / 100 * drag.overlayRect.width;
+		const dy = (next.y - drag.startingPosition.y) / 100 * drag.overlayRect.height;
+		clusterRef.current.style.transform = `translate3d(${dx}px, ${dy}px, 0) translate(-50%, -50%)`;
 	};
 	const scheduleAjawPosition = position => {
 		pendingPositionRef.current = position;
@@ -219,6 +224,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 			setHeroAjawOverride(true);
 		}
 		dragRef.current = {
+			startingPosition,
 			halfHeight: event.currentTarget.offsetHeight / 2,
 			halfWidth: event.currentTarget.offsetWidth / 2,
 			offsetX: event.clientX - centerX,
@@ -249,6 +255,9 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		dragRef.current = null;
 		if (frameRef.current !== null) { cancelAnimationFrame(frameRef.current); frameRef.current = null; }
 		pendingPositionRef.current = null;
+		if (clusterRef.current) {
+			clusterRef.current.style.transition = "none";
+		}
 		setAjawPosition(drag.position);
 		if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
 		setDragging(false);
@@ -257,16 +266,37 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 			settings.set("ajawPosition", drag.position).catch(() => setAjawPosition(value.ajawPosition));
 		}
 	};
+	const commitKeyboardPosition = () => {
+		const next = keyboardPositionRef.current;
+		keyboardPositionRef.current = null;
+		if (next) settings.set("ajawPosition", next).catch(() => setAjawPosition(value.ajawPosition));
+	};
+	const moveAjawWithKeyboard = event => {
+		if (!snapshot.writable || !(event.key.startsWith("Arrow") || event.key === "Home")) return;
+		const overlayRect = overlayRef.current?.getBoundingClientRect();
+		const buttonRect = event.currentTarget.getBoundingClientRect();
+		const current = keyboardPositionRef.current ?? (heroTarget && !heroAjawOverride ? HERO_AJAW_POSITION : ajawPosition);
+		const next = event.key === "Home" ? displayAjawPosition(DEFAULT_KINICH_SETTINGS.ajawPosition)
+			: nudgeAjawPosition(current, event.key, overlayRect, buttonRect, event.shiftKey);
+		if (!next) return;
+		event.preventDefault();
+		setHeroAjawOverride(true);
+		setAjawPosition(next);
+		keyboardPositionRef.current = next;
+	};
 	const toggleBalance = () => {
 		if (ignoreClickRef.current) { ignoreClickRef.current = false; return; }
-		setBalanceOpen(open => {
-			if (!open) void refreshBalance({ force: true });
-			return !open;
-		});
+		if (!balanceOpen) { setManualRefreshStatus("idle"); void refreshBalance({ force: true }); }
+		setBalanceOpen(open => !open);
 		triggerReaction();
 	};
+	const refreshBalanceManually = async () => {
+		setManualRefreshStatus("loading");
+		const next = await refreshBalance({ force: true });
+		setManualRefreshStatus(next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
+	};
 
-	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : sessionState === "error" ? "error" : sessionState === "running" ? "thinking" : sessionState === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
+	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : interactionFeedback === "error" ? "error" : interactionFeedback === "running" ? "thinking" : interactionFeedback === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
 	const presentedAjawPosition = heroTarget && !dragging && !heroAjawOverride ? HERO_AJAW_POSITION : ajawPosition;
 	const presentedAjawFlip = heroTarget && !heroAjawOverride ? 1 : value.ajawFlipped ? -1 : 1;
 	const presentedAjawRotation = heroTarget && !heroAjawOverride ? 0 : value.ajawRotation;
@@ -324,6 +354,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 				role: "status",
 				children: interactionFeedback === "sending" ? text(t, "feedback.sending", "正在传递指令") : interactionFeedback === "running" ? text(t, "feedback.running", "正在探索") : interactionFeedback === "complete" ? text(t, "feedback.complete", "探索完成") : interactionFeedback === "error" ? text(t, "feedback.error", "本次行动未完成") : ""
 			}),
+			heroTarget && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", { className: "dsh-kinich-sr-only", children: `${text(t, "welcome.line1", "从这里，")}${text(t, "welcome.line2", "开启新的探索。")}` }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", { "aria-hidden": "true", className: "dsh-kinich-welcome", children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-welcome__eyebrow", children: "◆ KINICH & AJAW" }),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("h1", { children: [text(t, "welcome.line1", "从这里，"), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("br", {}), text(t, "welcome.line2", "开启新的探索。") ] }),
@@ -348,6 +379,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 				className: "dsh-kinich-ajaw-cluster",
 				"data-bubble-side": presentedAjawPosition.x < 50 ? "right" : "left",
 				"data-bubble-vertical": presentedAjawPosition.y < 30 ? "down" : "up",
+				"data-dragging": String(dragging),
 				"data-open": String(balanceOpen),
 				ref: clusterRef,
 				style: {
@@ -359,13 +391,18 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						"aria-controls": balanceDialogId,
+						"aria-describedby": "dsh-kinich-ajaw-help",
 						"aria-expanded": balanceOpen,
 						"aria-label": text(t, "balance.open", "Open API balance"),
 						className: "dsh-kinich-ajaw-idle",
 						"data-draggable": String(snapshot.writable),
 						"data-dragging": String(dragging),
 						"data-state": ajawState,
+						ref: ajawButtonRef,
 						onClick: toggleBalance,
+						onBlur: commitKeyboardPosition,
+						onKeyDown: moveAjawWithKeyboard,
+						onKeyUp: event => { if (event.key.startsWith("Arrow") || event.key === "Home") commitKeyboardPosition(); },
 						onPointerCancel: finishAjawDrag,
 						onPointerDown: startAjawDrag,
 						onPointerEnter: () => setHovered(true),
@@ -384,8 +421,10 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 							})
 						]
 					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-sr-only", id: "dsh-kinich-ajaw-help", children: text(t, "ajaw.keyboard", "方向键移动阿乔；按住 Shift 可快速移动，Home 可复位位置。") }),
 					balanceOpen && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 						"aria-label": text(t, "balance.dialog", "API account balance"),
+						"aria-busy": manualRefreshStatus === "loading",
 						"aria-modal": "false",
 						className: "dsh-kinich-balance-bubble",
 						"data-balance-state": balance.status ?? "unavailable",
@@ -401,8 +440,8 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 									text(t, "balance.provider", "DeepSeek API")
 								] }),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { className: "dsh-kinich-balance-bubble__actions", children: [
-									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.refresh", "Refresh balance"), className: "dsh-kinich-balance-bubble__refresh", disabled: balance.refreshing === true, onClick: () => void refreshBalance({ force: true }), type: "button", children: "↻" }),
-									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.close", "Close"), className: "dsh-kinich-balance-bubble__close", onClick: () => setBalanceOpen(false), type: "button", children: "×" })
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.refresh", "Refresh balance"), className: "dsh-kinich-balance-bubble__refresh", disabled: manualRefreshStatus === "loading", onClick: () => void refreshBalanceManually(), type: "button", children: "↻" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.close", "Close"), className: "dsh-kinich-balance-bubble__close", onClick: () => { setBalanceOpen(false); ajawButtonRef.current?.focus(); }, type: "button", children: "×" })
 								] })
 							] }),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-bubble__label", children: text(t, "balance.current", "Current account balance") }),
@@ -412,8 +451,9 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 								text(t, statusKey, statusFallback)
 							] }),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-bubble__note", children: overheated
-								? text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
-								: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。") })
+								? balance.stale ? `${text(t, "balance.stale", "显示最近一次成功读取的余额。")} ${text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")}` : text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
+								: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。") }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-live": "polite", className: "dsh-kinich-balance-bubble__refresh-status", role: "status", children: manualRefreshStatus === "loading" ? text(t, "balance.refreshing", "正在检查余额") : manualRefreshStatus === "done" ? text(t, "balance.refreshed", "余额检查完成") : manualRefreshStatus === "failed" ? text(t, "balance.refreshFailed", "检查失败，仍可查看上次结果") : "" })
 						]
 					})
 				]

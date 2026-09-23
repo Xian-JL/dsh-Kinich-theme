@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { isSendAction, shouldQueuePointerBurst, toOverlayPoint } from "../src/client/interaction/interaction-bridge.js";
+import { nudgeAjawPosition } from "../src/client/overlay/position.js";
 
 function action({ type = "button", aria = "", title = "", testId = "", text = "" } = {}) {
 	return {
@@ -21,5 +22,13 @@ assert.equal(toOverlayPoint(Number.NaN, 90, { left: 100, top: 50, width: 200, he
 assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 1), true);
 assert.equal(shouldQueuePointerBurst(null, 1), false);
 assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 0), false);
+
+const overlayRect = { width: 800, height: 600 };
+const buttonRect = { width: 80, height: 60 };
+assert.deepEqual(nudgeAjawPosition({ x: 50, y: 50 }, "ArrowRight", overlayRect, buttonRect), { x: 51, y: 50 });
+assert.deepEqual(nudgeAjawPosition({ x: 50, y: 50 }, "ArrowUp", overlayRect, buttonRect), { x: 50, y: 48.667 });
+assert.deepEqual(nudgeAjawPosition({ x: 50, y: 50 }, "ArrowRight", overlayRect, buttonRect, true), { x: 54, y: 50 });
+assert.deepEqual(nudgeAjawPosition({ x: 5, y: 5 }, "ArrowLeft", overlayRect, buttonRect), { x: 5, y: 5 });
+assert.equal(nudgeAjawPosition({ x: 50, y: 50 }, "Enter", overlayRect, buttonRect), null);
 
 console.log("Kinich interaction feedback tests passed.");

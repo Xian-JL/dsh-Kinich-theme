@@ -89,7 +89,7 @@ export function SectionHeader({ eyebrow, title, description }) {
 		className: "dsh-kinich-section-heading",
 		children: [
 			eyebrow && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-section-heading__eyebrow", children: eyebrow }),
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-section-heading__title", children: title }),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", { className: "dsh-kinich-section-heading__title", children: title }),
 			description && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-section-heading__description", children: description })
 		]
 	});

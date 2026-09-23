@@ -73,9 +73,8 @@ export function installInteractionBridge() {
 	const pointerCancel = () => { pendingPointer = null; };
 	const click = event => {
 		const action = getAction(event.target);
-		if (isSendAction(action)) announceKinichInteraction("sending", "pointer");
 		const pointer = pendingPointer;
-		const queueBurst = shouldQueuePointerBurst(pointer, event.detail);
+		const queueBurst = Boolean(action) && shouldQueuePointerBurst(pointer, event.detail);
 		pendingPointer = null;
 		// DSH owns workspace/menu actions. Run decorative mutations only after the
 		// Host click has completed so React can switch workspaces or create chats.
@@ -86,16 +85,11 @@ export function installInteractionBridge() {
 			}
 		}, 0);
 	};
-	const keyDown = event => {
-		if (event.key !== "Enter" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
-		if (getTextInput(event.target)) announceKinichInteraction("sending", "keyboard");
-	};
 	document.addEventListener("focusin", focusIn, true);
 	document.addEventListener("focusout", focusOut, true);
 	document.addEventListener("pointerdown", pointerDown, true);
 	document.addEventListener("pointercancel", pointerCancel, true);
 	document.addEventListener("click", click);
-	document.addEventListener("keydown", keyDown, true);
 	return () => {
 		setFocused(null);
 		document.removeEventListener("focusin", focusIn, true);
@@ -103,6 +97,5 @@ export function installInteractionBridge() {
 		document.removeEventListener("pointerdown", pointerDown, true);
 		document.removeEventListener("pointercancel", pointerCancel, true);
 		document.removeEventListener("click", click);
-		document.removeEventListener("keydown", keyDown, true);
 	};
 }

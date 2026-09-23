@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0 — Desktop Feedback and Motion
+
+- Made Ajaw dragging follow the pointer with a compositor transform and commit its saved position only after release; page transitions retain their existing timing.
+- Added keyboard positioning with arrow keys, Shift acceleration, Home reset, and screen-reader instructions.
+- Derived sending feedback from actual DSH session state instead of global Enter or button-label guesses; click bursts now target actionable controls.
+- Added explicit manual balance refresh and setting-save feedback, a retry action for failed saves, and stale-balance messaging that remains visible during the low-balance state.
+- Improved small text contrast, focus visibility, and settings heading semantics while preserving both color schemes and reduced-motion behavior.
+- Reduced repeated full-layer filter animation and documented desktop motion and accessibility rules. No new visual assets were added.
+
 ## 1.3.1 — Click Burst Visibility Hotfix
 
 - Removed accidental paint containment from the 1 px click-burst origin so the ring, energy arc, and fragments are no longer clipped to a tiny white point.

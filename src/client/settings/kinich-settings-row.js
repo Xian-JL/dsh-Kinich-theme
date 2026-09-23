@@ -7,6 +7,16 @@ import { useKinichSettings } from "../hooks/use-kinich-settings.js";
 import { ActionButton, ChoiceGroup, RangeControl, SectionHeader, Toggle } from "./controls.js";
 import { useBalance } from "../balance/use-balance.js";
 
+const SETTING_LABEL_KEYS = {
+	visualStyle: "style.jungle.label", visualIntensity: "visualIntensity.label",
+	animateAjaw: "ajaw.label", ajawPosition: "ajaw.position", ajawRotation: "ajaw.rotation",
+	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
+	characterPosition: "character.position", characterOpacity: "character.opacity",
+	ambientMotion: "ambientMotion.label", showOrnament: "ornament.label",
+	ornamentIntensity: "ornament.intensity", showTexture: "texture.label",
+	textureIntensity: "texture.intensity"
+};
+
 function settingBalanceAmount(balance) {
 	if (typeof balance.totalBalance !== "string") return "—";
 	return `${balance.currency === "CNY" ? "¥" : balance.currency === "USD" ? "$" : `${balance.currency ?? ""} `}${balance.totalBalance}`;
@@ -71,7 +81,7 @@ function BalanceMonitorPreview({ t }) {
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-hidden": "true", className: "dsh-kinich-balance-setting__diamond" }),
 					t("balance.provider")
 				] }),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-setting__badge", children: t("balance.live.badge") })
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-setting__badge", children: t(balance.status === "ready" && !balance.stale ? "balance.live.badge" : "balance.unavailable.badge") })
 			] }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { className: "dsh-kinich-balance-setting__readout", children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: settingBalanceAmount(balance) }),
@@ -80,7 +90,7 @@ function BalanceMonitorPreview({ t }) {
 					t(statusKey)
 				] })
 			] }),
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: balance.overheated === true ? t("balance.overheated") : t("balance.live") })
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: balance.stale && balance.overheated === true ? `${t("balance.stale")} ${t("balance.overheated")}` : balance.stale ? t("balance.stale") : balance.overheated === true ? t("balance.overheated") : t("balance.live") })
 		]
 	});
 }
@@ -89,15 +99,15 @@ export function KinichSettingsRow({ settings, t }) {
 	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	const [pending, setPending] = (0, react.useState)(null);
-	const [failed, setFailed] = (0, react.useState)(false);
+	const [failed, setFailed] = (0, react.useState)(null);
 
 	const updateMany = async (label, patch) => {
 		setPending(label);
-		setFailed(false);
+		setFailed(null);
 		try {
 			for (const [field, next] of Object.entries(patch)) await settings.set(field, next);
 		} catch {
-			setFailed(true);
+			setFailed({ label, patch });
 		} finally {
 			setPending(null);
 		}
@@ -124,7 +134,7 @@ export function KinichSettingsRow({ settings, t }) {
 							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: "dsh-kinich-settings__title-row",
 								children: [
-									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__title", id: "dsh-kinich-settings-title", children: t("title") }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { className: "dsh-kinich-settings__title", id: "dsh-kinich-settings-title", children: t("title") }),
 									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-settings__version", children: `v${PLUGIN_VERSION}` })
 								]
 							}),
@@ -134,6 +144,11 @@ export function KinichSettingsRow({ settings, t }) {
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ThemePreview, { value, t })
 				]
 			}),
+			pending !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__pending", role: "status", children: `${t("state.saving")} ${t(SETTING_LABEL_KEYS[pending] ?? "state.setting")}` }),
+			failed !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { className: "dsh-kinich-settings__error", role: "alert", children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: `${t("state.error.before")}${t(SETTING_LABEL_KEYS[failed.label] ?? "state.setting")}${t("state.error.after")}` }),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, { disabled, label: t("state.retry"), onClick: () => updateMany(failed.label, failed.patch) })
+			] }),
 
 			value.visualStyle !== "jungle" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "dsh-kinich-settings__legacy",
@@ -311,8 +326,7 @@ export function KinichSettingsRow({ settings, t }) {
 				})
 			}),
 
-			!snapshot.writable && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__hint", children: t("state.unavailable") }),
-			failed && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { "aria-live": "polite", className: "dsh-kinich-settings__error", children: t("state.error") })
+			!snapshot.writable && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__hint", children: t("state.unavailable") })
 		]
 	});
 }

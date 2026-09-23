@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -18,7 +18,8 @@
     "CHANGELOG.md",
     "LICENSE",
     "THIRD_PARTY_ASSETS.md",
-    "RELEASE_NOTES.md"
+    "RELEASE_NOTES.md",
+    "docs/DESIGN_AND_MOTION.md"
   ],
   "dsh": {
     "manifestVersion": 1,

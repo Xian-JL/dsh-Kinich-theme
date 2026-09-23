@@ -1,5 +1,5 @@
 ﻿param(
-    [string]$Version = "1.3.1",
+    [string]$Version = "",
     [string]$Repository = "Xian-JL/dsh-Kinich-theme"
 )
 
@@ -7,6 +7,7 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $projectRoot "dist"
 $expectedVersion = (Get-Content (Join-Path $projectRoot "package.json") -Raw | ConvertFrom-Json).version
+if ([string]::IsNullOrWhiteSpace($Version)) { $Version = $expectedVersion }
 
 if ($expectedVersion -ne $Version) {
     throw "package.json version is $expectedVersion, expected $Version."

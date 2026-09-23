@@ -1,27 +1,26 @@
-# Kinich Theme v1.3.1 — Click Burst Visibility Hotfix
+# Kinich Theme v1.4.0 — Desktop Feedback and Motion
 
-Release candidate hotfix for the v1.3 presentation-only upgrade. Host, balance, session, settings, and DSH action behavior remain on the verified v1.2.2 contract.
+This release improves desktop interaction feedback and motion while retaining the verified DSH Host, balance, session, and settings contracts.
 
-## Highlights
+## Changes
 
-- Continuous Kinich and Ajaw transitions between conversation and welcome compositions
-- Temporary welcome-page Ajaw docking and orientation without overwriting user settings
-- Automatic closing of an already-open balance popover when entering the welcome page
-- High-refresh, bounded Web Animations click feedback with no overlay rerender per click
-- Unified Jungle presentation and a real packaged-character settings preview
-- Preserved multi-session, balance, low-balance, workspace, and DSH compatibility contracts
-- Fixed the v1.3.0 click burst being clipped to a 1 px point by an accidental paint-containment rule
+- Ajaw follows the pointer without a full React overlay render on each drag frame. Keyboard users can reposition it with arrow keys, Shift for larger steps, and Home to reset its position.
+- Sending feedback follows the actual DSH session lifecycle. Click feedback applies to actionable controls.
+- Manual balance refresh shows progress and result text. Failed setting saves identify the setting and offer a retry.
+- Settings headings, focus indicators, small text, and light/dark caption colors have been improved.
+- Repeated large-area filter animation has been reduced; welcome transitions, the fixed click-burst pool, and reduced-motion behavior remain intact.
 
 ## Install
 
 ```powershell
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
+dsh plugin --profile web add dsh-kinich-theme@latest
+dsh web
 ```
 
-Then:
+GitHub Release fallback:
 
 ```powershell
-dsh web
+dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
 ```
 
 ## Compatibility
@@ -29,6 +28,4 @@ dsh web
 - DeepSeek Harness Web: `0.1.5-rc.1`, `0.1.5-rc.2`, or `0.1.6-alpha.2`
 - Node.js: `^22.19.0 || >=24.0.0`
 
-## Important asset notice
-
-The MIT license covers the original plugin code and documentation only. The runtime bundle contains processed third-party visual materials documented in `THIRD_PARTY_ASSETS.md`. Public redistribution rights for those materials must be confirmed separately before publication.
+The MIT license covers original plugin code and documentation. Processed third-party visual materials remain documented separately in `THIRD_PARTY_ASSETS.md`.

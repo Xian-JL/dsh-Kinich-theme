@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -43,10 +43,10 @@
   },
   "engines": {
     "node": "^22.19.0 || >=24.0.0",
-    "dsh": "^0.1.5-rc.1 || ^0.1.6-alpha.1"
+    "dsh": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-settings": "^0.1.5-rc.1 || ^0.1.6-alpha.1",
+    "@deepseek-ai/dsh-settings": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2",
     "react": "^18.2.0"
   },
   "peerDependenciesMeta": {
@@ -60,11 +60,12 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "verify": "npm run build && npm run check && npm run test:stage4 && npm run test:interaction && npm run test:presentation && npm run test:compat",
+    "verify": "npm run build && npm run check && npm run test:stage4 && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
     "test:stage4": "node scripts/test-stage4.mjs",
     "test:interaction": "node scripts/test-interaction.mjs",
     "test:presentation": "node scripts/test-presentation.mjs",
     "test:compat": "node scripts/test-dsh-016.mjs",
+    "test:dsh017": "node scripts/test-dsh-017.mjs",
     "setup": "npm install --omit=dev"
   },
   "keywords": [
@@ -79,7 +80,7 @@
     "web"
   ],
   "dependencies": {
-    "@deepseek-ai/schemastery": "3.18.2"
+    "@deepseek-ai/schemastery": "3.18.4"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

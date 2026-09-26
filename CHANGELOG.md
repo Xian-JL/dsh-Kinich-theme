@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 — DSH 0.1.7 Compatibility
+
+- Migrated live Kinich preferences to DSH 0.1.7 Profile Config and Client `configForms`, while retaining the earlier settings-scope path for DSH 0.1.5/0.1.6.
+- Updated Host balance monitoring to read the active `llm-deepseek-api-key` configuration and trusted launch environment without exposing credentials to the browser.
+- Treated a refused 0.1.7 settings write as a failed save, including Ajaw position persistence.
+- Added compatibility checks for both settings generations and the 0.1.7 balance route. No visual assets were changed.
+
 ## 1.4.0 — Desktop Feedback and Motion
 
 - Made Ajaw dragging follow the pointer with a compositor transform and commit its saved position only after release; page transitions retain their existing timing.

@@ -50,14 +50,23 @@ function parseRetryAt(header) {
 	return Number.isFinite(date) ? date : Date.now() + 60_000;
 }
 
-function resolveConnection(settings) {
-	const section = settings.get("llm-deepseek") ?? {};
+function resolveConnection(settings, launchEnvironment) {
+	let section;
+	if (typeof settings.get === "function") {
+		section = settings.get("llm-deepseek") ?? {};
+	} else {
+		const entries = settings.describe({ redactSecrets: true });
+		const provider = entries.find(entry => entry.ns === "llm-deepseek-api-key")
+			?? entries.find(entry => entry.ns === "llm-deepseek");
+		if (!provider) return { status: "unbound" };
+		section = provider.value ?? {};
+	}
 	const apiKeyEnv = typeof section.apiKeyEnv === "string" && section.apiKeyEnv.length > 0
 		? section.apiKeyEnv
 		: "DEEPSEEK_API_KEY";
 	const rawBaseURL = typeof section.baseURL === "string" && section.baseURL.length > 0
 		? section.baseURL
-		: process.env.DEEPSEEK_BASE_URL ?? "https://api.deepseek.com";
+		: launchEnvironment?.get("DEEPSEEK_BASE_URL")?.value ?? process.env.DEEPSEEK_BASE_URL ?? "https://api.deepseek.com";
 	let baseURL;
 	try { baseURL = new URL(rawBaseURL); } catch { return { status: "unsupported" }; }
 	if (baseURL.protocol !== "https:" || baseURL.hostname !== OFFICIAL_HOST) return { status: "unsupported" };
@@ -70,8 +79,8 @@ function simpleBindingId(reference, source, secret) {
 }
 
 async function queryBalance(ctx) {
-	const connection = resolveConnection(ctx.settings);
-	if (connection.status === "unsupported") return errorSnapshot("unsupported");
+const connection = resolveConnection(ctx.settings, ctx.launchEnvironment);
+	if (connection.status) return errorSnapshot(connection.status);
 	const credential = await ctx.credentials.resolve(connection.apiKeyEnv);
 	if (credential === void 0 || credential.value === "") return errorSnapshot("unbound");
 	const bindingId = simpleBindingId(connection.apiKeyEnv, credential.source ?? "configured", credential.value);

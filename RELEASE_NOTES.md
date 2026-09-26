@@ -1,14 +1,13 @@
-# Kinich Theme v1.4.0 — Desktop Feedback and Motion
+# Kinich Theme v1.5.0 — DSH 0.1.7 Compatibility
 
-This release improves desktop interaction feedback and motion while retaining the verified DSH Host, balance, session, and settings contracts.
+Kinich now works with DeepSeek Harness Web 0.1.7-rc.2 while retaining the earlier 0.1.5 and 0.1.6 settings path.
 
 ## Changes
 
-- Ajaw follows the pointer without a full React overlay render on each drag frame. Keyboard users can reposition it with arrow keys, Shift for larger steps, and Home to reset its position.
-- Sending feedback follows the actual DSH session lifecycle. Click feedback applies to actionable controls.
-- Manual balance refresh shows progress and result text. Failed setting saves identify the setting and offer a retry.
-- Settings headings, focus indicators, small text, and light/dark caption colors have been improved.
-- Repeated large-area filter animation has been reduced; welcome transitions, the fixed click-burst pool, and reduced-motion behavior remain intact.
+- Kinich preferences follow DSH 0.1.7's Profile-backed live Config and `configForms` APIs. Existing settings controls and save feedback remain available.
+- Host balance monitoring reads the official DeepSeek API-key provider's current configuration and launch environment, then resolves the credential only on the Host.
+- Refused 0.1.7 preference writes are reported as failed saves; Ajaw position reverts if persistence is refused.
+- Session feedback, slots, visuals, assets, and reduced-motion behavior retain their previous behavior.
 
 ## Install
 
@@ -25,7 +24,7 @@ dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/release
 
 ## Compatibility
 
-- DeepSeek Harness Web: `0.1.5-rc.1`, `0.1.5-rc.2`, or `0.1.6-alpha.2`
+- DeepSeek Harness Web: `^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2`
 - Node.js: `^22.19.0 || >=24.0.0`
 
 The MIT license covers original plugin code and documentation. Processed third-party visual materials remain documented separately in `THIRD_PARTY_ASSETS.md`.

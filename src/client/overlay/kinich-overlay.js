@@ -263,13 +263,18 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		setDragging(false);
 		ignoreClickRef.current = drag.moved;
 		if (drag.position.x !== value.ajawPosition.x || drag.position.y !== value.ajawPosition.y) {
-			settings.set("ajawPosition", drag.position).catch(() => setAjawPosition(value.ajawPosition));
+			persistAjawPosition(drag.position);
 		}
+	};
+	const persistAjawPosition = position => {
+		settings.set("ajawPosition", position)
+			.then(accepted => { if (accepted === false) setAjawPosition(value.ajawPosition); })
+			.catch(() => setAjawPosition(value.ajawPosition));
 	};
 	const commitKeyboardPosition = () => {
 		const next = keyboardPositionRef.current;
 		keyboardPositionRef.current = null;
-		if (next) settings.set("ajawPosition", next).catch(() => setAjawPosition(value.ajawPosition));
+		if (next) persistAjawPosition(next);
 	};
 	const moveAjawWithKeyboard = event => {
 		if (!snapshot.writable || !(event.key.startsWith("Arrow") || event.key === "Home")) return;

@@ -52,8 +52,8 @@ assert.equal(getKinichSessionState("main"), "idle");
 
 assert.equal(packageJson.version, (await import("../src/client/version.generated.js")).PLUGIN_VERSION);
 assert.equal(packageJson.dsh.manifestVersion, 1);
-assert.equal(packageJson.engines.dsh, "^0.1.5-rc.1 || ^0.1.6-alpha.1");
+assert.equal(packageJson.engines.dsh, "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2");
 assert.equal(packageJson.dsh.client.inject.includes("@deepseek-ai/dsh-client-runtime"), false);
-assert.equal(packageJson.peerDependencies["@deepseek-ai/dsh-settings"], "^0.1.5-rc.1 || ^0.1.6-alpha.1");
+assert.equal(packageJson.peerDependencies["@deepseek-ai/dsh-settings"], "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2");
 
-console.log("DSH 0.1.6 compatibility tests passed.");
+console.log("DSH 0.1.5-0.1.7 compatibility tests passed.");

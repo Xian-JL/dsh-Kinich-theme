@@ -23,3 +23,8 @@ function schemaFor(definition) {
 export const KinichThemeSettingsSchema = z.object(Object.fromEntries(
 	Object.entries(KINICH_SETTING_DEFINITIONS).map(([key, definition]) => [key, schemaFor(definition)])
 ));
+
+/** DSH 0.1.7 stores plugin preferences in its live Profile configuration. */
+export const KinichThemeConfigSchema = z.object(Object.fromEntries(
+	Object.entries(KINICH_SETTING_DEFINITIONS).map(([key, definition]) => [key, schemaFor(definition).volatile()])
+));

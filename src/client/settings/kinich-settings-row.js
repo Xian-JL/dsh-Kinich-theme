@@ -105,7 +105,10 @@ export function KinichSettingsRow({ settings, t }) {
 		setPending(label);
 		setFailed(null);
 		try {
-			for (const [field, next] of Object.entries(patch)) await settings.set(field, next);
+			for (const [field, next] of Object.entries(patch)) {
+				const accepted = await settings.set(field, next);
+				if (accepted === false) throw new Error("Setting update refused by DSH");
+			}
 		} catch {
 			setFailed({ label, patch });
 		} finally {

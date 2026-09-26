@@ -4,17 +4,16 @@ import { KinichSettingsRow } from "./settings/kinich-settings-row.js";
 import { SessionStateBridge } from "./session/session-state-bridge.js";
 import { KINICH_LOCALE_NAMESPACE, KINICH_LOCALES } from "./locales.js";
 import { installKinichStyles } from "./styles.js";
-import { KINICH_SETTINGS_NAMESPACE } from "../shared/settings.js";
-import { decodeKinichSettings } from "./settings/decode.js";
+import { resolveKinichSettings } from "./settings/resolve.js";
 import { installInteractionBridge } from "./interaction/interaction-bridge.js";
 
-export const inject = ["theme", "slots", "locale", "connection", "remote", "settingsScope"];
+export const inject = ["theme", "slots", "locale", "connection", "remote"];
 export const BRAND_PRIORITY = -20;
 
 export function apply(ctx) {
 	installKinichStyles(ctx);
 	ctx.effect(installInteractionBridge, "dsh-kinich-theme: host interaction feedback");
-	const settings = ctx.settingsScope.bind({ namespace: KINICH_SETTINGS_NAMESPACE, decode: decodeKinichSettings });
+	const settings = resolveKinichSettings(ctx);
 	ctx.effect(() => ctx.locale.register(KINICH_LOCALE_NAMESPACE, KINICH_LOCALES), "dsh-kinich-theme: settings dictionaries");
 	ctx.slots.inject("sidebar.brand.mark", () => ctx.slots.register({ name: "sidebar.brand.mark", priority: BRAND_PRIORITY }, SidebarBrandMark));
 	ctx.slots.inject("sidebar.brand.name", () => ctx.slots.register({ name: "sidebar.brand.name", priority: BRAND_PRIORITY }, SidebarBrandName));

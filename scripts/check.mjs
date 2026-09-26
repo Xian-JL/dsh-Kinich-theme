@@ -38,6 +38,7 @@ const sourceFiles = [
   "src/client/assets.generated.js",
   "src/client/locales.js",
   "src/client/settings/decode.js",
+	"src/client/settings/resolve.js",
   "src/client/components/brand.js",
   "src/client/balance/balance-store.js",
   "src/client/balance/policy.js",
@@ -75,10 +76,10 @@ assert(/^\d+\.\d+\.\d+$/.test(packageJson.version), "package.json must use a rel
 assert(packageJson.dsh?.manifestVersion === 1, "DSH public manifest version must be 1");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
-assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.2", "@deepseek-ai/schemastery must match the DSH 0.1.6 settings runtime");
+assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.4", "@deepseek-ai/schemastery must support DSH 0.1.7 live Config fields");
 assert(packageJson.devDependencies?.esbuild === "0.28.2", "esbuild 0.28.2 must remain the development bundler");
-assert(packageJson.engines?.dsh === "^0.1.5-rc.1 || ^0.1.6-alpha.1", "Top-level DSH compatibility range must cover 0.1.5 and 0.1.6");
-assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"] === "^0.1.5-rc.1 || ^0.1.6-alpha.1", "Settings peer range must cover DSH 0.1.6");
+assert(packageJson.engines?.dsh === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2", "Top-level DSH compatibility range must cover 0.1.5 through 0.1.7-rc.2");
+assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"] === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2", "Settings peer range must cover DSH 0.1.7-rc.2");
 assert(!packageJson.dsh?.client?.inject?.includes("@deepseek-ai/dsh-client-runtime"), "Removed DSH client-runtime package must not be injected");
 
 assert(packageJson.repository?.url === "git+https://github.com/Xian-JL/dsh-Kinich-theme.git", "Public GitHub repository metadata missing");
@@ -97,8 +98,11 @@ for (const removedApi of [/\bsettingsNamespace\s*\(/, /\binstallSettingsSection\
   assert(!removedApi.test(client), `Client still calls removed DSH API: ${removedApi}`);
 }
 
-assert(host.includes("settingsCtx.settings.register(KINICH_SETTINGS_NAMESPACE"), "Host settings namespace registration changed");
-assert(client.includes("ctx.settingsScope.bind({"), "Client settingsScope binding missing");
+assert(host.includes("settingsCtx.settings.register(KINICH_SETTINGS_NAMESPACE"), "Legacy Host settings namespace registration missing");
+assert(host.includes("settingsCtx.settings.configure({ auto: false }"), "DSH 0.1.7 Host Config presentation missing");
+assert(host.includes("KinichThemeConfigSchema"), "DSH 0.1.7 live Config schema missing");
+assert(client.includes('ctx.get("settingsScope")'), "Legacy Client settingsScope binding missing");
+assert(client.includes('ctx.get("configForms")'), "DSH 0.1.7 Client configForms binding missing");
 assert(client.includes("namespace: KINICH_SETTINGS_NAMESPACE"), "Client settings namespace changed");
 assert(client.includes("theme: ctx.theme"), "Theme service is not projected into the live Kinich overlay");
 assert(overlaySource.includes("theme.overrideTokens(KINICH_THEME_SOURCE"), "Live visual-mode theme bridge missing");
@@ -108,7 +112,7 @@ for (const slot of ["sidebar.brand.mark", "conversation.hero.brand.mark", "shell
   assert(client.includes(`ctx.slots.inject(${JSON.stringify(slot)}`), `Required slot missing: ${slot}`);
 }
 
-for (const service of ["theme", "slots", "locale", "connection", "remote", "settingsScope"]) {
+for (const service of ["theme", "slots", "locale", "connection", "remote"]) {
   assert(client.includes(JSON.stringify(service)), `Required client service missing: ${service}`);
 }
 
@@ -219,5 +223,5 @@ console.log("- settings: shared schema + backwards-compatible decode");
 console.log("- product UI: Jungle workspace with legacy mode data compatibility");
 console.log("- product UI: modern settings hierarchy + branded sidebar + visual intensity");
 console.log("- Ajaw: live official balance, CNY<10 red tint + 2x motion, full interaction, and rAF drag");
-console.log("- compatibility: DSH 0.1.5 and 0.1.6-alpha.2 session APIs supported");
+console.log("- compatibility: DSH 0.1.5, 0.1.6 and 0.1.7-rc.2 settings/session APIs supported");
 console.log("- DSH slots/settings/theme/assets contract preserved");

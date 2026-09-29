@@ -1,7 +1,7 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.5.0",
-  "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
+  "version": "1.5.1",
+  "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web and Desktop with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "main": "lib/index.js",
@@ -43,10 +43,10 @@
   },
   "engines": {
     "node": "^22.19.0 || >=24.0.0",
-    "dsh": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2"
+    "dsh": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-settings": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2",
+    "@deepseek-ai/dsh-settings": "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2",
     "react": "^18.2.0"
   },
   "peerDependenciesMeta": {

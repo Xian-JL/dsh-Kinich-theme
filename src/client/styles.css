@@ -1718,8 +1718,8 @@ body[data-kinich-style='jungle'] {
 }
 
 body:has([data-phase='hero']) .dsh-kinich-welcome { display: block; }
-body:has([data-phase='hero']) .pXSMma_headline { visibility: hidden; }
-body:has([data-phase='hero']) .wSkVaW_composerHero {
+body:has([data-phase='hero']) :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: hidden; }
+body:has([data-phase='hero']) :is(.wSkVaW_composerHero, .Dc7zOa_composerHero) {
   transform: translateY(118px);
 }
 
@@ -1833,8 +1833,8 @@ body:has([data-phase='hero']) .dsh-kinich-character-frame .dsh-kinich-character 
 
 @media (max-width: 760px) {
   .dsh-kinich-welcome { display: none !important; }
-  body:has([data-phase='hero']) .pXSMma_headline { visibility: visible; }
-  body:has([data-phase='hero']) .wSkVaW_composerHero { transform: none; }
+  body:has([data-phase='hero']) :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: visible; }
+  body:has([data-phase='hero']) :is(.wSkVaW_composerHero, .Dc7zOa_composerHero) { transform: none; }
   .dsh-kinich-character-frame { display: none; }
 }
 

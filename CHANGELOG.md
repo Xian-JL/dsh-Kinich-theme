@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.1 — DSH 0.2 Desktop Compatibility
+
+- Updated welcome-page headline and composer selectors for DSH Desktop 0.2.0-rc.2 while retaining the earlier Web selectors and transition behavior.
+- Extended the DSH engine and settings peer ranges to include 0.2.0-rc.2. Desktop uses the Web renderer, so the client platform remains `web`.
+- Retained the existing live Config, balance route, session feedback, theme and slot APIs. No visual assets were changed.
+
 ## 1.5.0 — DSH 0.1.7 Compatibility
 
 - Migrated live Kinich preferences to DSH 0.1.7 Profile Config and Client `configForms`, while retaining the earlier settings-scope path for DSH 0.1.5/0.1.6.

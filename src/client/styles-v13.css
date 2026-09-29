@@ -198,11 +198,11 @@ body[data-ds-dark-theme] .dsh-kinich-ornament {
 
 .dsh-kinich-welcome p { line-height: 1.85; }
 
-body[data-kinich-page-phase='entering-hero'] .pXSMma_headline,
-body[data-kinich-page-phase='hero'] .pXSMma_headline,
-body[data-kinich-page-phase='leaving-hero'] .pXSMma_headline { visibility: hidden; }
+body[data-kinich-page-phase='entering-hero'] :is(.pXSMma_headline, .Hqq-bq_headline),
+body[data-kinich-page-phase='hero'] :is(.pXSMma_headline, .Hqq-bq_headline),
+body[data-kinich-page-phase='leaving-hero'] :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: hidden; }
 
-body[data-kinich-page-phase] .wSkVaW_composerHero { transform: none; }
+body[data-kinich-page-phase] :is(.wSkVaW_composerHero, .Dc7zOa_composerHero) { transform: none; }
 
 .dsh-kinich-character-frame,
 body:has([data-phase='hero']) .dsh-kinich-character-frame {
@@ -500,7 +500,7 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
 @media (max-width: 760px) {
   .dsh-kinich-welcome,
   .dsh-kinich-character-frame { display: none !important; }
-  body[data-kinich-page-phase] .pXSMma_headline { visibility: visible; }
+  body[data-kinich-page-phase] :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: visible; }
   .dsh-kinich-ajaw-cluster { width: 62px; }
   .dsh-kinich-balance-bubble { width: min(252px, 72vw); }
   .dsh-kinich-texture { opacity: .18; }

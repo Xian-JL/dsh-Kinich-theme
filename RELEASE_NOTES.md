@@ -1,13 +1,13 @@
-# Kinich Theme v1.6.0 — Desktop Action Cues
+# Kinich Theme v1.7.0 — Opt-in Immersive Depth
 
-Kinich adds restrained navigation, input, and send feedback for DeepSeek Harness Desktop 0.2.0-rc.2, while retaining the earlier Web compatibility ranges.
+Kinich 1.7 adds opt-in Jungle depth for DeepSeek Harness Desktop 0.2.0-rc.2. It includes the 1.6 navigation, input and send cues and retains earlier Web compatibility ranges.
 
 ## Changes
 
-- Welcome layout no longer embeds DSH's build-specific CSS hashes. It still uses a renderer role suffix and is checked against the current bundled Web renderer.
-- Welcome copy and the hero illustration now clear the native workspace selector and composer on desktop.
-- Selected session rows briefly show a jade edge, pointer-focused inputs receive a restrained outline, and the composer acknowledges a real sending state.
-- Reduced motion removes the new animation. Existing settings, balance monitoring, theme tokens, Ajaw behavior and visual assets remain intact.
+- Immersive intensity now gives the existing welcome environment up to four pixels of pointer depth after the page settles. It does not move DSH controls or Ajaw.
+- Welcome copy enters in three restrained steps. In conversations, the Immersive ambient layer becomes quieter and pauses its loops.
+- The depth effect is inactive when ambient motion is disabled, the page is hidden, reduced motion is requested or the viewport is narrow. No new visual assets or settings migration are involved.
+- The 1.6 desktop action cues, stable welcome role selectors, and clear composer layout remain included.
 
 ## Install
 

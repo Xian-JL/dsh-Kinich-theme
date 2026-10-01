@@ -19,6 +19,7 @@ import {
 	playClickBurst
 } from "../src/client/interaction/click-burst.js";
 import { getKinichThemeTokens } from "../src/client/theme/tokens.js";
+import { KINICH_PARALLAX_LIMIT_PX, kinichParallaxOffset } from "../src/client/presentation/parallax-model.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const overlay = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
@@ -38,6 +39,12 @@ assert.equal(isKinichHeroTarget("hero"), true);
 assert.equal(isKinichHeroTarget("leaving-hero"), false);
 assert.equal(KINICH_HERO_TRANSITION_MS, 760);
 assert.ok(KINICH_REDUCED_TRANSITION_MS <= 120);
+assert.equal(KINICH_PARALLAX_LIMIT_PX, 4);
+const scene = { left: 100, top: 50, width: 800, height: 600 };
+assert.deepEqual(kinichParallaxOffset(100, 50, scene), { x: -4, y: -4 });
+assert.deepEqual(kinichParallaxOffset(500, 350, scene), { x: 0, y: 0 });
+assert.deepEqual(kinichParallaxOffset(900, 650, scene), { x: 4, y: 4 });
+assert.deepEqual(kinichParallaxOffset(Number.NaN, 350, scene), { x: 0, y: 0 });
 
 function luminance(hex) {
 	const channels = hex.slice(1).match(/.{2}/g).map(part => parseInt(part, 16) / 255);
@@ -116,5 +123,7 @@ assert.ok(presentationStyles.includes("[data-phase='hero'] [class$='_headline']"
 assert.ok(presentationStyles.includes("[class$='_composerHero']"));
 assert.ok(presentationStyles.includes("dsh-kinich-navigation-light"));
 assert.ok(presentationStyles.includes("dsh-kinich-send-trace"));
+assert.ok(presentationStyles.includes("[data-intensity='immersive'][data-ambient-motion='true'][data-page-phase='hero']"));
+assert.ok(presentationStyles.includes("dsh-kinich-hero-copy-enter"));
 
 console.log("Kinich presentation and high-refresh feedback tests passed.");

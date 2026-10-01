@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0 — Opt-in immersive depth
+
+- Added bounded four-pixel pointer parallax to the existing Jungle background only after the welcome page settles in Immersive intensity, with ambient motion enabled.
+- Added staggered welcome-copy entrance and a quieter conversation state in Immersive mode; ambient loops pause while working.
+- Reset motion on blur, visibility loss, resize, unmount and reduced-motion changes. Narrow desktop windows do not run parallax. No settings migration or new assets were needed.
+
 ## 1.6.0 — Desktop action cues and resilient welcome selectors
 
 - Matched DSH welcome headline and composer by the hero phase and CSS-module role suffix instead of build-specific class hashes; the host keeps ownership of its navigation and composer.

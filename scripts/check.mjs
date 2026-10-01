@@ -50,6 +50,8 @@ const sourceFiles = [
   "src/client/overlay/kinich-overlay.js",
 	"src/client/presentation/hero-phase.js",
 	"src/client/presentation/phase-model.js",
+	"src/client/presentation/parallax-model.js",
+	"src/client/presentation/parallax.js",
 	"src/client/session/compat.js",
   "src/client/session/status-store.js",
   "src/client/session/session-state-bridge.js",

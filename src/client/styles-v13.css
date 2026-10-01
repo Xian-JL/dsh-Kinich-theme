@@ -554,3 +554,33 @@ body[data-kinich-session-state='sending'] [class$='_composerSeat'] {
   [role='treeitem'][data-kinich-navigation-pulse],
   body[data-kinich-session-state='sending'] [class$='_composerSeat'] { animation: none; }
 }
+
+/* v1.7: immersive-only depth with a quiet conversation terminal state. */
+.dsh-kinich-overlay[data-intensity='immersive'][data-ambient-motion='true'][data-page-phase='hero'] .dsh-kinich-decoration {
+  transform: translate3d(var(--kinich-parallax-x, 0px), var(--kinich-parallax-y, 0px), 0);
+}
+.dsh-kinich-overlay[data-intensity='immersive'][data-page-phase='conversation'] .dsh-kinich-ambient-motion {
+  opacity: .3;
+}
+.dsh-kinich-overlay[data-intensity='immersive'][data-page-phase='conversation'] .dsh-kinich-ambient-motion * {
+  animation-play-state: paused;
+}
+.dsh-kinich-overlay[data-intensity='immersive'][data-page-phase='entering-hero'] .dsh-kinich-welcome__eyebrow {
+  animation: dsh-kinich-hero-copy-enter 420ms ease-out 110ms both;
+}
+.dsh-kinich-overlay[data-intensity='immersive'][data-page-phase='entering-hero'] .dsh-kinich-welcome h1 {
+  animation: dsh-kinich-hero-copy-enter 460ms ease-out 170ms both;
+}
+.dsh-kinich-overlay[data-intensity='immersive'][data-page-phase='entering-hero'] .dsh-kinich-welcome p {
+  animation: dsh-kinich-hero-copy-enter 480ms ease-out 230ms both;
+}
+@keyframes dsh-kinich-hero-copy-enter {
+  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-decoration { transform: none !important; }
+  .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome__eyebrow,
+  .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome h1,
+  .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome p { animation: none !important; }
+}

@@ -18,6 +18,7 @@ import {
 	playClickBurst
 } from "../interaction/click-burst.js";
 import { useKinichPagePhase } from "../presentation/hero-phase.js";
+import { useKinichImmersiveParallax } from "../presentation/parallax.js";
 import { isKinichHeroTarget } from "../presentation/phase-model.js";
 
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
@@ -135,6 +136,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const [balanceOpen, setBalanceOpen] = (0, react.useState)(false);
 	const [manualRefreshStatus, setManualRefreshStatus] = (0, react.useState)("idle");
 	const overlayRef = (0, react.useRef)(null);
+	useKinichImmersiveParallax(overlayRef, value.visualIntensity === "immersive" && value.ambientMotion && pagePhase === "hero");
 	const clickLayerRef = useClickBurstLayer(overlayRef);
 	const dragRef = (0, react.useRef)(null);
 	const frameRef = (0, react.useRef)(null);

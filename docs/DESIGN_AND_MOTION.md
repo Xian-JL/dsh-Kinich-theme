@@ -20,6 +20,8 @@ The plugin enhances DSH Web through semantic tokens, slots, and a pointer-transp
 | Message lifecycle | Sending/running/complete/error follow the DSH session snapshot. The small Ajaw ring, badge, and accessible text carry state; ambient effects remain secondary. |
 | Balance refresh | Announce manual progress and result beside the balance. Keep the amount in place while checking. |
 | Click burst | Use the fixed four-slot Web Animations pool and only show it for actionable mouse controls. Keep its origin unclipped and pointer-transparent. |
+| Selected session | Give an `aria-selected` tree item one 280 ms jade edge cue after the Host confirms selection. |
+| Input focus and sending | Give pointer focus a restrained 160 ms outline and the composer one 260 ms edge cue only when the main Session enters `sending`. |
 
 Animate transforms and opacity for repeated movement. Avoid repeated filters or large-area repaint effects. Reserve `will-change` for an active transition or drag. When `prefers-reduced-motion: reduce` is active, remove decorative loops and preserve state through static text, color, and focus indicators. CNY below 10 changes Ajaw only to red and double animation speed; all interactions and session states remain available.
 

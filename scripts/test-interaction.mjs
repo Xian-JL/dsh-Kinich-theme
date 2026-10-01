@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isSendAction, shouldQueuePointerBurst, toOverlayPoint } from "../src/client/interaction/interaction-bridge.js";
+import { isSelectedNavigationNode, isSendAction, shouldQueuePointerBurst, toOverlayPoint } from "../src/client/interaction/interaction-bridge.js";
 import { nudgeAjawPosition } from "../src/client/overlay/position.js";
 
 function action({ type = "button", aria = "", title = "", testId = "", text = "" } = {}) {
@@ -22,6 +22,10 @@ assert.equal(toOverlayPoint(Number.NaN, 90, { left: 100, top: 50, width: 200, he
 assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 1), true);
 assert.equal(shouldQueuePointerBurst(null, 1), false);
 assert.equal(shouldQueuePointerBurst({ clientX: 140, clientY: 90 }, 0), false);
+const navigationNode = (role, selected) => ({ getAttribute: key => ({ role, "aria-selected": selected })[key] });
+assert.equal(isSelectedNavigationNode(navigationNode("treeitem", "true")), true);
+assert.equal(isSelectedNavigationNode(navigationNode("treeitem", "false")), false);
+assert.equal(isSelectedNavigationNode(navigationNode("button", "true")), false);
 
 const overlayRect = { width: 800, height: 600 };
 const buttonRect = { width: 80, height: 60 };

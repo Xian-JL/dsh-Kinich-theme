@@ -1,12 +1,13 @@
-# Kinich Theme v1.5.1 — DSH 0.2 Desktop Compatibility
+# Kinich Theme v1.6.0 — Desktop Action Cues
 
-Kinich supports DeepSeek Harness Desktop 0.2.0-rc.2 while retaining the earlier Web compatibility ranges.
+Kinich adds restrained navigation, input, and send feedback for DeepSeek Harness Desktop 0.2.0-rc.2, while retaining the earlier Web compatibility ranges.
 
 ## Changes
 
-- Adapted welcome-page headline hiding and composer placement to the new renderer CSS classes, including transition and existing narrow-window rules.
-- Extended the DSH engine and settings peer declarations to include `^0.2.0-rc.2`.
-- Retained live settings, balance monitoring, Ajaw feedback, theme tokens, reduced motion and existing assets.
+- Welcome layout no longer embeds DSH's build-specific CSS hashes. It still uses a renderer role suffix and is checked against the current bundled Web renderer.
+- Welcome copy and the hero illustration now clear the native workspace selector and composer on desktop.
+- Selected session rows briefly show a jade edge, pointer-focused inputs receive a restrained outline, and the composer acknowledges a real sending state.
+- Reduced motion removes the new animation. Existing settings, balance monitoring, theme tokens, Ajaw behavior and visual assets remain intact.
 
 ## Install
 

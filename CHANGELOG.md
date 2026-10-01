@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 — Desktop action cues and resilient welcome selectors
+
+- Matched DSH welcome headline and composer by the hero phase and CSS-module role suffix instead of build-specific class hashes; the host keeps ownership of its navigation and composer.
+- Moved welcome copy above the workspace selector and kept the hero illustration away from the native composer at desktop widths.
+- Added a short selected-session light cue, subtle pointer-focus outline, and a bounded send cue driven by the real session state. All new motion respects reduced-motion settings.
+- Added regression checks for the selector contract and navigation state classification. Existing settings and third-party visual assets are unchanged.
+
 ## 1.5.1 — DSH 0.2 Desktop Compatibility
 
 - Updated welcome-page headline and composer selectors for DSH Desktop 0.2.0-rc.2 while retaining the earlier Web selectors and transition behavior.

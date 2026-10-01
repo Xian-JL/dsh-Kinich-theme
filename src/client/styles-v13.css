@@ -146,7 +146,7 @@ body[data-ds-dark-theme] .dsh-kinich-ornament {
 /* 4. Welcome copy and character phase ----------------------------------- */
 .dsh-kinich-welcome {
   display: block;
-  top: 23%;
+  top: 13%;
   left: clamp(290px, 21vw, 450px);
   width: min(470px, 34vw);
   visibility: hidden;
@@ -198,18 +198,18 @@ body[data-ds-dark-theme] .dsh-kinich-ornament {
 
 .dsh-kinich-welcome p { line-height: 1.85; }
 
-body[data-kinich-page-phase='entering-hero'] :is(.pXSMma_headline, .Hqq-bq_headline),
-body[data-kinich-page-phase='hero'] :is(.pXSMma_headline, .Hqq-bq_headline),
-body[data-kinich-page-phase='leaving-hero'] :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: hidden; }
+body[data-kinich-page-phase='entering-hero'] [data-phase='hero'] [class$='_headline'],
+body[data-kinich-page-phase='hero'] [data-phase='hero'] [class$='_headline'],
+body[data-kinich-page-phase='leaving-hero'] [data-phase='hero'] [class$='_headline'] { visibility: hidden; }
 
-body[data-kinich-page-phase] :is(.wSkVaW_composerHero, .Dc7zOa_composerHero) { transform: none; }
+body[data-kinich-page-phase] [data-phase='hero'] [class$='_composerHero'] { transform: none; }
 
 .dsh-kinich-character-frame,
 body:has([data-phase='hero']) .dsh-kinich-character-frame {
   top: auto;
   right: clamp(30px, 3.7vw, 76px);
   bottom: -38px;
-  width: clamp(230px, 24vw, 400px);
+  width: clamp(200px, 20vw, 310px);
   border: 0;
   opacity: .32;
   transform: translate3d(12%, 7%, 0) scale(.86);
@@ -238,7 +238,7 @@ body:has([data-phase='hero']) .dsh-kinich-character-frame::after {
 .dsh-kinich-overlay[data-page-phase='entering-hero'] .dsh-kinich-character-frame,
 .dsh-kinich-overlay[data-page-phase='hero'] .dsh-kinich-character-frame {
   opacity: .98;
-  transform: translate3d(clamp(-150px, -9vw, -78px), clamp(-300px, -27vh, -150px), 0) scale(1.25);
+  transform: translate3d(-1vw, -58vh, 0) scale(1);
 }
 
 .dsh-kinich-overlay[data-page-phase='entering-hero'] .dsh-kinich-character-frame::before,
@@ -490,17 +490,17 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
 
 /* 9. Responsive and reduced motion -------------------------------------- */
 @media (max-width: 1100px) {
-  .dsh-kinich-welcome { left: clamp(245px, 24vw, 315px); width: 38vw; }
+  .dsh-kinich-welcome { left: max(292px, 29vw); width: 38vw; }
   .dsh-kinich-overlay[data-page-phase='entering-hero'] .dsh-kinich-character-frame,
   .dsh-kinich-overlay[data-page-phase='hero'] .dsh-kinich-character-frame {
-    transform: translate3d(-3vw, -23vh, 0) scale(1.14);
+    transform: translate3d(-1vw, -56vh, 0) scale(1);
   }
 }
 
 @media (max-width: 760px) {
   .dsh-kinich-welcome,
   .dsh-kinich-character-frame { display: none !important; }
-  body[data-kinich-page-phase] :is(.pXSMma_headline, .Hqq-bq_headline) { visibility: visible; }
+  body[data-kinich-page-phase] [data-phase='hero'] [class$='_headline'] { visibility: visible; }
   .dsh-kinich-ajaw-cluster { width: 62px; }
   .dsh-kinich-balance-bubble { width: min(252px, 72vw); }
   .dsh-kinich-texture { opacity: .18; }
@@ -523,4 +523,34 @@ body[data-kinich-page-phase] .dsh-kinich-overlay[data-ambient-motion='true'] .ds
     animation: none !important;
   }
   .dsh-kinich-click-layer { display: none !important; }
+}
+
+/* v1.6: bounded action cues. The host owns selection, focus, and sending state. */
+[role='treeitem'][data-kinich-navigation-pulse] {
+  animation: dsh-kinich-navigation-light 280ms ease-out both;
+}
+@keyframes dsh-kinich-navigation-light {
+  0% { box-shadow: inset 3px 0 0 transparent; }
+  40% { box-shadow: inset 3px 0 0 var(--kinich-accent); }
+  100% { box-shadow: inset 3px 0 0 transparent; }
+}
+
+[data-kinich-focus='true']:focus:not(:focus-visible) {
+  outline: 1px solid color-mix(in srgb, var(--kinich-jade) 55%, transparent);
+  outline-offset: 2px;
+  transition: outline-color 160ms ease;
+}
+
+body[data-kinich-session-state='sending'] [class$='_composerSeat'] {
+  animation: dsh-kinich-send-trace 260ms ease-out both;
+}
+@keyframes dsh-kinich-send-trace {
+  0% { box-shadow: inset 0 -2px 0 transparent; }
+  45% { box-shadow: inset 0 -2px 0 var(--kinich-jade); }
+  100% { box-shadow: inset 0 -2px 0 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [role='treeitem'][data-kinich-navigation-pulse],
+  body[data-kinich-session-state='sending'] [class$='_composerSeat'] { animation: none; }
 }

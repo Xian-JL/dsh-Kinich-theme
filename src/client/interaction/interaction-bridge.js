@@ -36,6 +36,10 @@ export function shouldQueuePointerBurst(pointer, clickDetail) {
 	return pointer !== null && clickDetail > 0;
 }
 
+export function isSelectedNavigationNode(node) {
+	return node?.getAttribute?.("role") === "treeitem" && node.getAttribute("aria-selected") === "true";
+}
+
 export function announceKinichInteraction(state, source = "host") {
 	if (typeof document === "undefined") return;
 	document.dispatchEvent(new CustomEvent(KINICH_INTERACTION_EVENT, { detail: { state, source } }));
@@ -46,6 +50,8 @@ export function installInteractionBridge() {
 	let focusedInput = null;
 	let pendingPointer = null;
 	const pressTimers = new WeakMap();
+	const navigationTimers = new Map();
+	let navigationPulse = 0;
 	const setFocused = input => {
 		if (focusedInput && focusedInput !== input) delete focusedInput.dataset.kinichFocus;
 		focusedInput = input;
@@ -85,12 +91,31 @@ export function installInteractionBridge() {
 			}
 		}, 0);
 	};
+	const selectedNavigation = new MutationObserver(records => {
+		if (document.visibilityState !== "visible" || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+		for (const record of records) {
+			const item = record.target;
+			if (!isSelectedNavigationNode(item)) continue;
+			const generation = String(++navigationPulse);
+			item.dataset.kinichNavigationPulse = generation;
+			const previous = navigationTimers.get(item);
+			if (previous !== undefined) clearTimeout(previous);
+			navigationTimers.set(item, setTimeout(() => {
+				if (item.dataset.kinichNavigationPulse === generation) delete item.dataset.kinichNavigationPulse;
+				navigationTimers.delete(item);
+			}, 280));
+		}
+	});
+	selectedNavigation.observe(document.body, { attributes: true, attributeFilter: ["aria-selected"], subtree: true });
 	document.addEventListener("focusin", focusIn, true);
 	document.addEventListener("focusout", focusOut, true);
 	document.addEventListener("pointerdown", pointerDown, true);
 	document.addEventListener("pointercancel", pointerCancel, true);
 	document.addEventListener("click", click);
 	return () => {
+		selectedNavigation.disconnect();
+		for (const [item, timer] of navigationTimers) { clearTimeout(timer); delete item.dataset.kinichNavigationPulse; }
+		navigationTimers.clear();
 		setFocused(null);
 		document.removeEventListener("focusin", focusIn, true);
 		document.removeEventListener("focusout", focusOut, true);

@@ -24,6 +24,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const overlay = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
 const clickSource = await readFile(resolve(ROOT, "src/client/interaction/click-burst.js"), "utf8");
 const presentationStyles = await readFile(resolve(ROOT, "src/client/styles-v13.css"), "utf8");
+const baseStyles = await readFile(resolve(ROOT, "src/client/styles.css"), "utf8");
 
 assert.equal(KINICH_HERO_SELECTOR, "[data-phase='hero']");
 assert.equal(detectKinichHero({ querySelector: selector => selector === KINICH_HERO_SELECTOR ? {} : null }), true);
@@ -110,5 +111,10 @@ assert.ok(presentationStyles.includes(".dsh-kinich-click-burst > i"));
 assert.ok(presentationStyles.includes("overflow: visible"), "Click fragments must escape the 1px burst origin");
 assert.equal(/\.dsh-kinich-click-burst\s*\{[^}]*contain:\s*[^;}]*paint/s.test(presentationStyles), false, "Paint containment would clip the burst to its 1px origin");
 assert.equal(presentationStyles.includes("steps("), false, "v1.3 click presentation must not quantize motion into low-frame steps");
+assert.equal(/\.(?:pXSMma|Hqq-bq|wSkVaW|Dc7zOa)_/.test(`${baseStyles}\n${presentationStyles}`), false, "Welcome layout must not depend on DSH build-hashed CSS classes");
+assert.ok(presentationStyles.includes("[data-phase='hero'] [class$='_headline']"));
+assert.ok(presentationStyles.includes("[class$='_composerHero']"));
+assert.ok(presentationStyles.includes("dsh-kinich-navigation-light"));
+assert.ok(presentationStyles.includes("dsh-kinich-send-trace"));
 
 console.log("Kinich presentation and high-refresh feedback tests passed.");

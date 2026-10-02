@@ -25,6 +25,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const overlay = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
 const clickSource = await readFile(resolve(ROOT, "src/client/interaction/click-burst.js"), "utf8");
 const presentationStyles = await readFile(resolve(ROOT, "src/client/styles-v13.css"), "utf8");
+const parallaxSource = await readFile(resolve(ROOT, "src/client/presentation/parallax.js"), "utf8");
 const baseStyles = await readFile(resolve(ROOT, "src/client/styles.css"), "utf8");
 
 assert.equal(KINICH_HERO_SELECTOR, "[data-phase='hero']");
@@ -125,5 +126,7 @@ assert.ok(presentationStyles.includes("dsh-kinich-navigation-light"));
 assert.ok(presentationStyles.includes("dsh-kinich-send-trace"));
 assert.ok(presentationStyles.includes("[data-intensity='immersive'][data-ambient-motion='true'][data-page-phase='hero']"));
 assert.ok(presentationStyles.includes("dsh-kinich-hero-copy-enter"));
+assert.ok(parallaxSource.includes("new ResizeObserver(resize)"), "Parallax must track sidebar and panel geometry changes");
+assert.equal(parallaxSource.includes("if (reducedMotion?.matches) return;"), false, "A reduced-motion setting at mount must not prevent a later opt-in change");
 
 console.log("Kinich presentation and high-refresh feedback tests passed.");

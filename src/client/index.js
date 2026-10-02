@@ -6,6 +6,7 @@ import { KINICH_LOCALE_NAMESPACE, KINICH_LOCALES } from "./locales.js";
 import { installKinichStyles } from "./styles.js";
 import { resolveKinichSettings } from "./settings/resolve.js";
 import { installInteractionBridge } from "./interaction/interaction-bridge.js";
+import { watchDeepSeekBalanceProvider } from "./balance/provider-watch.js";
 
 export const inject = ["theme", "slots", "locale", "connection", "remote"];
 export const BRAND_PRIORITY = -20;
@@ -13,6 +14,7 @@ export const BRAND_PRIORITY = -20;
 export function apply(ctx) {
 	installKinichStyles(ctx);
 	ctx.effect(installInteractionBridge, "dsh-kinich-theme: host interaction feedback");
+	ctx.effect(() => watchDeepSeekBalanceProvider(ctx), "dsh-kinich-theme: active DeepSeek credential updates");
 	const settings = resolveKinichSettings(ctx);
 	ctx.effect(() => ctx.locale.register(KINICH_LOCALE_NAMESPACE, KINICH_LOCALES), "dsh-kinich-theme: settings dictionaries");
 	ctx.slots.inject("sidebar.brand.mark", () => ctx.slots.register({ name: "sidebar.brand.mark", priority: BRAND_PRIORITY }, SidebarBrandMark));

@@ -2,6 +2,8 @@
 
 The plugin enhances DSH Web through semantic tokens, slots, and a pointer-transparent overlay. DSH continues to own navigation, conversations, the composer, and menus. Jungle is the current design target; older style values remain readable for saved settings.
 
+Product constraint: preserve every existing dynamic effect. Performance work may change scheduling, caching, and compositing, but must not remove an animation or make an existing motion option unavailable. The system's reduced-motion preference remains an accessibility override.
+
 ## Visual hierarchy
 
 - Primary content and controls use `--dsw-alias-label-primary` on the active DSH surface. Secondary labels use `--dsw-alias-label-secondary`; captions should remain legible in both color schemes.

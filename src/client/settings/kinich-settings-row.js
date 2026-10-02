@@ -4,8 +4,10 @@ import { AJAW_MARK_DATA_URI, KINICH_CHARACTER_DATA_URI } from "../assets.generat
 import { PLUGIN_VERSION } from "../version.generated.js";
 import { DEFAULT_KINICH_SETTINGS } from "../../shared/settings.js";
 import { useKinichSettings } from "../hooks/use-kinich-settings.js";
+import { writeKinichSettings } from "./write.js";
 import { ActionButton, ChoiceGroup, RangeControl, SectionHeader, Toggle } from "./controls.js";
 import { useBalance } from "../balance/use-balance.js";
+import { getBalanceRetryMinutes } from "../balance/policy.js";
 
 const SETTING_LABEL_KEYS = {
 	visualStyle: "style.jungle.label", visualIntensity: "visualIntensity.label",
@@ -72,6 +74,7 @@ function MoreControls({ label, children }) {
 function BalanceMonitorPreview({ t }) {
 	const balance = useBalance();
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
+	const retryMinutes = getBalanceRetryMinutes(balance);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: "dsh-kinich-balance-setting",
 		"data-overheated": String(balance.overheated === true),
@@ -90,7 +93,7 @@ function BalanceMonitorPreview({ t }) {
 					t(statusKey)
 				] })
 			] }),
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: balance.stale && balance.overheated === true ? `${t("balance.stale")} ${t("balance.overheated")}` : balance.stale ? t("balance.stale") : balance.overheated === true ? t("balance.overheated") : t("balance.live") })
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: retryMinutes !== null ? `${t("balance.retry.before")}${retryMinutes}${t("balance.retry.after")}` : balance.stale && balance.overheated === true ? `${t("balance.stale")} ${t("balance.overheated")}` : balance.stale ? t("balance.stale") : balance.overheated === true ? t("balance.overheated") : t("balance.live") })
 		]
 	});
 }
@@ -105,12 +108,9 @@ export function KinichSettingsRow({ settings, t }) {
 		setPending(label);
 		setFailed(null);
 		try {
-			for (const [field, next] of Object.entries(patch)) {
-				const accepted = await settings.set(field, next);
-				if (accepted === false) throw new Error("Setting update refused by DSH");
-			}
-		} catch {
-			setFailed({ label, patch });
+			await writeKinichSettings(settings, patch, snapshot.value ?? DEFAULT_KINICH_SETTINGS);
+		} catch (error) {
+			setFailed({ label, patch, partial: error?.partial === true });
 		} finally {
 			setPending(null);
 		}
@@ -149,7 +149,7 @@ export function KinichSettingsRow({ settings, t }) {
 			}),
 			pending !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__pending", role: "status", children: `${t("state.saving")} ${t(SETTING_LABEL_KEYS[pending] ?? "state.setting")}` }),
 			failed !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { className: "dsh-kinich-settings__error", role: "alert", children: [
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: `${t("state.error.before")}${t(SETTING_LABEL_KEYS[failed.label] ?? "state.setting")}${t("state.error.after")}` }),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: failed.partial ? t("state.error.partial") : `${t("state.error.before")}${t(SETTING_LABEL_KEYS[failed.label] ?? "state.setting")}${t("state.error.after")}` }),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, { disabled, label: t("state.retry"), onClick: () => updateMany(failed.label, failed.patch) })
 			] }),
 

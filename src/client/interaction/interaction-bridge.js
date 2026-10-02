@@ -1,9 +1,7 @@
-export const KINICH_INTERACTION_EVENT = "kinich:interaction-feedback";
 export const KINICH_CLICK_BURST_EVENT = "kinich:click-burst";
 
 const TEXT_INPUT_SELECTOR = "textarea, input[type='text'], input[type='search'], [contenteditable='true'], [role='textbox']";
 const ACTION_SELECTOR = "button, [role='button'], a[href], summary";
-const SEND_PATTERN = /(?:send|submit|发送|提交|运行|执行)/i;
 
 function elementFrom(target) {
 	return target instanceof Element ? target : target?.parentElement ?? null;
@@ -15,14 +13,6 @@ export function getTextInput(target) {
 
 export function getAction(target) {
 	return elementFrom(target)?.closest(ACTION_SELECTOR) ?? null;
-}
-
-export function isSendAction(action) {
-	if (!action) return false;
-	if (action.matches("button[type='submit']")) return true;
-	const label = [action.getAttribute("aria-label"), action.getAttribute("title"), action.getAttribute("data-testid"), action.textContent]
-		.filter(Boolean).join(" ").trim();
-	return SEND_PATTERN.test(label);
 }
 
 export function toOverlayPoint(clientX, clientY, rect) {
@@ -37,12 +27,11 @@ export function shouldQueuePointerBurst(pointer, clickDetail) {
 }
 
 export function isSelectedNavigationNode(node) {
-	return node?.getAttribute?.("role") === "treeitem" && node.getAttribute("aria-selected") === "true";
-}
-
-export function announceKinichInteraction(state, source = "host") {
-	if (typeof document === "undefined") return;
-	document.dispatchEvent(new CustomEvent(KINICH_INTERACTION_EVENT, { detail: { state, source } }));
+	if (node?.getAttribute?.("role") !== "treeitem" || node.getAttribute("aria-selected") !== "true") return false;
+	const rowKey = node.getAttribute("data-row-key");
+	if (rowKey !== null) return rowKey.startsWith("session:");
+	const treeLabel = node.closest?.('[role="tree"]')?.getAttribute("aria-label");
+	return treeLabel === "会话" || treeLabel === "Sessions";
 }
 
 export function installInteractionBridge() {
@@ -56,7 +45,6 @@ export function installInteractionBridge() {
 		if (focusedInput && focusedInput !== input) delete focusedInput.dataset.kinichFocus;
 		focusedInput = input;
 		if (input) input.dataset.kinichFocus = "true";
-		document.body.dataset.kinichComposerFocus = String(Boolean(input));
 	};
 	const focusIn = event => setFocused(getTextInput(event.target));
 	const focusOut = event => {

@@ -109,14 +109,22 @@ export function ActionButton({ disabled, label, onClick, tone = "neutral" }) {
 export function RangeControl({ disabled, label, max, min, onCommit, suffix, value }) {
 	const [draft, setDraft] = (0, react.useState)(value);
 	const committedRef = (0, react.useRef)(value);
+	const keyboardTimerRef = (0, react.useRef)(null);
 	(0, react.useEffect)(() => {
 		setDraft(value);
 		committedRef.current = value;
 	}, [value]);
+	(0, react.useEffect)(() => () => { if (keyboardTimerRef.current !== null) clearTimeout(keyboardTimerRef.current); }, []);
 	const commit = () => {
+		if (keyboardTimerRef.current !== null) { clearTimeout(keyboardTimerRef.current); keyboardTimerRef.current = null; }
 		if (draft === committedRef.current) return;
 		committedRef.current = draft;
 		onCommit(draft);
+	};
+	const scheduleKeyboardCommit = event => {
+		if (!/^(?:Arrow(?:Left|Right|Up|Down)|Home|End|PageUp|PageDown)$/.test(event.key)) return;
+		if (keyboardTimerRef.current !== null) clearTimeout(keyboardTimerRef.current);
+		keyboardTimerRef.current = setTimeout(commit, 180);
 	};
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 		className: "dsh-kinich-range",
@@ -129,7 +137,7 @@ export function RangeControl({ disabled, label, max, min, onCommit, suffix, valu
 			min,
 			onBlur: commit,
 			onChange: (event) => setDraft(Number(event.currentTarget.value)),
-			onKeyUp: commit,
+			onKeyUp: scheduleKeyboardCommit,
 			onPointerUp: commit,
 			step: 1,
 			type: "range",

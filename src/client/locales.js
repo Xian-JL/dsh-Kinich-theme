@@ -62,6 +62,9 @@ export const KINICH_LOCALES = {
 		"balance.status.unsupported": "当前端点不是 DeepSeek 官方 API，无法查询官方余额。",
 		"balance.status.auth-error": "API Key 验证失败，请检查当前连接凭据。",
 		"balance.status.rate-limited": "查询频率受限，请稍后重试。",
+		"balance.retry.before": "预计 ",
+		"balance.retry.after": " 分钟后可重试。",
+		"balance.refreshLimited": "查询频率受限，请按提示时间重试。",
 		"balance.status.unavailable": "余额服务暂不可用，请稍后重试。",
 		"balance.overheated": "余额低于 ¥10，阿乔已进入红温加速。",
 		"balance.stale": "显示最近一次成功读取的余额。",
@@ -92,6 +95,7 @@ export const KINICH_LOCALES = {
 		"state.setting": "设置",
 		"state.error.before": "未能保存「",
 		"state.error.after": "」。请重试。",
+		"state.error.partial": "部分设置已保存，回退未完全成功。请检查当前值后重试。",
 		"state.retry": "重试"
 	},
 	en: {
@@ -156,6 +160,9 @@ export const KINICH_LOCALES = {
 		"balance.status.unsupported": "The active endpoint is not the official DeepSeek API, so official balance is unavailable.",
 		"balance.status.auth-error": "API key authentication failed. Check the active connection credentials.",
 		"balance.status.rate-limited": "Balance checks are rate limited. Try again later.",
+		"balance.retry.before": "Try again in about ",
+		"balance.retry.after": " minutes.",
+		"balance.refreshLimited": "Rate limited; retry after the indicated wait.",
 		"balance.status.unavailable": "Balance service is unavailable. Try again later.",
 		"balance.overheated": "Balance is below ¥10. Ajaw is red-hot and moves at double speed.",
 		"balance.stale": "Showing the most recent successful balance check.",
@@ -186,6 +193,7 @@ export const KINICH_LOCALES = {
 		"state.setting": "setting",
 		"state.error.before": "Could not save “",
 		"state.error.after": "”. Please retry.",
+		"state.error.partial": "Some settings were saved and could not be fully restored. Check the current values before retrying.",
 		"state.retry": "Retry"
 	}
 };

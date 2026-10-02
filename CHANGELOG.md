@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.1 — Reliability and accessibility maintenance
+
+- Preserved all existing Jungle, Ajaw, click, ambient and immersive animations. Added a repository maintainer instruction recording that product requirement.
+- Kept balance caching bound to the active API credential, immediately invalidated the browser balance after provider configuration changes, honored provider `Retry-After` even on manual refresh, and showed a localized retry estimate.
+- Used DSH's atomic namespace mutation for multi-field settings writes, with legacy rollback and an explicit partial-recovery warning.
+- Scoped navigation light feedback to session rows, refreshed parallax geometry when its actual container resizes, and handled reduced-motion preference changes after mount.
+- Added dialog discoverability for Ajaw, reduced repeated keyboard-slider writes, and removed unused interaction code.
+
 ## 1.7.0 — Opt-in immersive depth
 
 - Added bounded four-pixel pointer parallax to the existing Jungle background only after the welcome page settles in Immersive intensity, with ambient motion enabled.

@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web and Desktop with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -60,8 +60,10 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "verify": "npm run build && npm run check && npm run test:stage4 && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
+    "verify": "npm run build && npm run check && npm run test:stage4 && npm run test:balance-client && npm run test:settings && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
     "test:stage4": "node scripts/test-stage4.mjs",
+    "test:balance-client": "node scripts/test-balance-client.mjs",
+    "test:settings": "node scripts/test-settings-write.mjs",
     "test:interaction": "node scripts/test-interaction.mjs",
     "test:presentation": "node scripts/test-presentation.mjs",
     "test:compat": "node scripts/test-dsh-016.mjs",

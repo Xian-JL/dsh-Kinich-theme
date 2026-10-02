@@ -5,6 +5,7 @@ let snapshot = EMPTY;
 let request;
 let pollTimer;
 let consumers = 0;
+let credentialGeneration = 0;
 const listeners = new Set();
 
 function publish(next) {
@@ -17,6 +18,7 @@ export function subscribeBalance(listener) { listeners.add(listener); return () 
 
 export async function refreshBalance({ force = false } = {}) {
 	if (request !== void 0) return request;
+	const generation = credentialGeneration;
 	if (snapshot.status === "loading") publish({ ...snapshot, refreshing: true });
 	request = fetch(`/api/kinich-balance${force ? "?force=1" : ""}`, {
 		credentials: "same-origin",
@@ -24,13 +26,21 @@ export async function refreshBalance({ force = false } = {}) {
 	}).then(async response => {
 		if (!response.ok) throw new Error(`balance endpoint ${response.status}`);
 		const next = await response.json();
-		publish({ ...next, refreshing: false, overheated: isBelowCnyThreshold(next) });
+		if (generation === credentialGeneration) publish({ ...next, refreshing: false, overheated: isBelowCnyThreshold(next) });
 		return next;
 	}).catch(() => {
-		publish({ ...snapshot, status: snapshot.totalBalance === void 0 ? "unavailable" : snapshot.status, stale: true, refreshing: false });
+		if (generation === credentialGeneration) publish({ ...snapshot, status: snapshot.totalBalance === void 0 ? "unavailable" : snapshot.status, stale: true, refreshing: false });
 		return snapshot;
 	}).finally(() => { request = void 0; });
 	return request;
+}
+
+export async function refreshBalanceForCredentialChange() {
+	credentialGeneration += 1;
+	const previous = request;
+	publish({ status: "loading", stale: false });
+	if (previous !== undefined) await previous;
+	return refreshBalance({ force: true });
 }
 
 function schedulePoll() {

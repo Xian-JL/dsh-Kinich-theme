@@ -7,6 +7,7 @@ import { getKinichThemeTokens, KINICH_THEME_SOURCE } from "../theme/tokens.js";
 import { getKinichSessionState, subscribeKinichSessionState } from "../session/status-store.js";
 import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
+import { getBalanceRetryMinutes } from "../balance/policy.js";
 import { useBalance } from "../balance/use-balance.js";
 import { KINICH_CLICK_BURST_EVENT, toOverlayPoint } from "../interaction/interaction-bridge.js";
 import { nudgeAjawPosition } from "./position.js";
@@ -300,7 +301,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const refreshBalanceManually = async () => {
 		setManualRefreshStatus("loading");
 		const next = await refreshBalance({ force: true });
-		setManualRefreshStatus(next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
+		setManualRefreshStatus(next.status === "rate-limited" ? "limited" : next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
 	};
 
 	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : interactionFeedback === "error" ? "error" : interactionFeedback === "running" ? "thinking" : interactionFeedback === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
@@ -311,6 +312,11 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const balanceDialogId = "dsh-kinich-balance-bubble";
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
 	const statusFallback = balance.status === "ready" ? "余额已同步" : balance.status === "loading" ? "正在读取余额" : "余额暂不可用";
+	const retryMinutes = getBalanceRetryMinutes(balance);
+	const balanceNote = retryMinutes !== null
+		? `${text(t, "balance.retry.before", "预计 ")}${retryMinutes}${text(t, "balance.retry.after", " 分钟后可重试。")} ${balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : ""} ${overheated ? text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。") : ""}`
+		: overheated ? balance.stale ? `${text(t, "balance.stale", "显示最近一次成功读取的余额。")} ${text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")}` : text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
+		: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。");
 
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: "dsh-kinich-overlay",
@@ -400,6 +406,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 						"aria-controls": balanceDialogId,
 						"aria-describedby": "dsh-kinich-ajaw-help",
 						"aria-expanded": balanceOpen,
+						"aria-haspopup": "dialog",
 						"aria-label": text(t, "balance.open", "Open API balance"),
 						className: "dsh-kinich-ajaw-idle",
 						"data-draggable": String(snapshot.writable),
@@ -457,10 +464,8 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-hidden": "true", className: "dsh-kinich-balance-bubble__status-dot" }),
 								text(t, statusKey, statusFallback)
 							] }),
-							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-bubble__note", children: overheated
-								? balance.stale ? `${text(t, "balance.stale", "显示最近一次成功读取的余额。")} ${text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")}` : text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
-								: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。") }),
-							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-live": "polite", className: "dsh-kinich-balance-bubble__refresh-status", role: "status", children: manualRefreshStatus === "loading" ? text(t, "balance.refreshing", "正在检查余额") : manualRefreshStatus === "done" ? text(t, "balance.refreshed", "余额检查完成") : manualRefreshStatus === "failed" ? text(t, "balance.refreshFailed", "检查失败，仍可查看上次结果") : "" })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-bubble__note", children: balanceNote }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-live": "polite", className: "dsh-kinich-balance-bubble__refresh-status", role: "status", children: manualRefreshStatus === "loading" ? text(t, "balance.refreshing", "正在检查余额") : manualRefreshStatus === "done" ? text(t, "balance.refreshed", "余额检查完成") : manualRefreshStatus === "limited" ? text(t, "balance.refreshLimited", "查询频率受限，请按提示时间重试") : manualRefreshStatus === "failed" ? text(t, "balance.refreshFailed", "检查失败，仍可查看上次结果") : "" })
 						]
 					})
 				]

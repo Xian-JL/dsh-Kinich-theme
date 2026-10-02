@@ -78,16 +78,24 @@ function simpleBindingId(reference, source, secret) {
 	return `deepseek-${digest}`;
 }
 
-async function queryBalance(ctx) {
-const connection = resolveConnection(ctx.settings, ctx.launchEnvironment);
-	if (connection.status) return errorSnapshot(connection.status);
+async function resolveBalanceBinding(ctx) {
+	const connection = resolveConnection(ctx.settings, ctx.launchEnvironment);
+	if (connection.status) return connection;
 	const credential = await ctx.credentials.resolve(connection.apiKeyEnv);
-	if (credential === void 0 || credential.value === "") return errorSnapshot("unbound");
-	const bindingId = simpleBindingId(connection.apiKeyEnv, credential.source ?? "configured", credential.value);
+	if (credential === void 0 || credential.value === "") return { status: "unbound" };
+	return {
+		...connection,
+		credential,
+		bindingId: simpleBindingId(connection.apiKeyEnv, credential.source ?? "configured", credential.value)
+	};
+}
+
+async function queryBalance(binding) {
+	const { balanceURL, bindingId, credential } = binding;
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 	try {
-		const response = await fetch(connection.balanceURL, {
+		const response = await fetch(balanceURL, {
 			headers: { accept: "application/json", authorization: `Bearer ${credential.value}` },
 			signal: controller.signal
 		});
@@ -120,17 +128,23 @@ const connection = resolveConnection(ctx.settings, ctx.launchEnvironment);
 }
 
 async function readBalance(ctx, force) {
+	const binding = await resolveBalanceBinding(ctx);
+	if (binding.status) return errorSnapshot(binding.status);
 	const now = Date.now();
-	if (cached !== void 0) {
+	if (cached?.bindingId === binding.bindingId) {
+		const retryAt = cached.value.status === "rate-limited" ? Date.parse(cached.value.retryAt ?? "") : Number.NaN;
+		if (Number.isFinite(retryAt) && retryAt > now) return cached.value;
 		const age = now - cached.at;
 		if (age < (force ? MANUAL_REFRESH_FLOOR_MS : CACHE_TTL_MS)) return cached.value;
 	}
-	if (inFlight !== void 0) return inFlight;
-	inFlight = queryBalance(ctx).then(value => {
-		cached = { at: Date.now(), value };
+	if (inFlight?.bindingId === binding.bindingId) return inFlight.promise;
+	const current = { bindingId: binding.bindingId, promise: undefined };
+	current.promise = queryBalance(binding).then(value => {
+		if (inFlight === current) cached = { at: Date.now(), bindingId: binding.bindingId, value };
 		return value;
-	}).finally(() => { inFlight = void 0; });
-	return inFlight;
+	}).finally(() => { if (inFlight === current) inFlight = void 0; });
+	inFlight = current;
+	return current.promise;
 }
 
 export function installBalanceRoute(ctx) {

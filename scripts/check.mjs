@@ -41,6 +41,7 @@ const sourceFiles = [
 	"src/client/settings/resolve.js",
   "src/client/components/brand.js",
   "src/client/balance/balance-store.js",
+  "src/client/balance/provider-watch.js",
   "src/client/balance/policy.js",
   "src/client/balance/use-balance.js",
   "src/client/hooks/use-kinich-settings.js",
@@ -57,6 +58,7 @@ const sourceFiles = [
   "src/client/session/session-state-bridge.js",
   "src/client/settings/controls.js",
   "src/client/settings/kinich-settings-row.js",
+  "src/client/settings/write.js",
   "src/client/styles.generated.js",
   "src/client/styles.js",
   "src/client/theme/tokens.js",
@@ -169,6 +171,7 @@ assert(overlaySource.includes('refreshBalance({ force: true })'), "Ajaw click/ma
 assert(overlaySource.includes('dsh-kinich-welcome'), "Preview-aligned Jungle welcome composition missing");
 assert(overlaySource.includes('dsh-kinich-character-frame'), "Preview-aligned Kinich character frame missing");
 assert(overlaySource.includes('role: "dialog"'), "Ajaw balance popover semantics missing");
+assert(overlaySource.includes('"aria-haspopup": "dialog"'), "Ajaw trigger must announce its balance dialog");
 assert(!overlaySource.includes('"aria-hidden": "true", className: "dsh-kinich-overlay"'), "Interactive overlay must not be hidden from assistive technology");
 assert(overlaySource.includes("dsh-kinich-ambient-motion"), "Dynamic ambient motion layer missing");
 assert(overlaySource.includes("dsh-kinich-ambient-motion__canopy"), "Jungle canopy motion layer missing");
@@ -178,7 +181,7 @@ assert(authoredStylesSource.includes("dsh-kinich-v13-character-breathe"), "Kinic
 assert(overlaySource.includes("length: 24"), "Jungle firefly layer must render 24 particles");
 assert(!stylesSource.includes("dsh-kinich-ornament-drift"), "Natlan ornament drift must remain removed");
 assert(client.includes("installInteractionBridge"), "Host interaction bridge is not installed");
-assert(interactionSource.includes("kinich:interaction-feedback"), "Interaction feedback event contract missing");
+assert(interactionSource.includes("kinich:click-burst"), "Click feedback event contract missing");
 assert(!interactionSource.includes('document.addEventListener("keydown", keyDown'), "Global Enter should not announce a message send");
 assert(interactionSource.includes("data.kinichPressed") || interactionSource.includes("dataset.kinichPressed"), "Tactile action feedback missing");
 for (const field of ["promptError", "openError", "lastAgentError"]) {

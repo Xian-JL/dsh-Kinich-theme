@@ -1,13 +1,14 @@
-# Kinich Theme v1.7.0 — Opt-in Immersive Depth
+# Kinich Theme v1.7.1 — Reliability Update
 
-Kinich 1.7 adds opt-in Jungle depth for DeepSeek Harness Desktop 0.2.0-rc.2. It includes the 1.6 navigation, input and send cues and retains earlier Web compatibility ranges.
+Kinich 1.7.1 strengthens settings, balance and desktop interaction behavior while preserving all 1.7 visual and dynamic effects.
 
 ## Changes
 
-- Immersive intensity now gives the existing welcome environment up to four pixels of pointer depth after the page settles. It does not move DSH controls or Ajaw.
-- Welcome copy enters in three restrained steps. In conversations, the Immersive ambient layer becomes quieter and pauses its loops.
-- The depth effect is inactive when ambient motion is disabled, the page is hidden, reduced motion is requested or the viewport is narrow. No new visual assets or settings migration are involved.
-- The 1.6 desktop action cues, stable welcome role selectors, and clear composer layout remain included.
+- Balance checks now track the active API credential, invalidate old-account data after provider configuration changes, and respect the provider's rate-limit deadline, including manual refresh. Both settings and the Ajaw bubble give a localized retry estimate.
+- DSH 0.2 multi-field settings changes use one atomic namespace mutation. Older settings services attempt rollback and report when recovery is incomplete.
+- Session selection light stays within the session tree. Immersive parallax responds to container resizing and to reduced-motion preference changes after the page loads.
+- Ajaw announces its dialog relationship to assistive technology; keyboard adjustment of settings sliders commits after a short pause.
+- All existing animations, appearance choices and visual assets remain available. No settings migration is required.
 
 ## Install
 

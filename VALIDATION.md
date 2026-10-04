@@ -18,6 +18,17 @@ The reliability maintenance branch additionally checks that:
 - a credential change and last-consumer unmount abort an in-flight browser balance request;
 - the Host rejects redirects, non-JSON or oversized responses, malformed balance values, unsupported currencies, and nonstandard API ports.
 
+## Kinich 1.7.2 candidate — 2026-10-04
+
+| Check | Result |
+| --- | --- |
+| `npm run verify` | PASS; build, contracts, balance, settings, interaction, presentation, DSH 0.1.5–0.2.0, and DSH 0.1.7 suites |
+| `npm pack --dry-run` | PASS; 11 published files, no source asset directory |
+| Isolated DSH install | PASS; DSH CLI `0.2.0-rc.2`, separate `DSH_HOME`, package resolved from the `1.7.2` tarball |
+| Candidate tarball SHA-256 | `01d1c2ee832b1dc045ed7e9968e4e1672e01bf25b80b98e33b0072bb94c0acca` |
+| Windows Desktop visual/performance acceptance | Not recorded for this candidate |
+| Per-asset redistribution evidence | Not recorded; see `THIRD_PARTY_ASSETS.md` |
+
 ## Manual validation evidence
 
 The last full Windows browser acceptance record is [`VALIDATION_V1.3.md`](./VALIDATION_V1.3.md), performed with DSH `0.1.6-alpha.2` for Kinich `1.3.1`. Kinich `1.7.1` adds automated compatibility coverage for DSH `0.1.7` and Desktop `0.2.0-rc.2`; this `1.7.2` maintenance candidate adds lifecycle, observer-filter, and API-response regression tests. The repository still does not contain a matching full Windows visual/performance acceptance record for DSH `0.1.7` or Desktop `0.2.0-rc.2`.

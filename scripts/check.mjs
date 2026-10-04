@@ -155,6 +155,9 @@ assert(overlaySource.includes("getKinichSessionState"), "Ajaw session-state feed
 assert(overlaySource.includes('"aria-controls": balanceDialogId'), "Accessible Ajaw balance trigger missing");
 assert(balanceRouteSource.includes('path: BALANCE_PATH'), "Authenticated balance route registration missing");
 assert(balanceRouteSource.includes('authorization: `Bearer ${credential.value}`'), "Host-side DeepSeek authorization missing");
+assert(balanceRouteSource.includes('redirect: "error"'), "The authenticated balance request must not follow upstream redirects");
+assert(balanceRouteSource.includes("MAX_BALANCE_RESPONSE_BYTES"), "Balance responses must have a bounded size");
+assert(balanceStoreSource.includes("new AbortController()"), "Client balance requests must be cancellable");
 assert(balanceRouteSource.includes('new URL("/user/balance"'), "Official DeepSeek balance endpoint missing");
 assert(balanceRouteSource.includes('CACHE_TTL_MS = 60_000'), "Host balance cache must remain 60 seconds");
 assert(balanceRouteSource.includes('REQUEST_TIMEOUT_MS = 10_000'), "Host balance timeout must remain 10 seconds");
@@ -200,6 +203,8 @@ assert(interactionSource.includes("kinich:click-burst"), "Pointer burst event co
 assert(interactionSource.includes('document.addEventListener("click", click);'), "Host click feedback must run after DSH handlers");
 assert(!interactionSource.includes('document.addEventListener("click", click, true);'), "Host click feedback must not intercept capture phase");
 assert(interactionSource.includes("setTimeout(() =>"), "Decorative click mutations must be deferred");
+assert(interactionSource.includes("const timers = new Set()"), "Deferred interaction timers must be tracked for cleanup");
+assert(interactionSource.includes("if (!disposed) callback()"), "Deferred interaction callbacks must not run after teardown");
 assert(overlaySource.includes("dsh-kinich-click-layer"), "Stable pointer-burst layer missing");
 assert(overlaySource.includes("dsh-kinich-click-burst__fragment"), "Pointer burst fragment layer missing");
 assert(clickBurstSource.includes("CLICK_BURST_FRAGMENT_COUNT = 10"), "Pointer burst must render exactly ten fragments");
@@ -209,6 +214,7 @@ assert(!clickBurstSource.includes("setTimeout"), "Pointer rendering must not use
 assert(presentationStylesSource.includes(".dsh-kinich-click-burst > i"), "v1.3 compositor click styles missing");
 assert(!presentationStylesSource.includes("steps("), "v1.3 pointer presentation must not quantize motion");
 assert(heroPhaseSource.includes("MutationObserver"), "Semantic DSH hero phase observer missing");
+assert(heroPhaseSource.includes("mutationAffectsKinichHero(records)"), "Hero observer must ignore unrelated DOM mutations");
 assert(phaseModelSource.includes('"entering-hero"'), "Hero transition phase model missing");
 assert(overlaySource.includes('setBalanceOpen(false)'), "Entering the welcome page must close an open balance popover");
 assert(overlaySource.includes("presentedAjawPosition"), "Temporary welcome-page Ajaw docking missing");

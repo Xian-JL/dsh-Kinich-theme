@@ -7,6 +7,7 @@ import {
 	KINICH_HERO_TRANSITION_MS,
 	KINICH_REDUCED_TRANSITION_MS,
 	detectKinichHero,
+	mutationAffectsKinichHero,
 	isKinichHeroTarget,
 	stableKinichPagePhase,
 	transitionKinichPagePhase
@@ -31,6 +32,22 @@ const baseStyles = await readFile(resolve(ROOT, "src/client/styles.css"), "utf8"
 assert.equal(KINICH_HERO_SELECTOR, "[data-phase='hero']");
 assert.equal(detectKinichHero({ querySelector: selector => selector === KINICH_HERO_SELECTOR ? {} : null }), true);
 assert.equal(detectKinichHero({ querySelector: () => null }), false);
+const heroNode = { nodeType: 1, matches: selector => selector === KINICH_HERO_SELECTOR, querySelector: () => null };
+const ordinaryNode = { nodeType: 1, matches: () => false, querySelector: () => null };
+assert.equal(mutationAffectsKinichHero([{ type: "childList", addedNodes: [{ nodeType: 3 }], removedNodes: [] }]), false,
+	"Streaming text nodes should not trigger a full hero lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "childList", addedNodes: [ordinaryNode], removedNodes: [] }]), false,
+	"Unrelated inserted subtrees should not trigger a full hero lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "childList", addedNodes: [heroNode], removedNodes: [] }]), true,
+	"Inserting the hero marker should trigger a phase lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "childList", addedNodes: [], removedNodes: [heroNode] }]), true,
+	"Removing the hero marker should trigger a phase lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "attributes", attributeName: "data-phase", oldValue: "conversation", target: heroNode }]), true,
+	"Changing a marker to hero should trigger a phase lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "attributes", attributeName: "data-phase", oldValue: "hero", target: ordinaryNode }]), true,
+	"Changing a marker away from hero should trigger a phase lookup");
+assert.equal(mutationAffectsKinichHero([{ type: "attributes", attributeName: "class", oldValue: "x", target: ordinaryNode }]), false,
+	"Unrelated attribute changes should be ignored");
 assert.equal(stableKinichPagePhase(false), "conversation");
 assert.equal(stableKinichPagePhase(true), "hero");
 assert.equal(transitionKinichPagePhase(false), "leaving-hero");

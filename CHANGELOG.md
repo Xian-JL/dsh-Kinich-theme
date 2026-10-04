@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.2 — Runtime reliability and validation
+
+- Filter unrelated streamed DOM mutations before resolving the welcome-page phase.
+- Cancel deferred click feedback, navigation cues, and in-flight balance requests when their owning client lifecycle ends.
+- Reject redirected, oversized, malformed, or undocumented responses from the official balance endpoint before displaying them.
+- Record the automated DSH compatibility fixtures separately from manual Windows/Desktop acceptance.
+
 ## 1.7.1 — Reliability and accessibility maintenance
 
 - Preserved all existing Jungle, Ajaw, click, ambient and immersive animations. Added a repository maintainer instruction recording that product requirement.

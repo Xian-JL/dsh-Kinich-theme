@@ -1,11 +1,13 @@
 import { isBelowCnyThreshold } from "./policy.js";
 
+const CLIENT_REQUEST_TIMEOUT_MS = 15_000;
 const EMPTY = Object.freeze({ status: "loading", stale: false });
 let snapshot = EMPTY;
 let request;
+let requestController;
 let pollTimer;
 let consumers = 0;
-let credentialGeneration = 0;
+let requestGeneration = 0;
 const listeners = new Set();
 
 function publish(next) {
@@ -17,27 +19,41 @@ export function getBalanceSnapshot() { return snapshot; }
 export function subscribeBalance(listener) { listeners.add(listener); return () => listeners.delete(listener); }
 
 export async function refreshBalance({ force = false } = {}) {
-	if (request !== void 0) return request;
-	const generation = credentialGeneration;
+	if (request !== void 0 && !requestController?.signal.aborted) return request;
+	const generation = ++requestGeneration;
+	const controller = new AbortController();
+	requestController = controller;
+	const timeout = setTimeout(() => controller.abort(), CLIENT_REQUEST_TIMEOUT_MS);
 	if (snapshot.status === "loading") publish({ ...snapshot, refreshing: true });
-	request = fetch(`/api/kinich-balance${force ? "?force=1" : ""}`, {
+	const nextRequest = fetch(`/api/kinich-balance${force ? "?force=1" : ""}`, {
 		credentials: "same-origin",
-		headers: { accept: "application/json" }
+		headers: { accept: "application/json" },
+		signal: controller.signal
 	}).then(async response => {
 		if (!response.ok) throw new Error(`balance endpoint ${response.status}`);
 		const next = await response.json();
-		if (generation === credentialGeneration) publish({ ...next, refreshing: false, overheated: isBelowCnyThreshold(next) });
+		if (generation === requestGeneration) publish({ ...next, refreshing: false, overheated: isBelowCnyThreshold(next) });
 		return next;
 	}).catch(() => {
-		if (generation === credentialGeneration) publish({ ...snapshot, status: snapshot.totalBalance === void 0 ? "unavailable" : snapshot.status, stale: true, refreshing: false });
+		if (generation === requestGeneration) publish({ ...snapshot, status: snapshot.totalBalance === void 0 ? "unavailable" : snapshot.status, stale: true, refreshing: false });
 		return snapshot;
-	}).finally(() => { request = void 0; });
-	return request;
+	});
+	let trackedRequest;
+	trackedRequest = nextRequest.finally(() => {
+		clearTimeout(timeout);
+		if (request === trackedRequest) {
+			request = void 0;
+			if (requestController === controller) requestController = void 0;
+		}
+	});
+	request = trackedRequest;
+	return trackedRequest;
 }
 
 export async function refreshBalanceForCredentialChange() {
-	credentialGeneration += 1;
+	requestGeneration += 1;
 	const previous = request;
+	requestController?.abort();
 	publish({ status: "loading", stale: false });
 	if (previous !== undefined) await previous;
 	return refreshBalance({ force: true });
@@ -65,6 +81,10 @@ export function retainBalancePolling() {
 		pollTimer = void 0;
 		document.removeEventListener("visibilitychange", handleVisibility);
 		window.removeEventListener("focus", handleFocus);
+		if (requestController !== void 0) {
+			requestGeneration += 1;
+			requestController.abort();
+		}
 	};
 }
 

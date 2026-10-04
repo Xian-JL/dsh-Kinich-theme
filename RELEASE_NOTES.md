@@ -1,14 +1,14 @@
-# Kinich Theme v1.7.1 — Reliability Update
+# Kinich Theme v1.7.2 — Runtime Reliability
 
-Kinich 1.7.1 strengthens settings, balance and desktop interaction behavior while preserving all 1.7 visual and dynamic effects.
+Kinich 1.7.2 reduces unrelated DOM work, cleans up deferred interactions on teardown, and makes balance requests more resilient while preserving all existing visual and dynamic effects.
 
 ## Changes
 
-- Balance checks now track the active API credential, invalidate old-account data after provider configuration changes, and respect the provider's rate-limit deadline, including manual refresh. Both settings and the Ajaw bubble give a localized retry estimate.
-- DSH 0.2 multi-field settings changes use one atomic namespace mutation. Older settings services attempt rollback and report when recovery is incomplete.
-- Session selection light stays within the session tree. Immersive parallax responds to container resizing and to reduced-motion preference changes after the page loads.
-- Ajaw announces its dialog relationship to assistive technology; keyboard adjustment of settings sliders commits after a short pause.
-- All existing animations, appearance choices and visual assets remain available. No settings migration is required.
+- The welcome-phase observer ignores ordinary streamed content changes and only rechecks when a phase marker is inserted, removed, or changed.
+- Deferred click and navigation feedback timers are tracked and cleared when the interaction bridge is disposed.
+- Browser balance requests have a timeout, abort when the last consumer leaves, and cannot let an old credential's response replace current state.
+- The Host rejects redirects, nonstandard API ports, non-JSON or oversized bodies, and malformed balance fields before accepting a response.
+- Existing motion, appearance choices, and saved settings remain available. No settings migration is required.
 
 ## Install
 

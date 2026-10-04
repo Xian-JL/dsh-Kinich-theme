@@ -1,14 +1,29 @@
 # Validation
 
-For local development:
+## Current development checks
+
+Run locally with:
 
 ```powershell
 npm install
 npm run verify
 ```
 
-`verify` rebuilds `lib/`, checks source/runtime syntax, confirms required dependencies and DSH slots, verifies the shared settings definition contract, checks the live theme bridge, confirms Ajaw interaction/drag code, validates the page-phase and bounded Web Animations feedback models, and runs the 0.1.6 session compatibility suite.
+`npm run verify` rebuilds the Host and Client bundles, checks source/runtime syntax and DSH contracts, then runs balance, settings, interaction, presentation, and compatibility suites. Compatibility fixtures cover the 0.1.5/0.1.6 session generations, DSH 0.1.7 Config and balance APIs, and the declared Desktop `0.2.0-rc.2` surface. These fixtures are automated contract tests; they are not a substitute for running each DSH build.
 
-The automated suite does not replace final Windows browser validation. Before publication, verify welcome/conversation transitions, workspace switching, conversation creation, rapid pointer feedback, Ajaw drag/balance behavior, light/dark modes, narrow layouts, and reduced motion in a clean DSH Web profile.
+The reliability maintenance branch additionally checks that:
 
-Validated runtime lines: DSH Web `0.1.5-rc.1` / `0.1.5-rc.2` and `0.1.6-alpha.2`.
+- unrelated streamed DOM mutations do not trigger a hero phase lookup;
+- deferred click feedback is cancelled when the interaction bridge is disposed;
+- a credential change and last-consumer unmount abort an in-flight browser balance request;
+- the Host rejects redirects, non-JSON or oversized responses, malformed balance values, unsupported currencies, and nonstandard API ports.
+
+## Manual validation evidence
+
+The last full Windows browser acceptance record is [`VALIDATION_V1.3.md`](./VALIDATION_V1.3.md), performed with DSH `0.1.6-alpha.2` for Kinich `1.3.1`. Kinich `1.7.1` adds automated compatibility coverage for DSH `0.1.7` and Desktop `0.2.0-rc.2`; this `1.7.2` maintenance candidate adds lifecycle, observer-filter, and API-response regression tests. The repository still does not contain a matching full Windows visual/performance acceptance record for DSH `0.1.7` or Desktop `0.2.0-rc.2`.
+
+Before publishing a new version, install its packed tarball into a clean, isolated DSH profile and verify welcome/conversation transitions, workspace switching, conversation creation, rapid pointer feedback, Ajaw drag and balance behavior, light/dark modes, narrow layouts, reduced motion, settings saves, focus/unfocus cleanup, and plugin disable/re-enable. Keep the DSH version, Windows build, test steps, and observed results in a dated validation record.
+
+## Release gate
+
+`THIRD_PARTY_ASSETS.md` is a provenance record, not a grant of redistribution rights. Confirm rights for each included visual asset before creating a public release; see [`PUBLISHING.md`](./PUBLISHING.md).

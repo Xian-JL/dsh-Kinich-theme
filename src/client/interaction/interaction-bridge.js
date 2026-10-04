@@ -38,9 +38,24 @@ export function installInteractionBridge() {
 	if (typeof document === "undefined") return () => {};
 	let focusedInput = null;
 	let pendingPointer = null;
-	const pressTimers = new WeakMap();
+	let disposed = false;
+	const timers = new Set();
+	const pressTimers = new Map();
 	const navigationTimers = new Map();
 	let navigationPulse = 0;
+	const schedule = (callback, delay) => {
+		let timer;
+		timer = setTimeout(() => {
+			timers.delete(timer);
+			if (!disposed) callback();
+		}, delay);
+		timers.add(timer);
+		return timer;
+	};
+	const cancel = timer => {
+		clearTimeout(timer);
+		timers.delete(timer);
+	};
 	const setFocused = input => {
 		if (focusedInput && focusedInput !== input) delete focusedInput.dataset.kinichFocus;
 		focusedInput = input;
@@ -50,14 +65,14 @@ export function installInteractionBridge() {
 	const focusOut = event => {
 		const input = getTextInput(event.target);
 		if (!input) return;
-		queueMicrotask(() => { if (!getTextInput(document.activeElement)) setFocused(null); });
+		queueMicrotask(() => { if (!disposed && !getTextInput(document.activeElement)) setFocused(null); });
 	};
 	const pulseAction = action => {
 		if (!action?.isConnected || action.closest(".dsh-kinich-overlay")) return;
 		action.dataset.kinichPressed = "true";
 		const previous = pressTimers.get(action);
-		if (previous) clearTimeout(previous);
-		pressTimers.set(action, setTimeout(() => { delete action.dataset.kinichPressed; pressTimers.delete(action); }, 190));
+		if (previous) cancel(previous);
+		pressTimers.set(action, schedule(() => { delete action.dataset.kinichPressed; pressTimers.delete(action); }, 190));
 	};
 	const pointerDown = event => {
 		pendingPointer = event.button === 0 && event.pointerType !== "touch"
@@ -72,7 +87,7 @@ export function installInteractionBridge() {
 		pendingPointer = null;
 		// DSH owns workspace/menu actions. Run decorative mutations only after the
 		// Host click has completed so React can switch workspaces or create chats.
-		setTimeout(() => {
+		schedule(() => {
 			pulseAction(action);
 			if (queueBurst) {
 				document.dispatchEvent(new CustomEvent(KINICH_CLICK_BURST_EVENT, { detail: pointer }));
@@ -80,15 +95,15 @@ export function installInteractionBridge() {
 		}, 0);
 	};
 	const selectedNavigation = new MutationObserver(records => {
-		if (document.visibilityState !== "visible" || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+		if (disposed || document.visibilityState !== "visible" || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
 		for (const record of records) {
 			const item = record.target;
 			if (!isSelectedNavigationNode(item)) continue;
 			const generation = String(++navigationPulse);
 			item.dataset.kinichNavigationPulse = generation;
 			const previous = navigationTimers.get(item);
-			if (previous !== undefined) clearTimeout(previous);
-			navigationTimers.set(item, setTimeout(() => {
+			if (previous !== undefined) cancel(previous);
+			navigationTimers.set(item, schedule(() => {
 				if (item.dataset.kinichNavigationPulse === generation) delete item.dataset.kinichNavigationPulse;
 				navigationTimers.delete(item);
 			}, 280));
@@ -101,8 +116,13 @@ export function installInteractionBridge() {
 	document.addEventListener("pointercancel", pointerCancel, true);
 	document.addEventListener("click", click);
 	return () => {
+		disposed = true;
 		selectedNavigation.disconnect();
-		for (const [item, timer] of navigationTimers) { clearTimeout(timer); delete item.dataset.kinichNavigationPulse; }
+		for (const timer of timers) clearTimeout(timer);
+		timers.clear();
+		for (const [action] of pressTimers) delete action.dataset.kinichPressed;
+		pressTimers.clear();
+		for (const [item] of navigationTimers) delete item.dataset.kinichNavigationPulse;
 		navigationTimers.clear();
 		setFocused(null);
 		document.removeEventListener("focusin", focusIn, true);

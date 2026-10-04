@@ -77,7 +77,7 @@ try {
 		return new Response(JSON.stringify({
 			is_available: true,
 			balance_infos: [{ currency: "CNY", total_balance: "9.50" }]
-		}), { status: 200 });
+		}), { status: 200, headers: { "content-type": "application/json" } });
 	};
 	const balance = await (await route.fetch(new Request("http://dsh.test/api/kinich-balance"))).json();
 	assert.equal(balance.status, "ready");

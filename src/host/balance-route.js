@@ -2,9 +2,11 @@ import { createHash } from "node:crypto";
 
 const BALANCE_PATH = "/api/kinich-balance";
 const OFFICIAL_HOST = "api.deepseek.com";
+const SUPPORTED_CURRENCIES = new Set(["CNY", "USD"]);
 const CACHE_TTL_MS = 60_000;
 const MANUAL_REFRESH_FLOOR_MS = 5_000;
 const REQUEST_TIMEOUT_MS = 10_000;
+const MAX_BALANCE_RESPONSE_BYTES = 64 * 1024;
 
 let cached;
 let inFlight;
@@ -69,7 +71,10 @@ function resolveConnection(settings, launchEnvironment) {
 		: launchEnvironment?.get("DEEPSEEK_BASE_URL")?.value ?? process.env.DEEPSEEK_BASE_URL ?? "https://api.deepseek.com";
 	let baseURL;
 	try { baseURL = new URL(rawBaseURL); } catch { return { status: "unsupported" }; }
-	if (baseURL.protocol !== "https:" || baseURL.hostname !== OFFICIAL_HOST) return { status: "unsupported" };
+	if (baseURL.protocol !== "https:" || baseURL.hostname !== OFFICIAL_HOST ||
+		(baseURL.port !== "" && baseURL.port !== "443") || baseURL.username !== "" || baseURL.password !== "") {
+		return { status: "unsupported" };
+	}
 	return { apiKeyEnv, balanceURL: new URL("/user/balance", baseURL.origin).href };
 }
 
@@ -97,22 +102,51 @@ async function queryBalance(binding) {
 	try {
 		const response = await fetch(balanceURL, {
 			headers: { accept: "application/json", authorization: `Bearer ${credential.value}` },
+			redirect: "error",
 			signal: controller.signal
 		});
 		if (response.status === 401 || response.status === 403) return errorSnapshot("auth-error", { bindingId });
 		if (response.status === 429) return errorSnapshot("rate-limited", { bindingId, retryAt: new Date(parseRetryAt(response.headers.get("retry-after"))).toISOString() });
 		if (!response.ok) return errorSnapshot("unavailable", { bindingId });
-		const body = await response.json();
+		const contentType = response.headers.get("content-type") ?? "";
+		if (!/^application\/json(?:\s*;|$)/i.test(contentType)) return errorSnapshot("unavailable", { bindingId });
+		const declaredLength = Number(response.headers.get("content-length"));
+		if (Number.isFinite(declaredLength) && declaredLength > MAX_BALANCE_RESPONSE_BYTES) return errorSnapshot("unavailable", { bindingId });
+		const reader = response.body?.getReader();
+		if (!reader) return errorSnapshot("unavailable", { bindingId });
+		const chunks = [];
+		let responseBytes = 0;
+		for (;;) {
+			const { done, value } = await reader.read();
+			if (done) break;
+			responseBytes += value.byteLength;
+			if (responseBytes > MAX_BALANCE_RESPONSE_BYTES) {
+				await reader.cancel();
+				return errorSnapshot("unavailable", { bindingId });
+			}
+			chunks.push(value);
+		}
+		const bytes = new Uint8Array(responseBytes);
+		let offset = 0;
+		for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+		let body;
+		try { body = JSON.parse(new TextDecoder().decode(bytes)); }
+		catch { return errorSnapshot("unavailable", { bindingId }); }
+		if (typeof body?.is_available !== "boolean" || !Array.isArray(body.balance_infos)) return errorSnapshot("unavailable", { bindingId });
 		const infos = Array.isArray(body?.balance_infos) ? body.balance_infos : [];
 		const primary = infos.find(info => info?.currency === "CNY") ?? infos[0];
-		if (primary === void 0 || typeof primary.total_balance !== "string") return errorSnapshot("unavailable", { bindingId });
+		const validAmount = value => typeof value === "string" && value.length <= 64 && /^\d+(?:\.\d+)?$/.test(value);
+		const currency = primary?.currency ?? "CNY";
+		if (primary === void 0 || primary === null || !SUPPORTED_CURRENCIES.has(currency) ||
+			!validAmount(primary.total_balance) || !validAmount(primary.granted_balance ?? "0") ||
+			!validAmount(primary.topped_up_balance ?? "0")) return errorSnapshot("unavailable", { bindingId });
 		generation += 1;
 		return {
 			status: "ready",
 			bindingId,
 			generation,
 			providerLabel: "DeepSeek API",
-			currency: String(primary.currency ?? "CNY"),
+			currency,
 			totalBalance: primary.total_balance,
 			grantedBalance: String(primary.granted_balance ?? "0"),
 			toppedUpBalance: String(primary.topped_up_balance ?? "0"),
@@ -161,4 +195,4 @@ export function installBalanceRoute(ctx) {
 	});
 }
 
-export { BALANCE_PATH, CACHE_TTL_MS, MANUAL_REFRESH_FLOOR_MS, REQUEST_TIMEOUT_MS };
+export { BALANCE_PATH, CACHE_TTL_MS, MANUAL_REFRESH_FLOOR_MS, MAX_BALANCE_RESPONSE_BYTES, REQUEST_TIMEOUT_MS };

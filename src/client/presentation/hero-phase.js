@@ -3,6 +3,7 @@ import {
 	KINICH_HERO_TRANSITION_MS,
 	KINICH_REDUCED_TRANSITION_MS,
 	detectKinichHero,
+	mutationAffectsKinichHero,
 	stableKinichPagePhase,
 	transitionKinichPagePhase
 } from "./phase-model.js";
@@ -62,10 +63,13 @@ export function useKinichPagePhase() {
 			frameRef.current = requestAnimationFrame(sync);
 		};
 
-		const observer = new MutationObserver(scheduleSync);
+		const observer = new MutationObserver(records => {
+			if (mutationAffectsKinichHero(records)) scheduleSync();
+		});
 		observer.observe(document.body, {
 			attributes: true,
 			attributeFilter: ["data-phase"],
+			attributeOldValue: true,
 			childList: true,
 			subtree: true
 		});

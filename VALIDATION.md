@@ -18,14 +18,16 @@ The reliability maintenance branch additionally checks that:
 - a credential change and last-consumer unmount abort an in-flight browser balance request;
 - the Host rejects redirects, non-JSON or oversized responses, malformed balance values, unsupported currencies, and nonstandard API ports.
 
-## Kinich 1.7.2 candidate — 2026-10-04
+## Kinich 1.7.2 release validation — 2026-10-04
 
 | Check | Result |
 | --- | --- |
 | `npm run verify` | PASS; build, contracts, balance, settings, interaction, presentation, DSH 0.1.5–0.2.0, and DSH 0.1.7 suites |
 | `npm pack --dry-run` | PASS; 11 published files, no source asset directory |
 | Isolated DSH install | PASS; DSH CLI `0.2.0-rc.2`, separate `DSH_HOME`, package resolved from the `1.7.2` tarball |
-| Candidate tarball SHA-256 | `01d1c2ee832b1dc045ed7e9968e4e1672e01bf25b80b98e33b0072bb94c0acca` |
+| npm publication | PASS; `dsh-kinich-theme@1.7.2` published with the `latest` tag |
+| Registry download | PASS; downloaded package matches the isolated-test tarball byte-for-byte |
+| Downloaded tarball SHA-256 | `01d1c2ee832b1dc045ed7e9968e4e1672e01bf25b80b98e33b0072bb94c0acca` |
 | Windows Desktop visual/performance acceptance | Not recorded for this candidate |
 | Per-asset redistribution evidence | Not recorded; see `THIRD_PARTY_ASSETS.md` |
 

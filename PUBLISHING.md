@@ -1,6 +1,6 @@
 # Publishing
 
-The current published baseline is Kinich Theme `1.7.1`. The deployment script creates GitHub Release tarballs and does not run `npm publish`; npm publication, if ever requested, is a separate action.
+The current published baseline is Kinich Theme `1.7.2`. The deployment script creates GitHub Release tarballs and does not run `npm publish`; npm publication remains a separate action.
 
 Before preparing a new public release:
 

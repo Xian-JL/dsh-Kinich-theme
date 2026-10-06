@@ -1,11 +1,11 @@
 # Changelog
 
-## 1.7.2 — Runtime reliability and validation
+## 1.8.0 — Session attention and custom background
 
-- Filter unrelated streamed DOM mutations before resolving the welcome-page phase.
-- Cancel deferred click feedback, navigation cues, and in-flight balance requests when their owning client lifecycle ends.
-- Reject redirected, oversized, malformed, or undocumented responses from the official balance endpoint before displaying them.
-- Record the automated DSH compatibility fixtures separately from manual Windows/Desktop acceptance.
+- Distinguish approval, question, and plan-review interactions for the selected main Session. Waiting state takes priority over running feedback and does not announce a false completion if the request is dismissed.
+- Add profile-persisted local background images, bounded client-side WebP normalization, and an optional light/dark accent palette derived from the image.
+- Keep image data local to the DSH profile and out of the package, network, and model context; reset restores the exact preset appearance.
+- Preserve existing animations and restore current theme tokens when custom background or automatic palette matching is disabled.
 
 ## 1.7.1 — Reliability and accessibility maintenance
 

@@ -7,6 +7,9 @@ import { KINICH_SETTINGS_NAMESPACE } from "../src/shared/settings.js";
 const currentConfig = Config({});
 assert.equal(currentConfig.animateAjaw.get(), true);
 assert.deepEqual(currentConfig.ajawPosition.get(), { x: 94, y: 84 });
+assert.equal(currentConfig.customBackgroundImage.get(), "");
+assert.equal(currentConfig.customBackgroundAccent.get(), "");
+assert.equal(currentConfig.backgroundAutoPalette.get(), true);
 assert.equal(KinichThemeSettingsSchema({}).animateAjaw, true);
 
 const currentForm = { getSnapshot: () => ({ status: "ready" }) };

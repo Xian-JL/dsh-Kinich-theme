@@ -1,9 +1,9 @@
 import * as react from "react";
 import * as react_jsx_runtime from "react/jsx-runtime";
 import { AJAW_IDLE_DATA_URI, KINICH_CHARACTER_DATA_URI, NATLAN_CORNER_DATA_URI } from "../assets.generated.js";
-import { DEFAULT_KINICH_SETTINGS } from "../../shared/settings.js";
+import { DEFAULT_KINICH_SETTINGS, isKinichSettingValue, KINICH_SETTING_DEFINITIONS } from "../../shared/settings.js";
 import { useKinichSettings } from "../hooks/use-kinich-settings.js";
-import { getKinichThemeTokens, KINICH_THEME_SOURCE } from "../theme/tokens.js";
+import { getKinichThemeTokens, getKinichAccentPalette, KINICH_THEME_SOURCE } from "../theme/tokens.js";
 import { getKinichSessionState, subscribeKinichSessionState } from "../session/status-store.js";
 import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
@@ -40,23 +40,61 @@ export function calculateAjawPosition(clientX, clientY, drag) {
 	return { x: Number((localX / overlayRect.width * 100).toFixed(3)), y: Number((localY / overlayRect.height * 100).toFixed(3)) };
 }
 
-function useKinichThemePresentation(theme, style, intensity) {
+function useKinichThemePresentation(theme, style, intensity, backgroundImage, backgroundAccent, autoPalette) {
+	const safeBackgroundImage = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, backgroundImage)
+		? backgroundImage : "";
+	const safeBackgroundAccent = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundAccent, backgroundAccent)
+		? backgroundAccent : "";
+	const useBackgroundAccent = safeBackgroundImage !== "" && autoPalette && safeBackgroundAccent !== "";
+	const accentPalette = (0, react.useMemo)(
+		() => useBackgroundAccent ? getKinichAccentPalette(style, safeBackgroundAccent) : null,
+		[style, useBackgroundAccent, safeBackgroundAccent]
+	);
+	const tokens = (0, react.useMemo)(
+		() => getKinichThemeTokens(style, accentPalette ? safeBackgroundAccent : "", safeBackgroundImage !== ""),
+		[style, accentPalette, safeBackgroundAccent, safeBackgroundImage]
+	);
 	(0, react.useEffect)(() => {
-		const dispose = theme.overrideTokens(KINICH_THEME_SOURCE, getKinichThemeTokens(style));
+		const dispose = theme.overrideTokens(KINICH_THEME_SOURCE, tokens);
 		return typeof dispose === "function" ? dispose : void 0;
-	}, [theme, style]);
+	}, [theme, tokens]);
 	(0, react.useEffect)(() => {
 		if (typeof document === "undefined") return;
 		const body = document.body;
-		const prevStyle = body.dataset.kinichStyle;
-		const prevIntensity = body.dataset.kinichIntensity;
+		const previousData = {
+			kinichStyle: body.dataset.kinichStyle,
+			kinichIntensity: body.dataset.kinichIntensity,
+			kinichCustomBackground: body.dataset.kinichCustomBackground,
+			kinichAutoPalette: body.dataset.kinichAutoPalette
+		};
+		const styleProperties = [
+			"--kinich-user-background",
+			"--kinich-background-accent-light",
+			"--kinich-background-accent-dark",
+			"--kinich-background-accent-strong-light",
+			"--kinich-background-accent-strong-dark"
+		];
+		const previousStyles = new Map(styleProperties.map(name => [name, body.style.getPropertyValue(name)]));
 		body.dataset.kinichStyle = style;
 		body.dataset.kinichIntensity = intensity;
+		body.dataset.kinichCustomBackground = String(safeBackgroundImage !== "");
+		body.dataset.kinichAutoPalette = String(Boolean(accentPalette));
+		if (safeBackgroundImage !== "") body.style.setProperty("--kinich-user-background", `url("${safeBackgroundImage}")`);
+		if (accentPalette) {
+			body.style.setProperty("--kinich-background-accent-light", accentPalette.light);
+			body.style.setProperty("--kinich-background-accent-dark", accentPalette.dark);
+			body.style.setProperty("--kinich-background-accent-strong-light", accentPalette.strongLight);
+			body.style.setProperty("--kinich-background-accent-strong-dark", accentPalette.strongDark);
+		}
 		return () => {
-			if (prevStyle === void 0) delete body.dataset.kinichStyle; else body.dataset.kinichStyle = prevStyle;
-			if (prevIntensity === void 0) delete body.dataset.kinichIntensity; else body.dataset.kinichIntensity = prevIntensity;
+			for (const [key, value] of Object.entries(previousData)) {
+				if (value === void 0) delete body.dataset[key]; else body.dataset[key] = value;
+			}
+			for (const [name, value] of previousStyles) {
+				if (value === "") body.style.removeProperty(name); else body.style.setProperty(name, value);
+			}
 		};
-	}, [style, intensity]);
+	}, [style, intensity, safeBackgroundImage, accentPalette]);
 }
 
 function useSessionFeedback(sessionId) {
@@ -79,9 +117,9 @@ function useInteractionFeedback(sessionState) {
 	const timerRef = (0, react.useRef)(null);
 	(0, react.useEffect)(() => {
 		if (timerRef.current !== null) { clearTimeout(timerRef.current); timerRef.current = null; }
-		if (sessionState === "sending" || sessionState === "running" || sessionState === "complete" || sessionState === "error") {
+		if (sessionState === "sending" || sessionState === "running" || sessionState === "waiting" || sessionState === "complete" || sessionState === "error") {
 			setFeedback(sessionState);
-			if (sessionState !== "sending" && sessionState !== "running") timerRef.current = setTimeout(() => setFeedback("idle"), sessionState === "error" ? 3200 : 1800);
+			if (sessionState !== "sending" && sessionState !== "running" && sessionState !== "waiting") timerRef.current = setTimeout(() => setFeedback("idle"), sessionState === "error" ? 3200 : 1800);
 		} else {
 			setFeedback("idle");
 		}
@@ -120,7 +158,8 @@ function text(t, key, fallback) { return typeof t === "function" ? t(key) : fall
 export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
-	useKinichThemePresentation(theme, value.visualStyle, value.visualIntensity);
+	useKinichThemePresentation(theme, value.visualStyle, value.visualIntensity,
+		value.customBackgroundImage, value.customBackgroundAccent, value.backgroundAutoPalette);
 	const mainSessionId = typeof useSessions === "function" ? useSessions(selectMainViewSessionId) : undefined;
 	const sessionState = useSessionFeedback(mainSessionId);
 	const interactionFeedback = useInteractionFeedback(sessionState);
@@ -304,11 +343,11 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		setManualRefreshStatus(next.status === "rate-limited" ? "limited" : next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
 	};
 
-	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : interactionFeedback === "error" ? "error" : interactionFeedback === "running" ? "thinking" : interactionFeedback === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
+	const ajawState = dragging ? "dragging" : interactionFeedback === "sending" ? "sending" : interactionFeedback === "waiting" ? "waiting" : interactionFeedback === "error" ? "error" : interactionFeedback === "running" ? "thinking" : interactionFeedback === "complete" ? "success" : reacting ? "reacting" : hovered ? "hover" : idleMood;
 	const presentedAjawPosition = heroTarget && !dragging && !heroAjawOverride ? HERO_AJAW_POSITION : ajawPosition;
 	const presentedAjawFlip = heroTarget && !heroAjawOverride ? 1 : value.ajawFlipped ? -1 : 1;
 	const presentedAjawRotation = heroTarget && !heroAjawOverride ? 0 : value.ajawRotation;
-	const moodBubble = ajawState === "sending" ? "↗" : ajawState === "thinking" ? "…" : ajawState === "success" ? "✓" : ajawState === "error" ? "!" : ajawState === "sleeping" ? "zZ" : ajawState === "excited" ? "!" : ajawState === "dragging" ? "↕" : reacting ? "★" : hovered ? "¥" : "";
+	const moodBubble = ajawState === "sending" ? "↗" : ajawState === "thinking" ? "…" : ajawState === "waiting" ? "?" : ajawState === "success" ? "✓" : ajawState === "error" ? "!" : ajawState === "sleeping" ? "zZ" : ajawState === "excited" ? "!" : ajawState === "dragging" ? "↕" : reacting ? "★" : hovered ? "¥" : "";
 	const balanceDialogId = "dsh-kinich-balance-bubble";
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
 	const statusFallback = balance.status === "ready" ? "余额已同步" : balance.status === "loading" ? "正在读取余额" : "余额暂不可用";
@@ -365,7 +404,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 				"aria-atomic": "true",
 				className: "dsh-kinich-interaction-status",
 				role: "status",
-				children: interactionFeedback === "sending" ? text(t, "feedback.sending", "正在传递指令") : interactionFeedback === "running" ? text(t, "feedback.running", "正在探索") : interactionFeedback === "complete" ? text(t, "feedback.complete", "探索完成") : interactionFeedback === "error" ? text(t, "feedback.error", "本次行动未完成") : ""
+				children: interactionFeedback === "sending" ? text(t, "feedback.sending", "正在传递指令") : interactionFeedback === "running" ? text(t, "feedback.running", "正在探索") : interactionFeedback === "waiting" ? text(t, "feedback.waiting", "等待你的确认") : interactionFeedback === "complete" ? text(t, "feedback.complete", "探索完成") : interactionFeedback === "error" ? text(t, "feedback.error", "本次行动未完成") : ""
 			}),
 			heroTarget && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", { className: "dsh-kinich-sr-only", children: `${text(t, "welcome.line1", "从这里，")}${text(t, "welcome.line2", "开启新的探索。")}` }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", { "aria-hidden": "true", className: "dsh-kinich-welcome", children: [

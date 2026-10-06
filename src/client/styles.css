@@ -19,6 +19,17 @@
   isolation: isolate;
 }
 
+body[data-kinich-custom-background='true'] {
+  background-color: transparent !important;
+  background-image: linear-gradient(var(--kinich-background-veil), var(--kinich-background-veil)), var(--kinich-user-background) !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+body[data-kinich-custom-background='true']:not([data-ds-dark-theme]) { --kinich-background-veil: rgba(248, 250, 243, .24); }
+body[data-kinich-custom-background='true'][data-ds-dark-theme] { --kinich-background-veil: rgba(11, 21, 20, .34); }
+
 .dsh-kinich-sr-only {
   position: absolute;
   width: 1px;
@@ -825,8 +836,19 @@ body[data-kinich-style='sunlit'] .dsh-kinich-brand-shell--hero {
     linear-gradient(145deg, transparent, var(--kinich-panel-tint, rgba(127, 164, 68, 0.08)));
 }
 
+.dsh-kinich-live-preview__background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .30;
+}
+
 .dsh-kinich-live-preview__grid {
   position: absolute;
+  z-index: 1;
   inset: 0;
   opacity: 0.22;
   background-image:
@@ -1007,6 +1029,30 @@ body[data-kinich-style='sunlit'] .dsh-kinich-brand-shell--hero {
   gap: 9px;
 }
 
+.dsh-kinich-background-control {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
+}
+.dsh-kinich-background-control__file { display: none; }
+.dsh-kinich-background-control__preview {
+  display: block;
+  width: 100%;
+  max-height: 112px;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border: 1px solid var(--dsw-alias-border-l2-darkmode-thin);
+  border-radius: 12px 4px 12px 4px;
+}
+.dsh-kinich-background-control__status,
+.dsh-kinich-background-control__error {
+  margin: 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.dsh-kinich-background-control__error { color: var(--dsw-alias-state-error-primary); }
+
 .dsh-kinich-settings__subgroup {
   padding: 0 2px 2px;
 }
@@ -1075,8 +1121,10 @@ body[data-kinich-session-state='complete'] .dsh-kinich-brand-shell__pulse { bord
 
 .dsh-kinich-ajaw-idle__status-ring { position:absolute; inset:4px; z-index:0; border:1px solid transparent; border-radius:50%; pointer-events:none; }
 .dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__status-ring { border-color:color-mix(in srgb,var(--kinich-accent) 62%,transparent); animation:dsh-kinich-ajaw-thinking 1.1s ease-in-out infinite; }
+.dsh-kinich-ajaw-idle[data-state='waiting'] .dsh-kinich-ajaw-idle__status-ring { border-color:color-mix(in srgb,var(--kinich-warm) 82%,transparent); border-style:dashed; animation:dsh-kinich-ajaw-waiting 1.8s ease-in-out infinite; }
 .dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__status-ring { border-color:color-mix(in srgb,var(--kinich-warm) 75%,transparent); animation:dsh-kinich-ajaw-success .9s ease-out both; }
 .dsh-kinich-ajaw-idle[data-state='thinking'] .dsh-kinich-ajaw-idle__bubble,
+.dsh-kinich-ajaw-idle[data-state='waiting'] .dsh-kinich-ajaw-idle__bubble,
 .dsh-kinich-ajaw-idle[data-state='success'] .dsh-kinich-ajaw-idle__bubble,
 .dsh-kinich-ajaw-idle[data-state='sleeping'] .dsh-kinich-ajaw-idle__bubble,
 .dsh-kinich-ajaw-idle[data-state='excited'] .dsh-kinich-ajaw-idle__bubble,
@@ -1086,6 +1134,7 @@ body[data-kinich-session-state='complete'] .dsh-kinich-brand-shell__pulse { bord
 .dsh-kinich-ajaw-idle[data-state='excited'] img { animation:dsh-kinich-ajaw-celebrate .62s ease-in-out 2; }
 .dsh-kinich-ajaw-idle[data-state='sleeping'] img { animation-duration:1.4s; filter:saturate(.72) brightness(.96); }
 @keyframes dsh-kinich-ajaw-thinking { 0%,100%{opacity:.25;transform:scale(.92)} 50%{opacity:.85;transform:scale(1.08)} }
+@keyframes dsh-kinich-ajaw-waiting { 0%,100%{opacity:.52;transform:scale(.97)} 50%{opacity:.92;transform:scale(1.035)} }
 @keyframes dsh-kinich-ajaw-success { 0%{opacity:.9;transform:scale(.72)} 100%{opacity:0;transform:scale(1.28)} }
 @keyframes dsh-kinich-ajaw-celebrate { 0%,100%{transform:translateY(0) rotate(0)} 45%{transform:translateY(-8px) rotate(-4deg)} 75%{transform:translateY(-3px) rotate(4deg)} }
 

@@ -1,14 +1,14 @@
-# Kinich Theme v1.7.2 — Runtime Reliability
+# Kinich Theme v1.8.0 — Session State and Custom Background
 
-Kinich 1.7.2 reduces unrelated DOM work, cleans up deferred interactions on teardown, and makes balance requests more resilient while preserving all existing visual and dynamic effects.
+Kinich 1.8.0 adds explicit waiting-for-user feedback and lets users set a local static background with an automatically derived accent palette. Existing visuals, animations, and DSH-owned controls remain in place.
 
 ## Changes
 
-- The welcome-phase observer ignores ordinary streamed content changes and only rechecks when a phase marker is inserted, removed, or changed.
-- Deferred click and navigation feedback timers are tracked and cleared when the interaction bridge is disposed.
-- Browser balance requests have a timeout, abort when the last consumer leaves, and cannot let an old credential's response replace current state.
-- The Host rejects redirects, nonstandard API ports, non-JSON or oversized bodies, and malformed balance fields before accepting a response.
-- Existing motion, appearance choices, and saved settings remain available. No settings migration is required.
+- Ajaw distinguishes DSH approval, question, and plan-review waits for the currently selected Session; errors and running work keep deterministic precedence.
+- Select a local PNG, JPEG, or WebP. Kinich downsizes and converts it to a bounded WebP kept in the active DSH profile, then derives light/dark accent colors from the image.
+- Turn automatic accent matching off to keep the selected Kinich palette, or reset the image and accent to restore the original appearance.
+- Legacy profiles receive defaults for the new settings; invalid background data falls back without resetting other Kinich preferences.
+- All existing animations and reduced-motion behavior remain available. No third-party image assets are added to the package.
 
 ## Install
 

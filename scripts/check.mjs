@@ -12,6 +12,8 @@ const schemaSource = await readFile(resolve(ROOT, "src/host/settings-schema.js")
 const decodeSource = await readFile(resolve(ROOT, "src/client/settings/decode.js"), "utf8");
 const overlaySource = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
 const settingsUiSource = await readFile(resolve(ROOT, "src/client/settings/kinich-settings-row.js"), "utf8");
+const backgroundImageSource = await readFile(resolve(ROOT, "src/client/background/image.js"), "utf8");
+const backgroundPaletteSource = await readFile(resolve(ROOT, "src/client/background/palette.js"), "utf8");
 const brandSource = await readFile(resolve(ROOT, "src/client/components/brand.js"), "utf8");
 const themeSource = await readFile(resolve(ROOT, "src/client/theme/tokens.js"), "utf8");
 const balanceRouteSource = await readFile(resolve(ROOT, "src/host/balance-route.js"), "utf8");
@@ -44,6 +46,8 @@ const sourceFiles = [
   "src/client/balance/provider-watch.js",
   "src/client/balance/policy.js",
   "src/client/balance/use-balance.js",
+  "src/client/background/image.js",
+  "src/client/background/palette.js",
   "src/client/hooks/use-kinich-settings.js",
   "src/client/interaction/interaction-bridge.js",
   "src/client/interaction/click-burst.js",
@@ -192,6 +196,15 @@ for (const field of ["promptError", "openError", "lastAgentError"]) {
 }
 assert(sessionCompatSource.includes("retainedBy?.mainView"), "DSH 0.1.6 main-view session selection missing");
 assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "error")'), "Keyed session error feedback missing");
+assert(sessionBridgeSource.includes("useSessionStatus"), "Optional DSH UI session-status source missing from the session bridge");
+assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "waiting")'), "Pending interaction state is not reflected in Kinich status");
+assert(sessionCompatSource.includes('"plan-review"'), "Plan-review pending interaction kind missing");
+assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette"), "Profile-backed custom background settings missing");
+assert(backgroundImageSource.includes('toDataURL("image/webp"'), "Custom images must be normalized to WebP before persistence");
+assert(backgroundImageSource.includes("MAX_BACKGROUND_DATA_URL_LENGTH"), "Custom background output must have a hard size limit");
+assert(!backgroundImageSource.includes("fetch("), "User background images must not be uploaded or fetched remotely");
+assert(backgroundPaletteSource.includes("extractDominantKinichAccent"), "Automatic background accent extraction missing");
+assert(overlaySource.includes("getKinichAccentPalette"), "Derived accent is not applied through Kinich theme tokens");
 assert(overlaySource.includes("useSessions(selectMainViewSessionId)"), "Overlay is not bound to the DSH 0.1.6 main-view session");
 assert(overlaySource.includes("dsh-kinich-interaction-status"), "Accessible interaction status missing");
 assert(overlaySource.includes('aria-live'), "Interaction feedback must announce state changes");

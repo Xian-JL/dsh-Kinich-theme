@@ -8,11 +8,14 @@ import { writeKinichSettings } from "./write.js";
 import { ActionButton, ChoiceGroup, RangeControl, SectionHeader, Toggle } from "./controls.js";
 import { useBalance } from "../balance/use-balance.js";
 import { getBalanceRetryMinutes } from "../balance/policy.js";
+import { normalizeKinichBackgroundFile, KinichBackgroundError } from "../background/image.js";
 
 const SETTING_LABEL_KEYS = {
 	visualStyle: "style.jungle.label", visualIntensity: "visualIntensity.label",
 	animateAjaw: "ajaw.label", ajawPosition: "ajaw.position", ajawRotation: "ajaw.rotation",
 	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
+	"custom-background": "background.section",
+	backgroundAutoPalette: "background.autoPalette.label",
 	characterPosition: "character.position", characterOpacity: "character.opacity",
 	ambientMotion: "ambientMotion.label", showOrnament: "ornament.label",
 	ornamentIntensity: "ornament.intensity", showTexture: "texture.label",
@@ -30,6 +33,7 @@ function ThemePreview({ value, t }) {
 		"data-character": String(value.showCharacter),
 		"data-intensity": value.visualIntensity,
 		"data-position": value.characterPosition,
+		"data-custom-background": String(Boolean(value.customBackgroundImage)),
 		children: [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "dsh-kinich-live-preview__copy",
@@ -42,6 +46,11 @@ function ThemePreview({ value, t }) {
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "dsh-kinich-live-preview__stage",
 				children: [
+					value.customBackgroundImage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+						alt: "",
+						className: "dsh-kinich-live-preview__background",
+						src: value.customBackgroundImage
+					}),
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-live-preview__grid" }),
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", { alt: "", className: "dsh-kinich-live-preview__character-image", src: KINICH_CHARACTER_DATA_URI }),
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", { alt: "", className: "dsh-kinich-live-preview__ajaw", src: AJAW_MARK_DATA_URI })
@@ -103,20 +112,48 @@ export function KinichSettingsRow({ settings, t }) {
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	const [pending, setPending] = (0, react.useState)(null);
 	const [failed, setFailed] = (0, react.useState)(null);
+	const [backgroundProcessing, setBackgroundProcessing] = (0, react.useState)(false);
+	const [backgroundMessage, setBackgroundMessage] = (0, react.useState)("");
+	const [backgroundError, setBackgroundError] = (0, react.useState)("");
+	const backgroundInputRef = (0, react.useRef)(null);
 
 	const updateMany = async (label, patch) => {
 		setPending(label);
 		setFailed(null);
 		try {
 			await writeKinichSettings(settings, patch, snapshot.value ?? DEFAULT_KINICH_SETTINGS);
+			return true;
 		} catch (error) {
 			setFailed({ label, patch, partial: error?.partial === true });
+			return false;
 		} finally {
 			setPending(null);
 		}
 	};
+	const handleBackgroundSelection = async event => {
+		const file = event.currentTarget.files?.[0];
+		event.currentTarget.value = "";
+		if (!file) return;
+		setBackgroundProcessing(true);
+		setBackgroundError("");
+		setBackgroundMessage("");
+		try {
+			const optimized = await normalizeKinichBackgroundFile(file);
+			const saved = await updateMany("custom-background", {
+				customBackgroundImage: optimized.dataUrl,
+				customBackgroundAccent: optimized.accent ?? ""
+			});
+			if (saved) setBackgroundMessage(t("background.saved"));
+		} catch (error) {
+			const key = error instanceof KinichBackgroundError ? `background.error.${error.code}` : "background.error.invalid-image";
+			setBackgroundError(t(key));
+		} finally {
+			setBackgroundProcessing(false);
+		}
+	};
 	const update = (field, next) => updateMany(field, { [field]: next });
 	const disabled = !snapshot.writable || pending !== null;
+	const backgroundDisabled = disabled || backgroundProcessing;
 	const stateLabel = active => t(active ? "state.on" : "state.off");
 	const ajawAtDefault = value.ajawPosition.x === DEFAULT_KINICH_SETTINGS.ajawPosition.x &&
 		value.ajawPosition.y === DEFAULT_KINICH_SETTINGS.ajawPosition.y &&
@@ -325,6 +362,59 @@ export function KinichSettingsRow({ settings, t }) {
 								]
 							})
 						})
+					]
+				})
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SettingSection, {
+				eyebrow: "05",
+				title: t("background.section"),
+				description: t("background.description"),
+				className: "dsh-kinich-settings__section--background",
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: "dsh-kinich-background-control",
+					children: [
+						value.customBackgroundImage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+							alt: "",
+							className: "dsh-kinich-background-control__preview",
+							src: value.customBackgroundImage
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+							accept: "image/png,image/jpeg,image/webp",
+							className: "dsh-kinich-background-control__file",
+						disabled: backgroundDisabled,
+							onChange: handleBackgroundSelection,
+							ref: backgroundInputRef,
+							type: "file"
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+							className: "dsh-kinich-settings__actions",
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, {
+									disabled: backgroundDisabled,
+									label: backgroundProcessing ? t("background.processing") : t(value.customBackgroundImage ? "background.replace" : "background.choose"),
+									onClick: () => backgroundInputRef.current?.click(),
+									tone: "accent"
+								}),
+								value.customBackgroundImage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, {
+									disabled: backgroundDisabled,
+									label: t("background.reset"),
+									onClick: async () => {
+										setBackgroundError("");
+										setBackgroundMessage(await updateMany("custom-background", { customBackgroundImage: "", customBackgroundAccent: "" }) ? t("background.resetDone") : "");
+									},
+								}),
+							]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
+							checked: value.backgroundAutoPalette,
+							description: t("background.autoPalette.description"),
+							disabled: backgroundDisabled || !value.customBackgroundImage,
+							label: t("background.autoPalette.label"),
+						onChange: () => update("backgroundAutoPalette", !value.backgroundAutoPalette),
+							stateLabel: stateLabel(value.backgroundAutoPalette)
+						}),
+						backgroundMessage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { className: "dsh-kinich-background-control__status", role: "status", children: backgroundMessage }),
+						backgroundError && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { className: "dsh-kinich-background-control__error", role: "alert", children: backgroundError })
 					]
 				})
 			}),

@@ -1,3 +1,5 @@
+import { deriveKinichAccentPalette } from "../background/palette.js";
+
 function token(light, dark) {
 	return Object.freeze({
 		light,
@@ -165,6 +167,70 @@ export const KINICH_THEME_PRESETS = Object.freeze({
 export const KINICH_THEME_TOKENS = JUNGLE_TOKENS;
 export const KINICH_THEME_SOURCE = "dsh-kinich-theme";
 
-export function getKinichThemeTokens(style) {
-	return KINICH_THEME_PRESETS[style] ?? JUNGLE_TOKENS;
+const BACKGROUND_SURFACE_ALPHA = Object.freeze({
+	"--dsw-alias-bg-base": [0.48, 0.40],
+	"--dsw-alias-bg-layer-1": [0.94, 0.92],
+	"--dsw-alias-bg-layer-2": [0.96, 0.94],
+	"--dsw-alias-bg-layer-3": [0.97, 0.96],
+	"--dsw-alias-bg-overlay": [0.98, 0.97],
+	"--dsw-alias-bg-module-platform": [0.95, 0.93],
+	"--dsw-alias-bg-multi-select": [0.94, 0.92],
+	"--dsw-specific-sidebar-fill": [0.88, 0.85],
+	"--dsw-specific-bubble": [0.96, 0.94],
+	"--dsw-specific-bubble-highlight": [0.94, 0.92],
+	"--dsw-specific-menu": [0.98, 0.97],
+	"--dsw-specific-selector": [0.96, 0.94]
+});
+
+function rgba(value, alpha) {
+	const hex = /^#([\da-f]{6})$/i.exec(value);
+	if (hex) {
+		const color = hex[1];
+		const red = Number.parseInt(color.slice(0, 2), 16);
+		const green = Number.parseInt(color.slice(2, 4), 16);
+		const blue = Number.parseInt(color.slice(4, 6), 16);
+		return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+	}
+	const existing = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)$/i.exec(value);
+	if (!existing) return value;
+	const oldAlpha = existing[4] === undefined ? 1 : Number(existing[4]);
+	return `rgba(${existing[1]}, ${existing[2]}, ${existing[3]}, ${alpha * oldAlpha})`;
+}
+
+function transparentSurface(value, alpha) {
+	return token(rgba(value.light, alpha[0]), rgba(value.dark, alpha[1]));
+}
+
+export function getKinichAccentPalette(style, accentHex) {
+	const base = KINICH_THEME_PRESETS[style] ?? JUNGLE_TOKENS;
+	const surfaces = base["--dsw-alias-bg-layer-1"];
+	return deriveKinichAccentPalette(accentHex, surfaces.light, surfaces.dark);
+}
+
+export function getKinichThemeTokens(style, accentHex = "", customBackground = false) {
+	const base = KINICH_THEME_PRESETS[style] ?? JUNGLE_TOKENS;
+	if (!accentHex && !customBackground) return base;
+	const result = { ...base };
+	if (customBackground) {
+		for (const [key, alpha] of Object.entries(BACKGROUND_SURFACE_ALPHA)) {
+			if (result[key]) result[key] = transparentSurface(result[key], alpha);
+		}
+	}
+	if (accentHex) {
+		const palette = getKinichAccentPalette(style, accentHex);
+		if (palette) {
+			result["--dsw-alias-brand-primary"] = token(palette.light, palette.dark);
+			result["--dsw-alias-brand-primary-invert"] = token(palette.foregroundLight, palette.foregroundDark);
+			result["--dsw-alias-brand-text"] = token(palette.strongLight, palette.strongDark);
+			result["--dsw-alias-button-primary-fill"] = token(palette.light, palette.dark);
+			result["--dsw-alias-button-primary-hover"] = token(palette.strongLight, palette.strongDark);
+			result["--dsw-alias-button-primary-dimmed"] = token(rgba(palette.light, 0.22), rgba(palette.dark, 0.24));
+			result["--dsw-specific-sidebar-nav-item-active-accent"] = token(palette.light, palette.dark);
+			result["--dsw-alias-state-business-primary"] = token(palette.light, palette.dark);
+			if (result["--dsw-alias-state-business-secondary"]) {
+				result["--dsw-alias-state-business-secondary"] = token(palette.strongLight, palette.strongDark);
+			}
+		}
+	}
+	return Object.freeze(result);
 }

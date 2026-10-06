@@ -5,6 +5,8 @@ function schemaFor(definition) {
 	switch (definition.kind) {
 		case "boolean":
 			return z.boolean().default(definition.default);
+		case "string":
+			return z.string().default(definition.default);
 		case "number":
 			return z.number().min(definition.min).max(definition.max).step(definition.step ?? 1).default(definition.default);
 		case "choice":

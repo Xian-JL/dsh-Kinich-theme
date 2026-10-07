@@ -4,12 +4,12 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - 分发方式：npm（GitHub Release 安装包可作备用）
-- 当前版本：`1.8.0`
+- 当前版本：`1.8.1`
 - 目标运行环境：声明兼容范围内的 DSH Web，以及桌面端 `0.2.0-rc.2`
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
 
-自定义背景支持自动配色，并可用亮度滑条单独调整图片（50%–180%，默认 130%）；调整不会过滤界面文字或控件。
+自定义背景支持自动配色，并提供 0%–100% 的背景可见度滑条（默认 75%）；数值越高，界面表面越通透，背景图片越清晰。
 
 ## 安装
 
@@ -85,7 +85,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 设置入口
 
-进入 **Settings → General → Kinich Theme**，可调整：
+进入 **Settings → Kinich**，可调整：
 
 - Jungle（旧模式只保留配置兼容）
 - Minimal / Balanced / Immersive

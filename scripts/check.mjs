@@ -116,9 +116,10 @@ assert(client.includes("theme: ctx.theme"), "Theme service is not projected into
 assert(overlaySource.includes("theme.overrideTokens(KINICH_THEME_SOURCE"), "Live visual-mode theme bridge missing");
 assert(overlaySource.includes("document.body"), "Visual-mode body presentation attribute missing");
 
-for (const slot of ["sidebar.brand.mark", "conversation.hero.brand.mark", "shell.overlay", "settings.general.item"]) {
+for (const slot of ["sidebar.brand.mark", "conversation.hero.brand.mark", "shell.overlay", "settings.section"]) {
   assert(client.includes(`ctx.slots.inject(${JSON.stringify(slot)}`), `Required slot missing: ${slot}`);
 }
+assert(!client.includes('ctx.slots.inject("settings.general.item"'), "Kinich settings must be a dedicated Settings section");
 
 for (const service of ["theme", "slots", "locale", "connection", "remote"]) {
   assert(client.includes(JSON.stringify(service)), `Required client service missing: ${service}`);
@@ -199,7 +200,7 @@ assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "e
 assert(sessionBridgeSource.includes("useSessionStatus"), "Optional DSH UI session-status source missing from the session bridge");
 assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "waiting")'), "Pending interaction state is not reflected in Kinich status");
 assert(sessionCompatSource.includes('"plan-review"'), "Plan-review pending interaction kind missing");
-assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette") && sharedSettings.includes("backgroundBrightness"), "Profile-backed custom background settings missing");
+assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette") && sharedSettings.includes("backgroundVisibility"), "Profile-backed custom background settings missing");
 assert(backgroundImageSource.includes('toDataURL("image/webp"'), "Custom images must be normalized to WebP before persistence");
 assert(backgroundImageSource.includes("MAX_BACKGROUND_DATA_URL_LENGTH"), "Custom background output must have a hard size limit");
 assert(!backgroundImageSource.includes("fetch("), "User background images must not be uploaded or fetched remotely");

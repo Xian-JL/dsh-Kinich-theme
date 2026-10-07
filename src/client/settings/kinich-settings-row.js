@@ -16,7 +16,7 @@ const SETTING_LABEL_KEYS = {
 	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
 	"custom-background": "background.section",
 	backgroundAutoPalette: "background.autoPalette.label",
-	backgroundBrightness: "background.brightness.label",
+	backgroundVisibility: "background.visibility.label",
 	characterPosition: "character.position", characterOpacity: "character.opacity",
 	ambientMotion: "ambientMotion.label", showOrnament: "ornament.label",
 	ornamentIntensity: "ornament.intensity", showTexture: "texture.label",
@@ -401,30 +401,34 @@ export function KinichSettingsRow({ settings, t }) {
 									label: t("background.reset"),
 									onClick: async () => {
 										setBackgroundError("");
-						setBackgroundMessage(await updateMany("custom-background", {
-							customBackgroundImage: "", customBackgroundAccent: "",
-							backgroundBrightness: DEFAULT_KINICH_SETTINGS.backgroundBrightness
-						}) ? t("background.resetDone") : "");
+										setBackgroundMessage(await updateMany("custom-background", {
+											customBackgroundImage: "", customBackgroundAccent: "",
+											backgroundVisibility: DEFAULT_KINICH_SETTINGS.backgroundVisibility
+										}) ? t("background.resetDone") : "");
 									},
 								}),
 							]
 						}),
 						value.customBackgroundImage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RangeControl, {
 							disabled: backgroundDisabled,
-							label: t("background.brightness.label"),
-							max: 180,
-							min: 50,
-							onCommit: next => update("backgroundBrightness", next),
+							label: t("background.visibility.label"),
+							max: 100,
+							min: 0,
+							onCommit: next => update("backgroundVisibility", next),
 							step: 5,
 							suffix: "%",
-							value: value.backgroundBrightness
+							value: value.backgroundVisibility
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							className: "dsh-kinich-background-control__hint",
+							children: t("background.visibility.description")
 						}),
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
 							checked: value.backgroundAutoPalette,
 							description: t("background.autoPalette.description"),
 							disabled: backgroundDisabled || !value.customBackgroundImage,
 							label: t("background.autoPalette.label"),
-						onChange: () => update("backgroundAutoPalette", !value.backgroundAutoPalette),
+							onChange: () => update("backgroundAutoPalette", !value.backgroundAutoPalette),
 							stateLabel: stateLabel(value.backgroundAutoPalette)
 						}),
 						backgroundMessage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { className: "dsh-kinich-background-control__status", role: "status", children: backgroundMessage }),

@@ -37,7 +37,7 @@ export const KINICH_SETTING_DEFINITIONS = Object.freeze({
 		pattern: HEX_COLOR_PATTERN, recoverInvalid: true
 	}),
 	backgroundAutoPalette: Object.freeze({ kind: "boolean", default: true }),
-	backgroundBrightness: Object.freeze({ kind: "number", default: 130, min: 50, max: 180, step: 5, recoverInvalid: true })
+	backgroundVisibility: Object.freeze({ kind: "number", default: 75, min: 0, max: 100, step: 5, recoverInvalid: true })
 });
 
 export const KINICH_SETTING_KEYS = Object.freeze(Object.keys(KINICH_SETTING_DEFINITIONS));

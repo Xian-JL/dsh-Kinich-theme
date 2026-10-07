@@ -21,17 +21,14 @@
 
 body[data-kinich-custom-background='true'] {
   background-color: transparent !important;
-  background-image:
-    linear-gradient(var(--kinich-background-veil), var(--kinich-background-veil)),
-    linear-gradient(var(--kinich-background-adjustment, transparent), var(--kinich-background-adjustment, transparent)),
-    var(--kinich-user-background) !important;
+  background-image: linear-gradient(var(--kinich-background-veil), var(--kinich-background-veil)), var(--kinich-user-background) !important;
   background-position: center center !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-attachment: fixed !important;
 }
-body[data-kinich-custom-background='true']:not([data-ds-dark-theme]) { --kinich-background-veil: rgba(248, 250, 243, .24); }
-body[data-kinich-custom-background='true'][data-ds-dark-theme] { --kinich-background-veil: rgba(11, 21, 20, .34); }
+body[data-kinich-custom-background='true']:not([data-ds-dark-theme]) { --kinich-background-veil: rgba(248, 250, 243, .06); }
+body[data-kinich-custom-background='true'][data-ds-dark-theme] { --kinich-background-veil: rgba(11, 21, 20, .08); }
 
 .dsh-kinich-sr-only {
   position: absolute;
@@ -846,7 +843,7 @@ body[data-kinich-style='sunlit'] .dsh-kinich-brand-shell--hero {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .30;
+  opacity: .78;
 }
 
 .dsh-kinich-live-preview__grid {
@@ -1055,6 +1052,12 @@ body[data-kinich-style='sunlit'] .dsh-kinich-brand-shell--hero {
   line-height: 1.45;
 }
 .dsh-kinich-background-control__error { color: var(--dsw-alias-state-error-primary); }
+.dsh-kinich-background-control__hint {
+  margin: -4px 2px 0;
+  color: var(--dsw-alias-label-caption);
+  font-size: 11px;
+  line-height: 1.45;
+}
 
 .dsh-kinich-settings__subgroup {
   padding: 0 2px 2px;

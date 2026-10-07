@@ -1,4 +1,4 @@
-# Kinich Theme v1.8.0 — Session State and Custom Background
+# Kinich Theme v1.8.1 — Visible Backgrounds and Dedicated Settings
 
 Kinich 1.8.0 adds explicit waiting-for-user feedback and lets users set a local static background with an automatically derived accent palette. Existing visuals, animations, and DSH-owned controls remain in place.
 
@@ -7,7 +7,8 @@ Kinich 1.8.0 adds explicit waiting-for-user feedback and lets users set a local 
 - Ajaw distinguishes DSH approval, question, and plan-review waits for the currently selected Session; errors and running work keep deterministic precedence.
 - Select a local PNG, JPEG, or WebP. Kinich downsizes and converts it to a bounded WebP kept in the active DSH profile, then derives light/dark accent colors from the image.
 - Turn automatic accent matching off to keep the selected Kinich palette, or reset the image and accent to restore the original appearance.
-- Adjust a custom image's apparent brightness from 50% to 180%; the default is 130%, and the adjustment applies only to the image layer.
+- Use the new 0–100% background visibility slider (default 75%) to tune surface transparency; custom imagery now shows clearly in both light and dark themes.
+- Open Kinich's controls from its own Settings sidebar section, separate from General settings.
 - Legacy profiles receive defaults for the new settings; invalid background data falls back without resetting other Kinich preferences.
 - All existing animations and reduced-motion behavior remain available. No third-party image assets are added to the package.
 

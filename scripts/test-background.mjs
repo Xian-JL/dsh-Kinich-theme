@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import {
 	deriveKinichAccentPalette,
 	contrastRatio,
-	extractDominantKinichAccent,
-	getKinichBackgroundAdjustment
+	extractDominantKinichAccent
 } from "../src/client/background/palette.js";
 import {
 	kinichBackgroundDimensions,
@@ -15,6 +14,7 @@ import {
 } from "../src/client/background/image.js";
 import { DEFAULT_KINICH_SETTINGS, KINICH_SETTING_DEFINITIONS, MAX_BACKGROUND_DATA_URL_LENGTH, isKinichSettingValue } from "../src/shared/settings.js";
 import { decodeKinichSettings } from "../src/client/settings/decode.js";
+import { getKinichThemeTokens } from "../src/client/theme/tokens.js";
 
 function solidPixels(color, count = 64) {
 	return Uint8ClampedArray.from(Array.from({ length: count }, () => color).flat());
@@ -41,11 +41,17 @@ for (const sourceAccent of ["#e94256", "#238dd1", "#69aa32", "#9b5cd1", "#e8a225
 	assert.ok(contrastRatio(palette.foregroundDark, palette.dark) >= 4.5, `${sourceAccent} dark button text contrast`);
 }
 assert.equal(deriveKinichAccentPalette("not-a-color"), null);
-assert.equal(getKinichBackgroundAdjustment(100), "transparent");
-assert.equal(getKinichBackgroundAdjustment(130), "rgba(255, 255, 255, 0.3)");
-assert.equal(getKinichBackgroundAdjustment(50), "rgba(0, 0, 0, 0.5)");
-assert.equal(getKinichBackgroundAdjustment(180), "rgba(255, 255, 255, 0.8)");
-assert.equal(getKinichBackgroundAdjustment(Number.NaN), "transparent");
+const opaqueSurfaces = getKinichThemeTokens("jungle", "", true, 0);
+const defaultVisibilitySurfaces = getKinichThemeTokens("jungle", "", true, 75);
+const maximumVisibilitySurfaces = getKinichThemeTokens("jungle", "", true, 100);
+assert.equal(opaqueSurfaces["--dsw-alias-bg-layer-1"].light, "rgba(248, 250, 243, 0.94)");
+assert.equal(opaqueSurfaces["--dsw-alias-bg-layer-1"].dark, "rgba(16, 30, 27, 0.92)");
+assert.equal(defaultVisibilitySurfaces["--dsw-alias-bg-layer-1"].light, "rgba(248, 250, 243, 0.61)");
+assert.equal(defaultVisibilitySurfaces["--dsw-alias-bg-layer-1"].dark, "rgba(16, 30, 27, 0.56)");
+assert.equal(maximumVisibilitySurfaces["--dsw-alias-bg-layer-1"].light, "rgba(248, 250, 243, 0.5)");
+assert.equal(maximumVisibilitySurfaces["--dsw-alias-bg-layer-1"].dark, "rgba(16, 30, 27, 0.44)");
+assert.equal(getKinichThemeTokens("jungle", "", true, Number.NaN)["--dsw-alias-bg-layer-1"].light,
+	defaultVisibilitySurfaces["--dsw-alias-bg-layer-1"].light, "Invalid visibility falls back to the readable, visible default");
 
 assert.equal(validateKinichBackgroundFile({ type: "image/png", size: 100 }), true);
 assert.equal(validateKinichBackgroundFile({ type: "image/jpeg", size: 100 }), true);
@@ -65,9 +71,9 @@ assert.equal(MAX_BACKGROUND_OUTPUT_HEIGHT, 1080);
 assert.equal(DEFAULT_KINICH_SETTINGS.customBackgroundImage, "");
 assert.equal(DEFAULT_KINICH_SETTINGS.customBackgroundAccent, "");
 assert.equal(DEFAULT_KINICH_SETTINGS.backgroundAutoPalette, true);
-assert.equal(DEFAULT_KINICH_SETTINGS.backgroundBrightness, 130);
-assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, 130), true);
-assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, 181), false);
+assert.equal(DEFAULT_KINICH_SETTINGS.backgroundVisibility, 75);
+assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundVisibility, 75), true);
+assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundVisibility, 101), false);
 assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, "data:image/webp;base64,YWJj"), true);
 assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, "https://example.com/image.webp"), false,
 	"Remote backgrounds are not accepted");
@@ -79,7 +85,7 @@ assert.equal(oldSettings.visualStyle, "phlogiston");
 assert.equal(oldSettings.animateAjaw, false);
 assert.equal(oldSettings.customBackgroundImage, "");
 assert.equal(oldSettings.backgroundAutoPalette, true);
-assert.equal(oldSettings.backgroundBrightness, 130);
+assert.equal(oldSettings.backgroundVisibility, 75);
 const damagedBackground = decodeKinichSettings({ visualStyle: "sunlit", customBackgroundImage: "file:///private/path.jpg" });
 assert.equal(damagedBackground.visualStyle, "sunlit", "A corrupt new asset field must not reset older valid settings");
 assert.equal(damagedBackground.customBackgroundImage, "");

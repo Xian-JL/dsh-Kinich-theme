@@ -5,7 +5,6 @@ import { DEFAULT_KINICH_SETTINGS, isKinichSettingValue, KINICH_SETTING_DEFINITIO
 import { useKinichSettings } from "../hooks/use-kinich-settings.js";
 import { getKinichThemeTokens, getKinichAccentPalette, KINICH_THEME_SOURCE } from "../theme/tokens.js";
 import { getKinichSessionState, subscribeKinichSessionState } from "../session/status-store.js";
-import { getKinichBackgroundAdjustment } from "../background/palette.js";
 import { selectMainViewSessionId } from "../session/compat.js";
 import { refreshBalance } from "../balance/balance-store.js";
 import { getBalanceRetryMinutes } from "../balance/policy.js";
@@ -41,7 +40,7 @@ export function calculateAjawPosition(clientX, clientY, drag) {
 	return { x: Number((localX / overlayRect.width * 100).toFixed(3)), y: Number((localY / overlayRect.height * 100).toFixed(3)) };
 }
 
-function useKinichThemePresentation(theme, style, intensity, backgroundImage, backgroundAccent, autoPalette, backgroundBrightness) {
+function useKinichThemePresentation(theme, style, intensity, backgroundImage, backgroundAccent, autoPalette, backgroundVisibility) {
 	const safeBackgroundImage = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, backgroundImage)
 		? backgroundImage : "";
 	const safeBackgroundAccent = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundAccent, backgroundAccent)
@@ -52,8 +51,8 @@ function useKinichThemePresentation(theme, style, intensity, backgroundImage, ba
 		[style, useBackgroundAccent, safeBackgroundAccent]
 	);
 	const tokens = (0, react.useMemo)(
-		() => getKinichThemeTokens(style, accentPalette ? safeBackgroundAccent : "", safeBackgroundImage !== ""),
-		[style, accentPalette, safeBackgroundAccent, safeBackgroundImage]
+		() => getKinichThemeTokens(style, accentPalette ? safeBackgroundAccent : "", safeBackgroundImage !== "", backgroundVisibility),
+		[style, accentPalette, safeBackgroundAccent, safeBackgroundImage, backgroundVisibility]
 	);
 	(0, react.useEffect)(() => {
 		const dispose = theme.overrideTokens(KINICH_THEME_SOURCE, tokens);
@@ -68,11 +67,8 @@ function useKinichThemePresentation(theme, style, intensity, backgroundImage, ba
 			kinichCustomBackground: body.dataset.kinichCustomBackground,
 			kinichAutoPalette: body.dataset.kinichAutoPalette
 		};
-		const safeBackgroundBrightness = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, backgroundBrightness)
-			? backgroundBrightness : DEFAULT_KINICH_SETTINGS.backgroundBrightness;
 		const styleProperties = [
 			"--kinich-user-background",
-			"--kinich-background-adjustment",
 			"--kinich-background-accent-light",
 			"--kinich-background-accent-dark",
 			"--kinich-background-accent-strong-light",
@@ -83,10 +79,7 @@ function useKinichThemePresentation(theme, style, intensity, backgroundImage, ba
 		body.dataset.kinichIntensity = intensity;
 		body.dataset.kinichCustomBackground = String(safeBackgroundImage !== "");
 		body.dataset.kinichAutoPalette = String(Boolean(accentPalette));
-		if (safeBackgroundImage !== "") {
-			body.style.setProperty("--kinich-user-background", `url("${safeBackgroundImage}")`);
-			body.style.setProperty("--kinich-background-adjustment", getKinichBackgroundAdjustment(safeBackgroundBrightness));
-		}
+		if (safeBackgroundImage !== "") body.style.setProperty("--kinich-user-background", `url("${safeBackgroundImage}")`);
 		if (accentPalette) {
 			body.style.setProperty("--kinich-background-accent-light", accentPalette.light);
 			body.style.setProperty("--kinich-background-accent-dark", accentPalette.dark);
@@ -101,7 +94,7 @@ function useKinichThemePresentation(theme, style, intensity, backgroundImage, ba
 				if (value === "") body.style.removeProperty(name); else body.style.setProperty(name, value);
 			}
 		};
-	}, [style, intensity, safeBackgroundImage, accentPalette, backgroundBrightness]);
+	}, [style, intensity, safeBackgroundImage, accentPalette]);
 }
 
 function useSessionFeedback(sessionId) {
@@ -166,7 +159,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	useKinichThemePresentation(theme, value.visualStyle, value.visualIntensity,
-		value.customBackgroundImage, value.customBackgroundAccent, value.backgroundAutoPalette, value.backgroundBrightness);
+		value.customBackgroundImage, value.customBackgroundAccent, value.backgroundAutoPalette, value.backgroundVisibility);
 	const mainSessionId = typeof useSessions === "function" ? useSessions(selectMainViewSessionId) : undefined;
 	const sessionState = useSessionFeedback(mainSessionId);
 	const interactionFeedback = useInteractionFeedback(sessionState);

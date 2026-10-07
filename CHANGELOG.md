@@ -1,10 +1,14 @@
 # Changelog
 
+## 1.8.1 — Visible backgrounds and dedicated settings
+
+- Replace the image-tint slider with a background-visibility control that adjusts Kinich surface opacity across light and dark themes, with a 75% visible-by-default setting.
+- Move Kinich preferences from General into a dedicated Settings sidebar section.
+
 ## 1.8.0 — Session attention and custom background
 
 - Distinguish approval, question, and plan-review interactions for the selected main Session. Waiting state takes priority over running feedback and does not announce a false completion if the request is dismissed.
 - Add profile-persisted local background images, bounded client-side WebP normalization, and an optional light/dark accent palette derived from the image.
-- Add a profile-persisted background brightness slider (50–180%, default 130%) that adjusts only the image layer while preserving readable DSH content.
 - Keep image data local to the DSH profile and out of the package, network, and model context; reset restores the exact preset appearance.
 - Preserve existing animations and restore current theme tokens when custom background or automatic palette matching is disabled.
 

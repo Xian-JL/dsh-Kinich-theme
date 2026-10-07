@@ -4,12 +4,12 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web / De
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - Distribution: npm, with a GitHub Release tarball as a fallback
-- Current release: `1.8.0`
+- Current release: `1.8.1`
 - Target runtimes: the declared DSH Web compatibility ranges and Desktop `0.2.0-rc.2`
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
 
-Custom backgrounds support automatic accents and an image-only brightness slider from 50% to 180% (default 130%). UI text and controls are not filtered.
+Custom backgrounds support automatic accents and a background-visibility slider from 0% to 100% (default 75%). Higher values make DSH surfaces more transparent so the image is clearly visible.
 
 ## Install
 
@@ -85,7 +85,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 
 ## Settings
 
-Open DSH **Settings → General → Kinich Theme** to configure:
+Open DSH **Settings → Kinich** to configure:
 
 - Jungle (legacy modes remain configuration-compatible only)
 - Minimal / Balanced / Immersive

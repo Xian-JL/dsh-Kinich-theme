@@ -55,6 +55,17 @@ export function contrastRatio(first, second) {
 	return (bright + 0.05) / (dark + 0.05);
 }
 
+/** Returns a tint color that adjusts only the custom image layer. */
+export function getKinichBackgroundAdjustment(brightness) {
+	if (typeof brightness !== "number" || !Number.isFinite(brightness)) return "transparent";
+	const normalized = clamp(brightness, 50, 180);
+	if (normalized === 100) return "transparent";
+	const opacity = Number((Math.abs(normalized - 100) / 100).toFixed(3));
+	return normalized > 100
+		? `rgba(255, 255, 255, ${opacity})`
+		: `rgba(0, 0, 0, ${opacity})`;
+}
+
 /** Picks a stable chromatic accent; transparency, near-neutral, and extreme pixels are ignored. */
 export function extractDominantKinichAccent(pixels) {
 	if (!pixels || !Number.isFinite(pixels.length) || pixels.length < 4 || pixels.length % 4 !== 0) return null;

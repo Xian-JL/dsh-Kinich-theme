@@ -199,7 +199,7 @@ assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "e
 assert(sessionBridgeSource.includes("useSessionStatus"), "Optional DSH UI session-status source missing from the session bridge");
 assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "waiting")'), "Pending interaction state is not reflected in Kinich status");
 assert(sessionCompatSource.includes('"plan-review"'), "Plan-review pending interaction kind missing");
-assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette"), "Profile-backed custom background settings missing");
+assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette") && sharedSettings.includes("backgroundBrightness"), "Profile-backed custom background settings missing");
 assert(backgroundImageSource.includes('toDataURL("image/webp"'), "Custom images must be normalized to WebP before persistence");
 assert(backgroundImageSource.includes("MAX_BACKGROUND_DATA_URL_LENGTH"), "Custom background output must have a hard size limit");
 assert(!backgroundImageSource.includes("fetch("), "User background images must not be uploaded or fetched remotely");

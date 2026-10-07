@@ -21,7 +21,10 @@
 
 body[data-kinich-custom-background='true'] {
   background-color: transparent !important;
-  background-image: linear-gradient(var(--kinich-background-veil), var(--kinich-background-veil)), var(--kinich-user-background) !important;
+  background-image:
+    linear-gradient(var(--kinich-background-veil), var(--kinich-background-veil)),
+    linear-gradient(var(--kinich-background-adjustment, transparent), var(--kinich-background-adjustment, transparent)),
+    var(--kinich-user-background) !important;
   background-position: center center !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;

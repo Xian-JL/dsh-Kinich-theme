@@ -10,6 +10,7 @@ assert.deepEqual(currentConfig.ajawPosition.get(), { x: 94, y: 84 });
 assert.equal(currentConfig.customBackgroundImage.get(), "");
 assert.equal(currentConfig.customBackgroundAccent.get(), "");
 assert.equal(currentConfig.backgroundAutoPalette.get(), true);
+assert.equal(currentConfig.backgroundBrightness.get(), 130);
 assert.equal(KinichThemeSettingsSchema({}).animateAjaw, true);
 
 const currentForm = { getSnapshot: () => ({ status: "ready" }) };

@@ -13,9 +13,12 @@ export function useKinichSettings(scope) {
 			? snapshot.value.customBackgroundAccent : DEFAULT_KINICH_SETTINGS.customBackgroundAccent;
 		const backgroundAutoPalette = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundAutoPalette, snapshot.value.backgroundAutoPalette)
 			? snapshot.value.backgroundAutoPalette : DEFAULT_KINICH_SETTINGS.backgroundAutoPalette;
+		const backgroundBrightness = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, snapshot.value.backgroundBrightness)
+			? snapshot.value.backgroundBrightness : DEFAULT_KINICH_SETTINGS.backgroundBrightness;
 		if (customBackgroundImage === snapshot.value.customBackgroundImage &&
 			customBackgroundAccent === snapshot.value.customBackgroundAccent &&
-			backgroundAutoPalette === snapshot.value.backgroundAutoPalette) return snapshot;
-		return { ...snapshot, value: { ...snapshot.value, customBackgroundImage, customBackgroundAccent, backgroundAutoPalette } };
+			backgroundAutoPalette === snapshot.value.backgroundAutoPalette &&
+			backgroundBrightness === snapshot.value.backgroundBrightness) return snapshot;
+		return { ...snapshot, value: { ...snapshot.value, customBackgroundImage, customBackgroundAccent, backgroundAutoPalette, backgroundBrightness } };
 	}, [snapshot]);
 }

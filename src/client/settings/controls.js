@@ -106,7 +106,7 @@ export function ActionButton({ disabled, label, onClick, tone = "neutral" }) {
 	});
 }
 
-export function RangeControl({ disabled, label, max, min, onCommit, suffix, value }) {
+export function RangeControl({ disabled, label, max, min, onCommit, step = 1, suffix, value }) {
 	const [draft, setDraft] = (0, react.useState)(value);
 	const committedRef = (0, react.useRef)(value);
 	const keyboardTimerRef = (0, react.useRef)(null);
@@ -139,7 +139,7 @@ export function RangeControl({ disabled, label, max, min, onCommit, suffix, valu
 			onChange: (event) => setDraft(Number(event.currentTarget.value)),
 			onKeyUp: scheduleKeyboardCommit,
 			onPointerUp: commit,
-			step: 1,
+			step,
 			type: "range",
 			value: draft
 		})]

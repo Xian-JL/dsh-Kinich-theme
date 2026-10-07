@@ -16,6 +16,7 @@ const SETTING_LABEL_KEYS = {
 	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
 	"custom-background": "background.section",
 	backgroundAutoPalette: "background.autoPalette.label",
+	backgroundBrightness: "background.brightness.label",
 	characterPosition: "character.position", characterOpacity: "character.opacity",
 	ambientMotion: "ambientMotion.label", showOrnament: "ornament.label",
 	ornamentIntensity: "ornament.intensity", showTexture: "texture.label",
@@ -400,10 +401,23 @@ export function KinichSettingsRow({ settings, t }) {
 									label: t("background.reset"),
 									onClick: async () => {
 										setBackgroundError("");
-										setBackgroundMessage(await updateMany("custom-background", { customBackgroundImage: "", customBackgroundAccent: "" }) ? t("background.resetDone") : "");
+						setBackgroundMessage(await updateMany("custom-background", {
+							customBackgroundImage: "", customBackgroundAccent: "",
+							backgroundBrightness: DEFAULT_KINICH_SETTINGS.backgroundBrightness
+						}) ? t("background.resetDone") : "");
 									},
 								}),
 							]
+						}),
+						value.customBackgroundImage && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RangeControl, {
+							disabled: backgroundDisabled,
+							label: t("background.brightness.label"),
+							max: 180,
+							min: 50,
+							onCommit: next => update("backgroundBrightness", next),
+							step: 5,
+							suffix: "%",
+							value: value.backgroundBrightness
 						}),
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
 							checked: value.backgroundAutoPalette,

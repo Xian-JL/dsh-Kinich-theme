@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import {
 	deriveKinichAccentPalette,
 	contrastRatio,
-	extractDominantKinichAccent
+	extractDominantKinichAccent,
+	getKinichBackgroundAdjustment
 } from "../src/client/background/palette.js";
 import {
 	kinichBackgroundDimensions,
@@ -40,6 +41,11 @@ for (const sourceAccent of ["#e94256", "#238dd1", "#69aa32", "#9b5cd1", "#e8a225
 	assert.ok(contrastRatio(palette.foregroundDark, palette.dark) >= 4.5, `${sourceAccent} dark button text contrast`);
 }
 assert.equal(deriveKinichAccentPalette("not-a-color"), null);
+assert.equal(getKinichBackgroundAdjustment(100), "transparent");
+assert.equal(getKinichBackgroundAdjustment(130), "rgba(255, 255, 255, 0.3)");
+assert.equal(getKinichBackgroundAdjustment(50), "rgba(0, 0, 0, 0.5)");
+assert.equal(getKinichBackgroundAdjustment(180), "rgba(255, 255, 255, 0.8)");
+assert.equal(getKinichBackgroundAdjustment(Number.NaN), "transparent");
 
 assert.equal(validateKinichBackgroundFile({ type: "image/png", size: 100 }), true);
 assert.equal(validateKinichBackgroundFile({ type: "image/jpeg", size: 100 }), true);
@@ -59,6 +65,9 @@ assert.equal(MAX_BACKGROUND_OUTPUT_HEIGHT, 1080);
 assert.equal(DEFAULT_KINICH_SETTINGS.customBackgroundImage, "");
 assert.equal(DEFAULT_KINICH_SETTINGS.customBackgroundAccent, "");
 assert.equal(DEFAULT_KINICH_SETTINGS.backgroundAutoPalette, true);
+assert.equal(DEFAULT_KINICH_SETTINGS.backgroundBrightness, 130);
+assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, 130), true);
+assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.backgroundBrightness, 181), false);
 assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, "data:image/webp;base64,YWJj"), true);
 assert.equal(isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, "https://example.com/image.webp"), false,
 	"Remote backgrounds are not accepted");
@@ -70,6 +79,7 @@ assert.equal(oldSettings.visualStyle, "phlogiston");
 assert.equal(oldSettings.animateAjaw, false);
 assert.equal(oldSettings.customBackgroundImage, "");
 assert.equal(oldSettings.backgroundAutoPalette, true);
+assert.equal(oldSettings.backgroundBrightness, 130);
 const damagedBackground = decodeKinichSettings({ visualStyle: "sunlit", customBackgroundImage: "file:///private/path.jpg" });
 assert.equal(damagedBackground.visualStyle, "sunlit", "A corrupt new asset field must not reset older valid settings");
 assert.equal(damagedBackground.customBackgroundImage, "");

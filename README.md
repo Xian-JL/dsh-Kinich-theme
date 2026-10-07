@@ -96,7 +96,7 @@ Open DSH **Settings → Kinich** to configure:
 
 ## Compatibility
 
-`v1.7.1` supports the previous DSH Web releases and Desktop `0.2.0-rc.2`:
+`v1.8.1` supports the declared DSH releases and Desktop `0.2.0-rc.2`:
 
 ```text
 @deepseek-ai/dsh ^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2

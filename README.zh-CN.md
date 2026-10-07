@@ -96,7 +96,7 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 兼容性
 
-`v1.7.1` 支持此前的 DSH Web 版本及桌面端 `0.2.0-rc.2`：
+`v1.8.1` 支持声明范围内的 DSH 版本及桌面端 `0.2.0-rc.2`：
 
 ```text
 @deepseek-ai/dsh ^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2

@@ -6,6 +6,9 @@ export const VISUAL_INTENSITIES = Object.freeze(["minimal", "balanced", "immersi
 export const CHARACTER_POSITIONS = Object.freeze(["corner", "edge"]);
 export const DECORATION_INTENSITIES = Object.freeze(["soft", "standard"]);
 export const CHARACTER_OPACITIES = Object.freeze(["low", "medium", "high"]);
+export const MAX_BACKGROUND_DATA_URL_LENGTH = 512 * 1024;
+const BACKGROUND_DATA_URL_PATTERN = /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/;
+const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 
 const AJAW_DEFAULT_POSITION = Object.freeze({ x: 94, y: 84 });
 
@@ -14,6 +17,7 @@ export const KINICH_SETTING_DEFINITIONS = Object.freeze({
 	visualStyle: Object.freeze({ kind: "choice", default: "jungle", options: VISUAL_STYLES }),
 	visualIntensity: Object.freeze({ kind: "choice", default: "balanced", options: VISUAL_INTENSITIES }),
 	ambientMotion: Object.freeze({ kind: "boolean", default: true }),
+	dynamicWallpaperEnabled: Object.freeze({ kind: "boolean", default: true, recoverInvalid: true }),
 	animateAjaw: Object.freeze({ kind: "boolean", default: true }),
 	ajawFlipped: Object.freeze({ kind: "boolean", default: false }),
 	ajawPosition: Object.freeze({ kind: "position", default: AJAW_DEFAULT_POSITION, min: 0, max: 100 }),
@@ -24,7 +28,17 @@ export const KINICH_SETTING_DEFINITIONS = Object.freeze({
 	showCharacter: Object.freeze({ kind: "boolean", default: true }),
 	showOrnament: Object.freeze({ kind: "boolean", default: true }),
 	showTexture: Object.freeze({ kind: "boolean", default: true }),
-	textureIntensity: Object.freeze({ kind: "choice", default: "standard", options: DECORATION_INTENSITIES })
+	textureIntensity: Object.freeze({ kind: "choice", default: "standard", options: DECORATION_INTENSITIES }),
+	customBackgroundImage: Object.freeze({
+		kind: "string", default: "", maxLength: MAX_BACKGROUND_DATA_URL_LENGTH,
+		pattern: BACKGROUND_DATA_URL_PATTERN, recoverInvalid: true
+	}),
+	customBackgroundAccent: Object.freeze({
+		kind: "string", default: "", maxLength: 7,
+		pattern: HEX_COLOR_PATTERN, recoverInvalid: true
+	}),
+	backgroundAutoPalette: Object.freeze({ kind: "boolean", default: true }),
+	backgroundVisibility: Object.freeze({ kind: "number", default: 75, min: 0, max: 100, step: 5, recoverInvalid: true })
 });
 
 export const KINICH_SETTING_KEYS = Object.freeze(Object.keys(KINICH_SETTING_DEFINITIONS));
@@ -63,6 +77,8 @@ export function isKinichSettingValue(definition, value) {
 		case "boolean": return typeof value === "boolean";
 		case "number": return isFiniteRange(value, definition.min, definition.max);
 		case "choice": return typeof value === "string" && definition.options.includes(value);
+		case "string": return typeof value === "string" && value.length <= definition.maxLength &&
+			(value === "" || definition.pattern.test(value));
 		case "position": return typeof value === "object" && value !== null &&
 			isFiniteRange(value.x, definition.min, definition.max) && isFiniteRange(value.y, definition.min, definition.max);
 		default: return false;

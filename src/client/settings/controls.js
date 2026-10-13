@@ -95,31 +95,36 @@ export function SectionHeader({ eyebrow, title, description }) {
 	});
 }
 
-export function ActionButton({ disabled, label, onClick, tone = "neutral" }) {
+export function ActionButton({ disabled, id, label, onClick, tone = "neutral" }) {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 		className: "dsh-kinich-action",
 		"data-tone": tone,
 		disabled,
+		id,
 		onClick,
 		type: "button",
 		children: label
 	});
 }
 
-export function RangeControl({ disabled, label, max, min, onCommit, suffix, value }) {
+export function RangeControl({ disabled, label, max, min, onCommit, onPreview, scaleLabels, step = 1, suffix, value }) {
 	const [draft, setDraft] = (0, react.useState)(value);
+	const draftRef = (0, react.useRef)(value);
 	const committedRef = (0, react.useRef)(value);
 	const keyboardTimerRef = (0, react.useRef)(null);
 	(0, react.useEffect)(() => {
 		setDraft(value);
+		draftRef.current = value;
 		committedRef.current = value;
 	}, [value]);
 	(0, react.useEffect)(() => () => { if (keyboardTimerRef.current !== null) clearTimeout(keyboardTimerRef.current); }, []);
-	const commit = () => {
+	const commit = async () => {
 		if (keyboardTimerRef.current !== null) { clearTimeout(keyboardTimerRef.current); keyboardTimerRef.current = null; }
-		if (draft === committedRef.current) return;
-		committedRef.current = draft;
-		onCommit(draft);
+		const next = draftRef.current, previous = committedRef.current;
+		if (next === previous) return;
+		committedRef.current = next;
+		try { if (await onCommit(next) === false) throw new Error("Commit rejected"); }
+		catch { committedRef.current = previous; draftRef.current = previous; setDraft(previous); onPreview?.(null); }
 	};
 	const scheduleKeyboardCommit = event => {
 		if (!/^(?:Arrow(?:Left|Right|Up|Down)|Home|End|PageUp|PageDown)$/.test(event.key)) return;
@@ -136,12 +141,13 @@ export function RangeControl({ disabled, label, max, min, onCommit, suffix, valu
 			max,
 			min,
 			onBlur: commit,
-			onChange: (event) => setDraft(Number(event.currentTarget.value)),
+			onChange: (event) => { const next=Number(event.currentTarget.value); draftRef.current=next; setDraft(next); onPreview?.(next); },
+			onPointerCancel: () => { draftRef.current=value; setDraft(value); onPreview?.(null); },
 			onKeyUp: scheduleKeyboardCommit,
 			onPointerUp: commit,
-			step: 1,
+			step,
 			type: "range",
 			value: draft
-		})]
+		}), scaleLabels && (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-range__scale", children: scaleLabels.map((text,index)=>(0,react_jsx_runtime.jsx)("span",{children:text},index)) })]
 	});
 }

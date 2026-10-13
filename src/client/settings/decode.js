@@ -13,8 +13,11 @@ export function decodeKinichSettings(section) {
 	if (typeof section !== "object" || section === null) return void 0;
 	const decoded = {};
 	for (const [key, definition] of Object.entries(KINICH_SETTING_DEFINITIONS)) {
-		const candidate = section[key] ?? DEFAULT_KINICH_SETTINGS[key];
-		if (!isKinichSettingValue(definition, candidate)) return void 0;
+		let candidate = section[key] ?? DEFAULT_KINICH_SETTINGS[key];
+		if (!isKinichSettingValue(definition, candidate)) {
+			if (!definition.recoverInvalid) return void 0;
+			candidate = DEFAULT_KINICH_SETTINGS[key];
+		}
 		decoded[key] = cloneKinichSettingValue(definition, candidate);
 	}
 	return decoded;

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { assertKinichVersionPolicy } from "../src/shared/version-policy.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageJson = JSON.parse(await readFile(resolve(ROOT, "package.json"), "utf8"));
@@ -12,9 +13,16 @@ const schemaSource = await readFile(resolve(ROOT, "src/host/settings-schema.js")
 const decodeSource = await readFile(resolve(ROOT, "src/client/settings/decode.js"), "utf8");
 const overlaySource = await readFile(resolve(ROOT, "src/client/overlay/kinich-overlay.js"), "utf8");
 const settingsUiSource = await readFile(resolve(ROOT, "src/client/settings/kinich-settings-row.js"), "utf8");
+const backgroundImageSource = await readFile(resolve(ROOT, "src/client/background/image.js"), "utf8");
+const backgroundPaletteSource = await readFile(resolve(ROOT, "src/client/background/palette.js"), "utf8");
 const brandSource = await readFile(resolve(ROOT, "src/client/components/brand.js"), "utf8");
 const themeSource = await readFile(resolve(ROOT, "src/client/theme/tokens.js"), "utf8");
 const balanceRouteSource = await readFile(resolve(ROOT, "src/host/balance-route.js"), "utf8");
+const wallpaperAssetsSource = await readFile(resolve(ROOT, "src/host/wallpaper/assets.js"), "utf8");
+const wallpaperBuiltinSource = await readFile(resolve(ROOT, "src/host/wallpaper/builtin.js"), "utf8");
+const wallpaperRoutesSource = await readFile(resolve(ROOT, "src/host/wallpaper/routes.js"), "utf8");
+const wallpaperStoreSource = await readFile(resolve(ROOT, "src/host/wallpaper/store.js"), "utf8");
+const wallpaperModelSource = await readFile(resolve(ROOT, "src/shared/wallpaper.js"), "utf8");
 const balanceStoreSource = await readFile(resolve(ROOT, "src/client/balance/balance-store.js"), "utf8");
 const balancePolicySource = await readFile(resolve(ROOT, "src/client/balance/policy.js"), "utf8");
 const interactionSource = await readFile(resolve(ROOT, "src/client/interaction/interaction-bridge.js"), "utf8");
@@ -44,6 +52,8 @@ const sourceFiles = [
   "src/client/balance/provider-watch.js",
   "src/client/balance/policy.js",
   "src/client/balance/use-balance.js",
+  "src/client/background/image.js",
+  "src/client/background/palette.js",
   "src/client/hooks/use-kinich-settings.js",
   "src/client/interaction/interaction-bridge.js",
   "src/client/interaction/click-burst.js",
@@ -65,6 +75,10 @@ const sourceFiles = [
   "src/client/version.generated.js",
   "src/client/index.js",
 ];
+sourceFiles.push(
+	"src/host/wallpaper/archive.js", "src/host/wallpaper/assets.js", "src/host/wallpaper/builtin.js", "src/host/wallpaper/routes.js", "src/host/wallpaper/store.js", "src/shared/wallpaper.js",
+	"src/client/wallpaper/image.js", "src/client/wallpaper/stage.js", "src/client/wallpaper/use-wallpaper.js"
+);
 
 for (const file of sourceFiles) {
   const result = spawnSync(process.execPath, ["--check", resolve(ROOT, file)], { encoding: "utf8" });
@@ -76,7 +90,8 @@ for (const file of ["lib/index.js", "lib/client.js"]) {
   assert(result.status === 0, `${file}: syntax check failed\n${result.stderr}`);
 }
 
-assert(/^\d+\.\d+\.\d+$/.test(packageJson.version), "package.json must use a release version");
+try { assertKinichVersionPolicy(packageJson.version, packageJson.kinich?.wallpaperReleaseStage); }
+catch (error) { assert(false, error.message); }
 assert(packageJson.dsh?.manifestVersion === 1, "DSH public manifest version must be 1");
 assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must remain web");
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
@@ -85,6 +100,16 @@ assert(packageJson.devDependencies?.esbuild === "0.28.2", "esbuild 0.28.2 must r
 assert(packageJson.engines?.dsh === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2", "Top-level DSH compatibility range must cover 0.1.5 through 0.2.0-rc.2");
 assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"] === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2", "Settings peer range must cover DSH 0.2.0-rc.2");
 assert(!packageJson.dsh?.client?.inject?.includes("@deepseek-ai/dsh-client-runtime"), "Removed DSH client-runtime package must not be injected");
+
+assert(packageJson.files?.includes("assets/wallpapers/camille-reference"), "Offline Camille reference package must be included in plugin releases");
+assert(wallpaperRoutesSource.includes('ctx.get("profileContext")'), "Wallpaper storage must remain isolated to the active DSH Profile");
+assert(wallpaperRoutesSource.includes("connection.fetch.register"), "Wallpaper APIs must use the authenticated Host connection router");
+assert(wallpaperStoreSource.includes("writer.lock") && wallpaperStoreSource.includes("index.backup.json"), "Wallpaper Profile writes must use a serialized, recoverable transaction");
+assert(wallpaperStoreSource.includes("history.unshift(state.active)"), "Replacing an active wallpaper must preserve a recoverable history snapshot");
+assert(wallpaperAssetsSource.includes("MAX_WALLPAPER_ASSET_BYTES") && wallpaperAssetsSource.includes("VP8X"), "Wallpaper import validation limits or animation rejection are missing");
+assert(wallpaperBuiltinSource.includes("camille-reference") && wallpaperBuiltinSource.includes("representativeAssetId"), "Offline reference package registration is incomplete");
+assert(wallpaperModelSource.includes("WALLPAPER_DEFAULT_PARAMETERS") && wallpaperModelSource.includes("wallpaperMotionAllowed"), "Wallpaper parameters or accessibility motion model are missing");
+assert(!wallpaperRoutesSource.includes("process.cwd()"), "Profile asset routes must not depend on the invocation working directory");
 
 assert(packageJson.repository?.url === "git+https://github.com/Xian-JL/dsh-Kinich-theme.git", "Public GitHub repository metadata missing");
 assert(packageJson.homepage === "https://github.com/Xian-JL/dsh-Kinich-theme#readme", "Public homepage metadata missing");
@@ -112,9 +137,10 @@ assert(client.includes("theme: ctx.theme"), "Theme service is not projected into
 assert(overlaySource.includes("theme.overrideTokens(KINICH_THEME_SOURCE"), "Live visual-mode theme bridge missing");
 assert(overlaySource.includes("document.body"), "Visual-mode body presentation attribute missing");
 
-for (const slot of ["sidebar.brand.mark", "conversation.hero.brand.mark", "shell.overlay", "settings.general.item"]) {
+for (const slot of ["sidebar.brand.mark", "conversation.hero.brand.mark", "shell.overlay", "settings.section"]) {
   assert(client.includes(`ctx.slots.inject(${JSON.stringify(slot)}`), `Required slot missing: ${slot}`);
 }
+assert(!client.includes('ctx.slots.inject("settings.general.item"'), "Kinich settings must be a dedicated Settings section");
 
 for (const service of ["theme", "slots", "locale", "connection", "remote"]) {
   assert(client.includes(JSON.stringify(service)), `Required client service missing: ${service}`);
@@ -125,7 +151,7 @@ for (const asset of ["AJAW_MARK_DATA_URI", "AJAW_IDLE_DATA_URI", "KINICH_CHARACT
 }
 
 for (const field of [
-  "visualStyle", "visualIntensity", "ambientMotion", "animateAjaw", "ajawFlipped", "ajawPosition", "ajawRotation",
+  "visualStyle", "visualIntensity", "ambientMotion", "dynamicWallpaperEnabled", "animateAjaw", "ajawFlipped", "ajawPosition", "ajawRotation",
   "characterOpacity", "characterPosition", "ornamentIntensity",
   "showCharacter", "showOrnament", "showTexture", "textureIntensity",
 ]) {
@@ -192,6 +218,15 @@ for (const field of ["promptError", "openError", "lastAgentError"]) {
 }
 assert(sessionCompatSource.includes("retainedBy?.mainView"), "DSH 0.1.6 main-view session selection missing");
 assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "error")'), "Keyed session error feedback missing");
+assert(sessionBridgeSource.includes("useSessionStatus"), "Optional DSH UI session-status source missing from the session bridge");
+assert(sessionBridgeSource.includes('setKinichSessionState(resolvedSessionId, "waiting")'), "Pending interaction state is not reflected in Kinich status");
+assert(sessionCompatSource.includes('"plan-review"'), "Plan-review pending interaction kind missing");
+assert(sharedSettings.includes("customBackgroundImage") && sharedSettings.includes("backgroundAutoPalette") && sharedSettings.includes("backgroundVisibility"), "Profile-backed custom background settings missing");
+assert(backgroundImageSource.includes('toDataURL("image/webp"'), "Custom images must be normalized to WebP before persistence");
+assert(backgroundImageSource.includes("MAX_BACKGROUND_DATA_URL_LENGTH"), "Custom background output must have a hard size limit");
+assert(!backgroundImageSource.includes("fetch("), "User background images must not be uploaded or fetched remotely");
+assert(backgroundPaletteSource.includes("extractDominantKinichAccent"), "Automatic background accent extraction missing");
+assert(overlaySource.includes("getKinichAccentPalette"), "Derived accent is not applied through Kinich theme tokens");
 assert(overlaySource.includes("useSessions(selectMainViewSessionId)"), "Overlay is not bound to the DSH 0.1.6 main-view session");
 assert(overlaySource.includes("dsh-kinich-interaction-status"), "Accessible interaction status missing");
 assert(overlaySource.includes('aria-live'), "Interaction feedback must announce state changes");

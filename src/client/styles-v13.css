@@ -583,4 +583,15 @@ body[data-kinich-session-state='sending'] [class$='_composerSeat'] {
   .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome__eyebrow,
   .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome h1,
   .dsh-kinich-overlay[data-intensity='immersive'] .dsh-kinich-welcome p { animation: none !important; }
+  .dsh-kinich-ajaw-idle[data-state='waiting'] .dsh-kinich-ajaw-idle__status-ring { animation: none; opacity: .85; }
+}
+
+/* A user background may recolor only Kinich's accent family, never semantic status colors. */
+body[data-kinich-auto-palette='true']:not([data-ds-dark-theme]) {
+  --kinich-accent: var(--kinich-background-accent-light);
+  --kinich-accent-strong: var(--kinich-background-accent-strong-light);
+}
+body[data-kinich-auto-palette='true'][data-ds-dark-theme] {
+  --kinich-accent: var(--kinich-background-accent-dark);
+  --kinich-accent-strong: var(--kinich-background-accent-strong-dark);
 }

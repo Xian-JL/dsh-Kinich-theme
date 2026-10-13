@@ -40,10 +40,19 @@ v1.0.0 延续既有 的素材恢复方案：此前只存在于 `lib/client.js` d
 - 像素几何网格、燃素色光晕及响应式遮罩由插件 CSS 原创生成，不使用外部纹理图片。
 - 主题色板为针对 DSH 语义 Token 编写的原创配置。
 
-## 公开发布前必须复核
+## 既有素材说明
 
-1. 保存每项素材作者或权利人的明确再分发许可记录。
-2. 核实是否允许修改、压缩、透明化及嵌入 npm 包。
-3. 按许可补充作者署名、作品链接、许可名称和版权声明。
-4. 如任一素材没有公开再分发许可，公开版应替换为自制或明确授权素材。
-5. 复核“原神”、角色及相关视觉元素的商标、同人内容与平台规则。
+上表继续记录插件既有 Kinich/Ajaw 视觉素材的来源与实际处理方式。本次壁纸工作的来源记录不以授权调查、商标调查或额外许可审查作为开发前置条件。
+
+## 复杂动态壁纸设计参考（2026-10-08）
+
+- 视觉与交互参考：[Camille Mormal](https://camillemormal.com/)，包括 Work、项目详情、About、加载及过渡模板。
+- 网站 About 署名的 Motion & Development：[Aristide Benoist](https://www.aristidebenoist.com/)。
+- 网站 About 署名的字体：Klim Type Foundry **Söhne Buch**，来源：[Söhne 字体页面](https://klim.co.nz/retail-fonts/soehne)。
+- 参考截图、观察方法和文件 URL 清单位于 `docs/wallpaper-reference/2026-10-08/`；规格为 `docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md`。
+- `assets/wallpapers/camille-reference/images/` 中实际随插件包分发 277 张 JPEG，来源均为 Camille Mormal 网站公开的 `https://camillemormal.com/static/media/d/...` 图像：25 张加载拼图、8 个项目各自的首页图与 Hero 图，以及八项目完整详情画廊的大图/缩略图各 118 张。另随包分发 1 个 Söhne Buch WOFF2 字体文件 `https://camillemormal.com/static/font/s.woff2`。每个原始 URL、文件相对路径和内容 SHA-256 逐项列于 `assets/wallpapers/camille-reference/source-map.json`；包加载器启动时逐项校验哈希，默认壁纸离线可用。
+- 八项目详情图的顺序、alt 文案、图像尺寸、40/320 px 间隔及下一项目目标取自各项目公开页面 HTML，固化在 `assets/wallpapers/camille-reference/project-reference-data.json`。`scripts/import-camille-reference.mjs` 可从原页面重新生成资源清单；执行前会核对公开渲染脚本 SHA-256 与固定规格快照。图像和字体在本机归一化前保持原始字节，不在 Client Bundle 中放入站点脚本或运行时远端加载入口。
+- 用户已确认该壁纸工作不以素材授权调查作为前置事项；采用内容在此记录，不把授权调查设为开发门槛。
+- 壁纸 ZIP 容器采用 `fflate` 0.8.3（MIT），仅用于受限 `.kinich-wallpaper.zip` 的压缩与解压；项目源代码与官方说明：[fflate GitHub](https://github.com/101arrowz/fflate)。
+
+如有侵权，联系删除

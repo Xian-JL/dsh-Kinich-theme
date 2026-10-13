@@ -4,8 +4,11 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	deriveKinichSessionPhase,
+	isKinichPendingInteraction,
 	resolveSessionId,
-	selectMainViewSessionId
+	selectKinichPendingInteraction,
+	selectMainViewSessionId,
+	shouldAnnounceKinichCompletion
 } from "../src/client/session/compat.js";
 import {
 	clearKinichSessionState,
@@ -24,6 +27,23 @@ assert.equal(deriveKinichSessionPhase({ promptError: { code: "send-failed" }, ru
 assert.equal(deriveKinichSessionPhase({ openError: { code: "open-failed" }, running: false }), "error");
 assert.equal(deriveKinichSessionPhase({ lastAgentError: "agent failed", running: false }), "error");
 assert.equal(deriveKinichSessionPhase({ error: new Error("legacy"), running: false }), "error");
+assert.equal(deriveKinichSessionPhase({ running: true }, { kind: "approval" }), "waiting", "Waiting interaction takes priority over running");
+assert.equal(deriveKinichSessionPhase({ running: true }, { kind: "question" }), "waiting");
+assert.equal(deriveKinichSessionPhase({ running: true }, { kind: "plan-review" }), "waiting");
+assert.equal(deriveKinichSessionPhase({ running: true }, { kind: "unknown" }), "running", "Unknown interaction kinds do not invent a waiting state");
+assert.equal(deriveKinichSessionPhase({ error: new Error("failed") }, { kind: "approval" }), "error", "Errors retain priority over waiting interactions");
+assert.equal(isKinichPendingInteraction({ kind: "approval" }), true);
+assert.equal(isKinichPendingInteraction({ kind: "answer-record" }), false);
+const mainPending = { kind: "question", sessionId: "main" };
+const interactionSnapshot = new Map([[
+	"main", { running: true, pendingInteraction: mainPending }
+], ["secondary", { running: true, pendingInteraction: { kind: "approval", sessionId: "secondary" } }]]);
+assert.equal(selectKinichPendingInteraction(interactionSnapshot, "main"), mainPending);
+assert.equal(selectKinichPendingInteraction(interactionSnapshot, "secondary").kind, "approval");
+assert.equal(selectKinichPendingInteraction(interactionSnapshot, "missing"), undefined);
+assert.equal(selectKinichPendingInteraction(undefined, "main"), undefined);
+assert.equal(shouldAnnounceKinichCompletion(false, "idle"), false, "Leaving a waiting interaction must not announce a false completion");
+assert.equal(shouldAnnounceKinichCompletion(true, "idle"), true, "A real run that settles still announces completion");
 assert.equal(resolveSessionId("slot-session", { sessionId: "snapshot-session" }), "slot-session");
 assert.equal(resolveSessionId(undefined, { sessionId: "snapshot-session" }), "snapshot-session");
 

@@ -2,16 +2,33 @@
  * Translate both the DSH 0.1.5 and 0.1.6 Session snapshots into the small
  * product-state vocabulary used by Ajaw.
  */
-export function deriveKinichSessionPhase(snapshot) {
+export const KINICH_PENDING_INTERACTION_KINDS = Object.freeze(["approval", "question", "plan-review"]);
+
+export function isKinichPendingInteraction(value) {
+	return value !== null && typeof value === "object" && KINICH_PENDING_INTERACTION_KINDS.includes(value.kind);
+}
+
+export function selectKinichPendingInteraction(statusSnapshot, sessionId) {
+	if (sessionId === undefined || statusSnapshot?.get === undefined) return undefined;
+	const interaction = statusSnapshot.get(sessionId)?.pendingInteraction;
+	return isKinichPendingInteraction(interaction) ? interaction : undefined;
+}
+
+export function deriveKinichSessionPhase(snapshot, pendingInteraction) {
 	if (!snapshot) return "idle";
 	const failed = snapshot.promptError ?? snapshot.openError ?? snapshot.lastAgentError
 		?? snapshot.error ?? snapshot.lastError;
 	if (failed) return "error";
+	if (isKinichPendingInteraction(pendingInteraction)) return "waiting";
 	if (snapshot.awaitingFirstTurn === true || (Array.isArray(snapshot.pendingSubmissions) && snapshot.pendingSubmissions.length > 0)) {
 		return "sending";
 	}
 	if (snapshot.running === true) return "running";
 	return "idle";
+}
+
+export function shouldAnnounceKinichCompletion(previousActive, nextPhase) {
+	return previousActive === true && nextPhase === "idle";
 }
 
 /** Resolve the Session identity attached to a strict Session-scoped slot. */

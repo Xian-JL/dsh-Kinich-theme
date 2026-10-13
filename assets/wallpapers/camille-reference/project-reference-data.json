@@ -1,0 +1,1141 @@
+{
+  "snapshotDate": "2026-10-08",
+  "retrievedAt": "2026-10-09T07:52:25.510Z",
+  "scriptSha256": "a8c103d4e6f3f57534e8208b05fae57aa48a7b58c7b552723609639cc8f40dfe",
+  "projects": [
+    {
+      "id": "gucci",
+      "pageUrl": "https://camillemormal.com/gucci",
+      "referenceTitle": "A Restorative & Immersive Experience",
+      "nextProjectId": "samsung",
+      "nextProjectUrl": "https://camillemormal.com/samsung",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G0.jpg?1",
+          "caption": "The Regeneration Suite introduction",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G1.jpg?1",
+          "caption": "Woman at the Savoy in Gucci",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G2.jpg?1",
+          "caption": "Mind Body Soul illustrations",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G3.jpg?1",
+          "caption": "Savoy suite by Gucci",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G4.jpg?1",
+          "caption": "Savoy hotel illustration",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G5.jpg?1",
+          "caption": "Nature inside a Gucci hotel suite",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G6.jpg?1",
+          "caption": "iPad screen for restorative tea ceremony",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G7.jpg?1",
+          "caption": "Gucci scarf illustration",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G8.jpg?1",
+          "caption": "Woman having tea in Gucci hotel",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G9.jpg?1",
+          "caption": "Flower eye illustration",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G10.jpg?1",
+          "caption": "Savoy Gucci suite bedroom",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/large/G11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/gucci/section/small/G11.jpg?1",
+          "caption": "TV screen for Gucci campaign",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "samsung",
+      "pageUrl": "https://camillemormal.com/samsung",
+      "referenceTitle": "An All-New Experience On Your Wrist",
+      "nextProjectId": "rituals",
+      "nextProjectUrl": "https://camillemormal.com/rituals",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG0.jpg?1",
+          "caption": "Samsung watch UI grid",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG1.jpg?1",
+          "caption": "Onboarding for Samsung Watch 4 OOBE",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG2.jpg?1",
+          "caption": "Woman playing Frisbee wearing Samsung Watch",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG3.jpg?1",
+          "caption": "Key UI screen",
+          "width": 1800,
+          "height": 1008,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG4.jpg?1",
+          "caption": "Man in cafe wearing Samsung watch classic",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG5.jpg?1",
+          "caption": "2 watches floating",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG6.jpg?1",
+          "caption": "People running with Samsung watch",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG7.jpg?1",
+          "caption": "Running widget of Samsung Watch",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG8.jpg?1",
+          "caption": "Body composition widget animation",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG9.jpg?1",
+          "caption": "Stress widget steps",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG10.jpg?1",
+          "caption": "Close-up UI",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG11.jpg?1",
+          "caption": "Breathe widget steps of Samsung watch",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG12.jpg?1",
+          "caption": "Water consumption widget screens",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG13.jpg?1",
+          "caption": "Heart Rate widget measuring",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 14,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG14.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG14.jpg?1",
+          "caption": "Close-up UI progress",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 15,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG15.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG15.jpg?1",
+          "caption": "Light grey Samsung Watch 4",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 16,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG16.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG16.jpg?1",
+          "caption": "All UI screens together",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 17,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG17.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG17.jpg?1",
+          "caption": "Samsung Watch 4 face showcase",
+          "width": 1800,
+          "height": 1008,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 18,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/large/SG18.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/samsung/section/small/SG18.jpg?1",
+          "caption": "Watchfaces together",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "rituals",
+      "pageUrl": "https://camillemormal.com/rituals",
+      "referenceTitle": "Where Your Wellbeing Is Part Of The Journey",
+      "nextProjectId": "moco",
+      "nextProjectUrl": "https://camillemormal.com/moco",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R1.jpg?1",
+          "caption": "Tear one Rituals visual",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R2.jpg?1",
+          "caption": "A day to remember",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R3.jpg?1",
+          "caption": "Card to flip with UI",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R4.jpg?1",
+          "caption": "Rituals of Jing set",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R5.jpg?1",
+          "caption": "Tear 2 loyalty program",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R6.jpg?1",
+          "caption": "Card to Slider with UI",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R7.jpg?1",
+          "caption": "Woman receiving a Rituals spa treatment",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R8.jpg?1",
+          "caption": "Tear 3 loyalty program",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R9.jpg?1",
+          "caption": "Box to open with user interface",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R10.jpg?1",
+          "caption": "Full Rituals of Jing set in bathroom",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R11.jpg?1",
+          "caption": "Custom QR code",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R12.jpg?1",
+          "caption": "Your compass screen",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R13.jpg?1",
+          "caption": "3 iPhones presenting the Rituals app",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R14.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R14.jpg?1",
+          "caption": "Our recommendations screens",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 14,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R15.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R15.jpg?1",
+          "caption": "Thank you page of the Rituals app",
+          "width": 1800,
+          "height": 1012,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 15,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/large/R16.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/rituals/section/small/R16.jpg?1",
+          "caption": "Ritual of Namaste creams",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "moco",
+      "pageUrl": "https://camillemormal.com/moco",
+      "referenceTitle": "Iconic Art At Your Fingertip",
+      "nextProjectId": "sennheiser",
+      "nextProjectUrl": "https://camillemormal.com/sennheiser",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M0.jpg?1",
+          "caption": "Moco Museum home screen",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M1.jpg?1",
+          "caption": "Location page of the Moco website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M2.jpg?1",
+          "caption": "Modular website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M3.jpg?1",
+          "caption": "Macbook pro presenting Basquiat via 404 page",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M4.jpg?1",
+          "caption": "Collection site page of Daniel Arsham",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M5.jpg?1",
+          "caption": "Menu of the Moco website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M6.jpg?1",
+          "caption": "Artwork grid in 4 columns",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M7.jpg?1",
+          "caption": "Article from the Moco website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M8.jpg?1",
+          "caption": "iPhones screens presenting the website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M9.jpg?1",
+          "caption": "Moco Museum floor map",
+          "width": 1800,
+          "height": 1230,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M10.jpg?1",
+          "caption": "Patchwork of iPhones showcasing the app",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M11.jpg?1",
+          "caption": "Pink floor map",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M12.jpg?1",
+          "caption": "Action cards of the Moco app",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M13.jpg?1",
+          "caption": "Unlock Art in outdoors",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 14,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/large/M14.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/moco/section/small/M14.jpg?1",
+          "caption": "AR art in outdoors",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "sennheiser",
+      "pageUrl": "https://camillemormal.com/sennheiser",
+      "referenceTitle": "The Future Of Audio Expressed In Full",
+      "nextProjectId": "swarovski",
+      "nextProjectUrl": "https://camillemormal.com/swarovski",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S0.jpg?1",
+          "caption": "Homepage carrousel of the Sennheiser flagship store",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S1.jpg?1",
+          "caption": "Laptop showcasing 3D experience",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S2.jpg?1",
+          "caption": "Conversational search on the website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S3.jpg?1",
+          "caption": "Result of search of the Sennheiser ecommerce",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S4.jpg?1",
+          "caption": "Sennheiser lifestyle imagery",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S5.jpg?1",
+          "caption": "iPhone showing interactive hero of a product",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S6.jpg?1",
+          "caption": "3D exploded view of an Earbud",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S7.jpg?1",
+          "caption": "Product hero with variants of the website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S8.jpg?1",
+          "caption": "Video player from the site",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S9.jpg?1",
+          "caption": "Phone showing the homepage design",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S10.jpg?1",
+          "caption": "Dropdown product benefits",
+          "width": 1800,
+          "height": 1244,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S11.jpg?1",
+          "caption": "Shopable images",
+          "width": 1800,
+          "height": 990,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S12.jpg?1",
+          "caption": "Sennheizer HE1 product hero from the ecommerce",
+          "width": 1800,
+          "height": 1008,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S13.jpg?1",
+          "caption": "Image gallery of a product",
+          "width": 1800,
+          "height": 1008,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 14,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S14.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S14.jpg?1",
+          "caption": "Smart search bar",
+          "width": 1800,
+          "height": 1008,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 15,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/large/S15.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/sennheiser/section/small/S15.jpg?1",
+          "caption": "Basket of the ecommerce",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "swarovski",
+      "pageUrl": "https://camillemormal.com/swarovski",
+      "referenceTitle": "More Than Delightful Pieces",
+      "nextProjectId": "activia",
+      "nextProjectUrl": "https://camillemormal.com/activia",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW0.jpg?1",
+          "caption": "Light reflecting on the homepage of the Swarovski portfolio",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW1.jpg?1",
+          "caption": "2 columns Grid of Swarovski project",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW2.jpg?1",
+          "caption": "4 columns Grid of Swarovski project",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW3.jpg?1",
+          "caption": "Prologue peace light interaction feature",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW4.jpg?1",
+          "caption": "Craftsmanship section in project page",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW5.jpg?1",
+          "caption": "close-up of crystals in 3D",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW6.jpg?1",
+          "caption": "Renderer of 4 crystals for interaction",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW7.jpg?1",
+          "caption": "Swarovski fine interiors product header",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW8.jpg?1",
+          "caption": "Collection carousel from the Swarovski website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW9.jpg?1",
+          "caption": "Classic project hero designed at AKQA",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW10.jpg?1",
+          "caption": "Services Swarovski offers",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW11.jpg?1",
+          "caption": "About Swarovski fine interiors page from the website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW12.jpg?1",
+          "caption": "Drag and drop interaction with 3D crystal model",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW13.jpg?1",
+          "caption": "Selection of mobile screens for the Swarovski website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 14,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/large/SW14.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/swarovski/section/small/SW14.jpg?1",
+          "caption": "Light interaction with the cursor for the 404 page",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        }
+      ]
+    },
+    {
+      "id": "activia",
+      "pageUrl": "https://camillemormal.com/activia",
+      "referenceTitle": "Welcome To The Culture Of Living Well",
+      "nextProjectId": "saeco",
+      "nextProjectUrl": "https://camillemormal.com/saeco",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A0.jpg?1",
+          "caption": "Homepage hero of the Activia website",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A1.jpg?1",
+          "caption": "Macbook showcasing the design of the site",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A2.jpg?1",
+          "caption": "Infinity grid from the Activia ecommerce",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A3.jpg?1",
+          "caption": "Filters feature from the Activia store",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A4.jpg?1",
+          "caption": "Screen presenting category landing page",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A5.jpg?1",
+          "caption": "Grid of the Activia products",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A6.jpg?1",
+          "caption": "Product detail page with interaction",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A7.jpg?1",
+          "caption": "Design screen of a widget to find a product",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A8.jpg?1",
+          "caption": "Loader illustrations designed at AKQA",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A9.jpg?1",
+          "caption": "Screen showing articles boxes from the Activia website",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/large/A10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/activia/section/small/A10.jpg?1",
+          "caption": "Recipe made with Activia product",
+          "width": 1800,
+          "height": 1092,
+          "gapBeforePx": 40
+        }
+      ]
+    },
+    {
+      "id": "saeco",
+      "pageUrl": "https://camillemormal.com/saeco",
+      "referenceTitle": "Bringing Passion Back Into Coffee",
+      "nextProjectId": "gucci",
+      "nextProjectUrl": "https://camillemormal.com/gucci",
+      "gallery": [
+        {
+          "largeIndex": 0,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC0.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC0.jpg?1",
+          "caption": "Saeco website introduction with hand written typography",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 0
+        },
+        {
+          "largeIndex": 1,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC1.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC1.jpg?1",
+          "caption": "Craftmanship section of the website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 2,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC2.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC2.jpg?1",
+          "caption": "Using haptics to enhance sensations",
+          "width": 1800,
+          "height": 1790,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 3,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC3.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC3.jpg?1",
+          "caption": "Immersive experience on the Saeco website",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 4,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC4.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC4.jpg?1",
+          "caption": "Design of the interactive video player",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 5,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC5.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC5.jpg?1",
+          "caption": "Illustration of Saeco technology",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 6,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC6.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC6.jpg?1",
+          "caption": "All types of coffee from Saeco",
+          "width": 1800,
+          "height": 810,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 7,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC7.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC7.jpg?1",
+          "caption": "Coffee Machine UI in 3D",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 8,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC8.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC8.jpg?1",
+          "caption": "Product page from the ecommerce of Saeco",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 9,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC9.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC9.jpg?1",
+          "caption": "Content Carousel of videos and images",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 10,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC10.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC10.jpg?1",
+          "caption": "UI elements on top of photography",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 320
+        },
+        {
+          "largeIndex": 11,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC11.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC11.jpg?1",
+          "caption": "Slider of Saeco products with interaction UI",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 12,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC12.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC12.jpg?1",
+          "caption": "Place Coffee machine through augmented reality",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        },
+        {
+          "largeIndex": 13,
+          "largeSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/large/SC13.jpg?1",
+          "thumbnailSourceUrl": "https://camillemormal.com/static/media/d/work/saeco/section/small/SC13.jpg?1",
+          "caption": "Kitchen with 3D model of the Saeco machine",
+          "width": 1800,
+          "height": 1010,
+          "gapBeforePx": 40
+        }
+      ]
+    }
+  ]
+}

@@ -12,3 +12,6 @@ coverage/
 
 .DS_Store
 Thumbs.db
+
+# Local Desktop captures, Profile backup records and machine-specific evidence.
+docs/wallpaper-reference/

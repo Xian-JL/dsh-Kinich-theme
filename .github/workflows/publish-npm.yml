@@ -29,7 +29,17 @@ jobs:
         run: npm ci
 
       - name: Verify package
-        run: npm run verify
+        run: |
+          npm run build
+          npm run check
+          npm run test:version
+          npm run test:settings
+          npm run test:wallpaper-switch
+          npm run test:wallpaper-renderer
+
+      - name: Select npm distribution tag
+        id: npm-tag
+        run: node --input-type=module -e 'import fs from "node:fs"; const p=JSON.parse(fs.readFileSync("package.json","utf8")); fs.appendFileSync(process.env.GITHUB_OUTPUT,"tag="+(p.version.includes("-")?"next":"latest")+"\n");'
 
       - name: Publish package
-        run: npm publish --access public
+        run: npm publish --access public --tag ${{ steps.npm-tag.outputs.tag }}

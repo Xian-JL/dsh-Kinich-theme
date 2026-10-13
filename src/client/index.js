@@ -23,6 +23,6 @@ export function apply(ctx) {
 	ctx.slots.inject("conversation.composer.dock", () => ctx.slots.register({ name: "conversation.composer.dock", id: "kinich-session-state", order: 9999 }, SessionStateBridge));
 	ctx.slots.inject("shell.overlay", () => ctx.slots.register({ name: "shell.overlay", id: "kinich-theme-decoration", order: -100,
 		locale: KINICH_LOCALE_NAMESPACE, inject: () => ({ settings, theme: ctx.theme }) }, KinichOverlay));
-	ctx.slots.inject("settings.general.item", () => ctx.slots.register({ name: "settings.general.item", id: "kinich-theme", order: 15,
-		locale: KINICH_LOCALE_NAMESPACE, inject: () => ({ settings }) }, KinichSettingsRow));
+	ctx.slots.inject("settings.section", () => ctx.slots.register({ name: "settings.section", id: "kinich-theme", order: 40,
+		label: () => "Kinich", locale: KINICH_LOCALE_NAMESPACE, inject: () => ({ settings }) }, KinichSettingsRow));
 }

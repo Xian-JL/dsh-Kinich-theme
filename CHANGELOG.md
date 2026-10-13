@@ -1,11 +1,94 @@
 # Changelog
 
-## 1.7.2 — Runtime reliability and validation
+## 2.0.0-alpha.12 — Dynamic wallpaper enable switch
 
-- Filter unrelated streamed DOM mutations before resolving the welcome-page phase.
-- Cancel deferred click feedback, navigation cues, and in-flight balance requests when their owning client lifecycle ends.
-- Reject redirected, oversized, malformed, or undocumented responses from the official balance endpoint before displaying them.
-- Record the automated DSH compatibility fixtures separately from manual Windows/Desktop acceptance.
+- Add an explicit Profile-owned enable switch in section 06. Off removes dynamic rendering and browse controls while retaining assets, parameters and saved accents; it does not create wallpaper history.
+- Keep static wallpaper, visibility, accent matching and legacy animations independent. Preserve the switch through configuration rereads; reject failed writes without reporting success.
+- Update Specification to 1.0.3. Add isolated persistence and renderer lifecycle checks; Desktop review remains user-operated.
+- Confirm installed Desktop and embedded runtime are 0.2.0-rc.2. Official releases currently contain no stable 0.2.0, so the stable-environment gate remains unmet.
+
+## 2.0.0-alpha.11 — Matched-viewport audit corrections
+
+- Hide the plugin welcome copy while browsing wallpapers, preserving its normal welcome-page behavior.
+- Match the reference's fixed 60px miniature rail, original thumbnail aspect ratios, 1/15 gap mapping, pinned scrolling and viewport frame; thumbnail seeking aligns the gallery image 40px from the top.
+- Reveal newly visible About rows in one static redraw when an explicit seek occurs at zero rhythm.
+- Desktop visual and parameter acceptance is being completed against a single 1280×820 reference viewport; no cancelled test gates are restored.
+
+## 2.0.0-alpha.10 — Native import and footer correction
+
+- Accept Desktop requests without Content-Length; bound actual image upload bytes and archive streams, while rejecting oversized or mismatched declared uploads.
+- Match the pinned reference footer: clamp page scrolling at the footer, then expand over 1.5 viewport heights using its quadratic mapping after the 15% threshold. Keep the next preview below the last gallery image.
+- Align the scroll hit area with its visible caption/oval and seek exactly one viewport from the hero.
+- Correct About introductory typography and Credits color. Mark empty grayscale sampling completed for static imports.
+- Store normalization version/rules and relative blob paths; add an idempotent metadata migration that explicitly records unknown historic pipelines while preserving bytes, snapshots, parameters and provenance.
+- Add actual package rollback/uninstall/reinstall and source restore evidence in isolated Profiles. Native visual acceptance remains in progress.
+
+## 2.0.0-alpha.9 — Desktop audit corrections
+
+- Apply visibility once to the complete scene and preserve opaque alpha during image transitions; suppress legacy Ajaw/click decorations during temporary reference calibration.
+- Correct detail hero crop, copy placement, persistent Back, oval scroll cue, edge progress, real gallery miniature spacing and selection, overview crop direction and browse tool placement.
+- Keep both static import entries on the original 1920×1080/512 KiB WebP pipeline, omit source filenames and route old static controls through durable wallpaper snapshots.
+- Preserve original attribution/source URL for new assets imported from archives, while retaining existing content-addressed metadata.
+- Add targeted static-pipeline and fresh-asset provenance checks. Desktop visual acceptance remains in progress; final 2.0.0 is reserved.
+
+## 2.0.0-alpha.8 — Acceptance boundary audit
+
+- Preserve existing content-addressed asset attribution/metadata on repeat upload or failed archive import, using temporary upload leases instead of overwriting history metadata.
+- Revalidate image/font reference roles when a complete multi-volume archive is ready to commit.
+- Add 15 rejected-input boundary cases with unchanged index/metadata assertions, duplicate/same-name imports, selected export, missing volumes, split font roles, real old WebP migration/backup/idempotence, none reopening and original-file-independent restore bytes.
+- Provide the complete non-cancelled Desktop acceptance checklist and a separately invoked local installer with Junction staging, wallpaper/configuration backups, identity checks and rollback. No Desktop installation or Computer Use was performed.
+
+## 2.0.0-alpha.7 — Specification implementation candidate
+
+- Keep one renderer and one playback clock across parameter, project and template changes; preserve a zero-rhythm frame and make zero visibility restore ordinary surfaces.
+- Replace screenshot scaling with image-plane interpolation, bounded cover crops, time-normalized reference damping and the detail handover curve. Retarget from visible geometry and release retired textures.
+- Add the first-load mosaic handover, staged masked copy, independent project-count reveal, detail hero crop/scroll affordance, next-project handover and scroll-triggered About lines. Keep Work/About template navigation separate from browse tools.
+- Add browse-only image-space wheel/key controls, overview card selection and exact gallery-image seeking. Move the existing canvas into the plugin-owned browse surface and return it behind DSH on exit.
+- Add a local data-only package builder with ordered projects/images, descriptions, captions, fixed representative image and 40/320 px spacing. Preserve static/dynamic exclusivity and current/history/all export scopes.
+- Preview slider drafts immediately, commit once per gesture, reset all four values to medium explicitly and roll back failed writes. Preserve saved scene positions during parameter updates.
+- Persist paired accent palettes and preserve the single sampled result during parameter changes and history restore, including a completed sample with no valid color.
+- Back up legacy background configuration; preserve broken history metadata and refrain from garbage collection when live references cannot be resolved. Detect clear/import revision races and stale history pages.
+- Distinguish storage space/permission/I/O failures, retain loaded data on refresh failure, and provide data reload feedback.
+- Add focused renderer and storage failure-path source checks. This entry makes no Desktop visual-acceptance claim; Computer Use and installation are deferred to the user's separate instruction.
+
+## 2.0.0-alpha.6 — Reference browsing, calibration, and gallery controls
+
+- Make wallpaper browsing an explicit mode so normal DSH controls remain unobstructed.
+- Let the active wallpaper own its visual composition by suppressing legacy welcome/decorative overlays while the wallpaper is visible; existing settings and decorations resume when it is removed.
+- Add a view-scoped Escape handler and return focus to the wallpaper-browse setting when browsing ends.
+- Make the selected Work title open its project details and support arrow-key movement within the focused wallpaper toolbar.
+- Align the Work page number and detail type scale/description block with the fixed reference metrics.
+- Fade detail secondary copy to the measured alpha and add the next-page number, description, and progress-line elements to the footer preview.
+- Reveal the selected project’s image count when the browsable Work title is hovered or focused.
+- Add a browse-only, keyboard-accessible detail thumbnail rail that seeks the matching gallery position without capturing input over the rest of DSH.
+- Let the focused thumbnail rail consume wheel scrolling and map it to the matching gallery progress.
+- Add a browse-only Work thumbnail rail; project thumbnails now directly switch the selected project without capturing clicks elsewhere in DSH.
+- Add browse-scoped 1290 ms scene handovers: Work/overview cover geometry expands or contracts; project changes travel horizontally on Work and vertically in Detail; reduced motion, R=0, A=0 and ambient-motion-off go directly to stable frames.
+- Make the About micro-column and viewport frame scroll in sync; add a browse-only pointer, wheel, and keyboard mini-map slider for direct reading-position control.
+- Schedule each automatic project at 12 seconds of stable display followed by three reference-length transition phases; keep the queue movement time-normalized and skip motion under zero amplitude or reduced-motion overrides.
+- Cascade About main and miniature text row-by-row with the specified 1500 ms line reveal and 100/50 ms stagger while keeping miniature scrolling tied to the same normalized position.
+- Keep wallpaper browsing manual by default, offer an explicit autoplay demonstration, and add a non-persistent reference-calibration override at the specified 50/50/50/100 values.
+- Keep calibration and autoplay preview state out of Profile settings and wallpaper history.
+
+## 2.0.0-alpha.2 — Complete reference gallery and data-safe volumes
+
+- Added the complete ordered large-image and thumbnail galleries for all eight Camille Mormal reference projects, including the captured 40/320 px image-gap sequence and verified next-project footer targets.
+- Bundled the Söhne Buch WOFF2 font and registered it only within the wallpaper UI subtree; the package now contains 277 JPEGs plus one font, with URL/path/hash metadata for every asset.
+- Split the wallpaper renderer's Work overview into the reference horizontal card queue, separated gallery source images from thumbnail assets, restored the detail hero-to-gallery scroll composition, and added the six-section About micro-column layout.
+- Loaded the complete default bundle through the same Profile-scoped data store and verified a multi-volume backup round trip for its 278 assets; fixed the volume planner to respect the 256-asset per-volume limit.
+- Updated the wallpaper data-spec marker to 1.0.2 and kept the plugin candidate below the final 2.0.0 release.
+
+## 1.8.1 — Visible backgrounds and dedicated settings
+
+- Replace the image-tint slider with a background-visibility control that adjusts Kinich surface opacity across light and dark themes, with a 75% visible-by-default setting.
+- Move Kinich preferences from General into a dedicated Settings sidebar section.
+
+## 1.8.0 — Session attention and custom background
+
+- Distinguish approval, question, and plan-review interactions for the selected main Session. Waiting state takes priority over running feedback and does not announce a false completion if the request is dismissed.
+- Add profile-persisted local background images, bounded client-side WebP normalization, and an optional light/dark accent palette derived from the image.
+- Keep image data local to the DSH profile and out of the package, network, and model context; reset restores the exact preset appearance.
+- Preserve existing animations and restore current theme tokens when custom background or automatic palette matching is disabled.
 
 ## 1.7.1 — Reliability and accessibility maintenance
 

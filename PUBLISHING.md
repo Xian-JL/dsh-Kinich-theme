@@ -1,5 +1,15 @@
 # Publishing
 
+## Complex-wallpaper candidates (2026-10-13)
+
+The current candidate is `2.0.0-alpha.12`; final `2.0.0` remains reserved. Publish prereleases to npm `next`, and create GitHub releases with `--prerelease --latest=false`. Do not replace the stable npm/GitHub latest channels with a candidate. DSH Desktop remains `0.2.0-rc.2`, not a confirmed stable 0.2.0 environment.
+
+Specification 1.0.3 and the user's accepted/cancelled gates govern this candidate. Use build/check/version, settings writes, wallpaper switch/store persistence and renderer checks, plus installation of the exact packed tarball in a clean isolated Profile. Do not reinstate cancelled multi-size, long-running, performance or dedicated interaction/regression requirements through the legacy `verify` command below. Local Desktop captures and Profile records in `docs/wallpaper-reference/` stay outside Git; sanitized candidate status is in `docs/CANDIDATE_ALPHA12.md`.
+
+The legacy deployment script below always marks a GitHub release latest and is not suitable for this prerelease. This candidate is pushed and published using explicit commands and the exact checked tarball. The user explicitly authorized this GitHub/npm publication; final stable-version confirmation remains separate.
+
+## Historical stable publication procedure
+
 The current published baseline is Kinich Theme `1.7.2`. The deployment script creates GitHub Release tarballs and does not run `npm publish`; npm publication remains a separate action.
 
 Before preparing a new public release:

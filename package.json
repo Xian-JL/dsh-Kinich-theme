@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "1.7.2",
+  "version": "2.0.0-alpha.12",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web and Desktop with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -11,6 +11,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "assets/wallpapers/camille-reference",
     "lib",
     "cordis.patch.yml",
     "README.md",
@@ -60,15 +61,21 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "verify": "npm run build && npm run check && npm run test:stage4 && npm run test:balance-client && npm run test:settings && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
+    "verify": "npm run test:version && npm run test:wallpaper && npm run build && npm run check && npm run test:stage4 && npm run test:balance-client && npm run test:settings && npm run test:background && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
+    "test:version": "node scripts/test-version-policy.mjs",
+    "test:wallpaper": "node scripts/test-wallpaper.mjs",
     "test:stage4": "node scripts/test-stage4.mjs",
     "test:balance-client": "node scripts/test-balance-client.mjs",
     "test:settings": "node scripts/test-settings-write.mjs",
+    "test:background": "node scripts/test-background.mjs",
     "test:interaction": "node scripts/test-interaction.mjs",
     "test:presentation": "node scripts/test-presentation.mjs",
     "test:compat": "node scripts/test-dsh-016.mjs",
     "test:dsh017": "node scripts/test-dsh-017.mjs",
-    "setup": "npm install --omit=dev"
+    "setup": "npm install --omit=dev",
+    "test:wallpaper-renderer": "node scripts/test-wallpaper-renderer.mjs",
+    "test:wallpaper-boundaries": "node scripts/test-wallpaper-boundaries.mjs",
+    "test:wallpaper-switch": "node scripts/test-wallpaper-switch.mjs"
   },
   "keywords": [
     "deepseek",
@@ -82,7 +89,8 @@
     "web"
   ],
   "dependencies": {
-    "@deepseek-ai/schemastery": "3.18.4"
+    "@deepseek-ai/schemastery": "3.18.4",
+    "fflate": "0.8.3"
   },
   "devDependencies": {
     "esbuild": "0.28.2"
@@ -98,6 +106,10 @@
   "homepage": "https://github.com/Xian-JL/dsh-Kinich-theme#readme",
   "publishConfig": {
     "access": "public"
+  },
+  "kinich": {
+    "wallpaperReleaseStage": "candidate",
+    "wallpaperSpecVersion": "1.0.3"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

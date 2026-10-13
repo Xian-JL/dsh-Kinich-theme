@@ -1,41 +1,16 @@
-# Kinich Theme v1.7.2 — Runtime Reliability
+# Kinich 2.0.0-alpha.12 — Complex wallpaper prerelease
 
-Kinich 1.7.2 reduces unrelated DOM work, cleans up deferred interactions on teardown, and makes balance requests more resilient while preserving all existing visual and dynamic effects.
+This is a prerelease candidate, not the final Kinich 2.0.0 release. The verified Desktop host is DSH 0.2.0-rc.2; stable DSH 0.2.0 compatibility has not been confirmed.
 
-## Changes
+- Add an explicit **Enable dynamic wallpaper** switch in section 06, saved independently per Profile. Off stops dynamic display and playback while retaining the selected assets, parameters and sampled accent. On restores the selected wallpaper. Toggling does not create history.
+- Static backgrounds, visibility, accent matching and existing Kinich/Ajaw animations retain their separate controls.
+- Include Work, Overview, project detail/gallery/footer, About and loading templates with the local eight-project reference assets.
+- Provide local wallpaper creation, selection, recoverable history, current/history/all export and multi-volume import. Static and dynamic backgrounds remain exclusive; accents are sampled once and retained.
+- Include Desktop transport, footer geometry, thumbnail rail and frozen About-row corrections developed in the preceding candidates.
+- Specification is now **1.0.3**. The user confirmed the preceding visual/parameter/management acceptance groups; the new enable switch has code, isolated persistence and renderer checks, with Desktop review left to the user.
 
-- The welcome-phase observer ignores ordinary streamed content changes and only rechecks when a phase marker is inserted, removed, or changed.
-- Deferred click and navigation feedback timers are tracked and cleared when the interaction bridge is disposed.
-- Browser balance requests have a timeout, abort when the last consumer leaves, and cannot let an old credential's response replace current state.
-- The Host rejects redirects, nonstandard API ports, non-JSON or oversized bodies, and malformed balance fields before accepting a response.
-- Existing motion, appearance choices, and saved settings remain available. No settings migration is required.
+Build, package contracts, version policy, settings writes, the isolated switch/store checks, renderer harness and clean package installation are the publication checks. They do not claim a real Desktop restart or stable-host acceptance.
 
-## Install
+Install this candidate with `dsh plugin --profile desktop add dsh-kinich-theme@2.0.0-alpha.12` after fully exiting Desktop.
 
-Open Desktop once to initialize its profile, then fully quit it. Install into the Desktop profile using its bundled DSH CLI:
-
-```powershell
-dsh plugin --profile desktop add dsh-kinich-theme@latest
-```
-
-For the Web profile:
-
-```powershell
-dsh plugin --profile web add dsh-kinich-theme@latest
-dsh web
-```
-
-GitHub Release fallback:
-
-```powershell
-dsh plugin --profile web add https://github.com/Xian-JL/dsh-Kinich-theme/releases/latest/download/dsh-kinich-theme-latest.tgz
-```
-
-Use the CLI bundled with the intended DSH installation if the global `dsh` command points to an older version. Restart that DSH instance after installation.
-
-## Compatibility
-
-- DeepSeek Harness Web / Desktop: `^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2`
-- Node.js: `^22.19.0 || >=24.0.0`
-
-The MIT license covers original plugin code and documentation. Processed third-party visual materials remain documented separately in `THIRD_PARTY_ASSETS.md`.
+The npm `next` tag selects the candidate. The `latest` tag remains on the stable baseline. Final 2.0.0 remains reserved for final confirmation.

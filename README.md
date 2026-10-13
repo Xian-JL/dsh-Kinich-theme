@@ -4,10 +4,14 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web / De
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - Distribution: npm, with a GitHub Release tarball as a fallback
-- Current release: `1.7.2`
+- Stable plugin: `1.8.1` (npm `latest`); current candidate: `2.0.0-alpha.12` (npm `next`)
 - Target runtimes: the declared DSH Web compatibility ranges and Desktop `0.2.0-rc.2`
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
+
+Custom backgrounds support automatic accents and a background-visibility slider from 0% to 100% (default 75%). Higher values make DSH surfaces more transparent so the image is clearly visible.
+
+alpha.12 adds complex wallpaper templates, creation/history/import/export and a Profile-owned **Enable dynamic wallpaper** switch. New wallpaper parameters default to 50. Off retains assets, parameters and sampled accents; static backgrounds and existing effects are independent. Install the candidate using `dsh plugin --profile desktop add dsh-kinich-theme@next`. The verified host is still **DSH 0.2.0-rc.2**, not stable 0.2.0; final Kinich 2.0.0 is not confirmed. See [Specification 1.0.3](docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md) and [candidate status](docs/CANDIDATE_ALPHA12.md).
 
 ## Install
 
@@ -83,7 +87,7 @@ Choose **Minimal**, **Balanced**, or **Immersive** independently from the visual
 
 ## Settings
 
-Open DSH **Settings → General → Kinich Theme** to configure:
+Open DSH **Settings → Kinich** to configure:
 
 - Jungle (legacy modes remain configuration-compatible only)
 - Minimal / Balanced / Immersive
@@ -94,7 +98,7 @@ Open DSH **Settings → General → Kinich Theme** to configure:
 
 ## Compatibility
 
-`v1.7.1` supports the previous DSH Web releases and Desktop `0.2.0-rc.2`:
+`v1.8.1` supports the declared DSH releases and Desktop `0.2.0-rc.2`:
 
 ```text
 @deepseek-ai/dsh ^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2

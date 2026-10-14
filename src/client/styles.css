@@ -2384,3 +2384,31 @@ body:has([data-phase='hero']) .dsh-kinich-overlay[data-ambient-motion='true'] .d
 /* Keep plugin tools away from the reference's top-right project counter. */
 .dsh-kinich-wallpaper-play { top:auto; right:auto; left:420px; bottom:12px; }
 .dsh-kinich-wallpaper-browse-exit { top:auto; right:auto; left:540px; bottom:12px; }
+
+/* Settings is a document inside the host-owned scrollport, never a shrinking flex viewport. */
+.dsh-kinich-settings { display:block; box-sizing:border-box; width:100%; min-width:0; min-height:0; height:auto; max-height:none; overflow:visible; }
+.dsh-kinich-settings > :not(:last-child) { margin-bottom:14px; }
+.dsh-kinich-settings__section { flex:none; min-height:0; scroll-margin-top:94px; }
+.dsh-kinich-settings__navigation { position:sticky; top:0; z-index:3; display:flex; flex-wrap:wrap; gap:6px; padding:8px 0; background:var(--dsw-alias-bg-layer-2); }
+.dsh-kinich-settings__navigation button { border:1px solid var(--dsw-alias-border-l2); border-radius:6px; padding:5px 8px; background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); font:inherit; font-size:12px; cursor:pointer; }
+body[data-kinich-style] [data-shortcut-modal='settings'] > div { min-width:0; min-height:0; }
+
+/* Wallpaper transparency applies to the workspace, not body-portaled dialog/popup surfaces. */
+body[data-kinich-style] :is([role='dialog'],[role='alertdialog'],[aria-modal='true'],[role='menu'],[role='listbox'],[popover]) {
+  --dsw-alias-bg-base:var(--kinich-opaque-alias-bg-base);
+  --dsw-alias-bg-layer-1:var(--kinich-opaque-alias-bg-layer-1);
+  --dsw-alias-bg-layer-2:var(--kinich-opaque-alias-bg-layer-2);
+  --dsw-alias-bg-layer-3:var(--kinich-opaque-alias-bg-layer-3);
+  --dsw-alias-bg-overlay:var(--kinich-opaque-alias-bg-overlay);
+  --dsw-alias-bg-module-platform:var(--kinich-opaque-alias-bg-module-platform);
+  --dsw-alias-bg-multi-select:var(--kinich-opaque-alias-bg-multi-select);
+  --dsw-specific-sidebar-fill:var(--kinich-opaque-specific-sidebar-fill);
+  --dsw-specific-bubble:var(--kinich-opaque-specific-bubble);
+  --dsw-specific-bubble-highlight:var(--kinich-opaque-specific-bubble-highlight);
+  --dsw-specific-menu:var(--kinich-opaque-specific-menu);
+  --dsw-specific-selector:var(--kinich-opaque-specific-selector);
+  background-color:var(--kinich-opaque-alias-bg-layer-2) !important;
+}
+.dsh-kinich-overlay[data-wallpaper-displayed='true'] .dsh-kinich-welcome { visibility:hidden; pointer-events:none; }
+body:has([aria-modal='true']) :is(.dsh-kinich-wallpaper-hit-area,.dsh-kinich-wallpaper-project-hit,.dsh-kinich-wallpaper-overview-hit,.dsh-kinich-wallpaper-scroll-hit,.dsh-kinich-wallpaper-card-hit,.dsh-kinich-wallpaper-nav,.dsh-kinich-wallpaper-play,.dsh-kinich-wallpaper-browse-exit,.dsh-kinich-wallpaper-thumb-rail,.dsh-kinich-wallpaper-work-thumb-rail,.dsh-kinich-wallpaper-about-mini-map,.dsh-kinich-wallpaper-about-link) { pointer-events:none !important; }
+body:has([aria-modal='true']) .dsh-kinich-wallpaper-reference-nav button { pointer-events:none !important; }

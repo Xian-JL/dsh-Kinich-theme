@@ -375,6 +375,7 @@ export function KinichOverlay({ settings, theme, t, useSessions }) {
 		className: "dsh-kinich-overlay",
 		ref: overlayRef,
 		"data-wallpaper-mode": wallpaperReady?.active.mode ?? "legacy",
+		"data-wallpaper-displayed":String((wallpaperDisplayed&&backgroundVisibility>0)||legacyVisible),
 		"data-wallpaper-calibration":String(wallpaper.calibration),
 		"data-wallpaper-browsing":String(wallpaper.browsing),
 		"data-ajaw": String(value.animateAjaw),

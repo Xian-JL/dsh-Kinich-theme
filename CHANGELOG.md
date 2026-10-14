@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 — Background copy and settings popup fixes
+
+- Suppress reference titles/navigation/loading copy in passive wallpapers and hide the legacy welcome annotation when a background is visible; explicit browsing/calibration retains the full reference template text.
+- Make all six settings sections reachable through normal document scrolling and section navigation. Restore direct selection of Jungle, Phlogiston and Sunlit without overwriting motion/wallpaper settings.
+- Give each mounted plugin fiber its own stylesheet so old-fiber cleanup during hot replacement cannot remove the active replacement's CSS.
+- Keep dialog, alertdialog, menu, listbox and popover surfaces opaque in light/dark modes at every wallpaper visibility value. Scope opaque surface tokens to popup content while preserving workspace transparency and existing animations.
+- Record the user's explicit 2.0.1 release authorization in Specification 1.0.6; raise the version ceiling only to 2.0.1. Host verification remains DSH 0.2.0-rc.2.
+
 ## 2.0.0 — Confirmed complex wallpaper release
 
 - Finalize the accepted alpha.13 implementation as 2.0.0 following the user's final review and explicit publication authorization on 2026-10-14.

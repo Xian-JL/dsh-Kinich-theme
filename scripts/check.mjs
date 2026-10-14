@@ -172,7 +172,7 @@ assert(overlaySource.includes('triggerReaction'), "Ajaw click reaction missing")
 assert(settingsUiSource.includes("ThemePreview"), "Settings live preview missing");
 assert(!settingsUiSource.includes("PresetCards"), "Stage 3 settings must expose the Jungle design only");
 assert(settingsUiSource.includes("BalanceMonitorPreview"), "Balance monitor settings shell missing");
-assert(settingsUiSource.includes('value.visualStyle !== "jungle"'), "Legacy visual-mode compatibility prompt missing");
+assert(settingsUiSource.includes('"style.phlogiston.label"')&&settingsUiSource.includes('"style.sunlit.label"'), "All retained theme styles must be directly selectable");
 assert(settingsUiSource.includes('updateMany("ajaw-reset"'), "Ajaw reset action missing");
 assert(brandSource.includes("dsh-kinich-brand-shell__orbit"), "Layered brand emblem missing");
 assert(client.includes("sidebar.brand.name"), "Sidebar brand name slot missing");

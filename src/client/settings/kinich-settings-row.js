@@ -46,8 +46,8 @@ function ThemePreview({ value, t }) {
 				className: "dsh-kinich-live-preview__copy",
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-live-preview__eyebrow", children: t("preview.eyebrow") }),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: t("style.jungle.label") }),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t("style.jungle.tagline") })
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: t(`style.${value.visualStyle}.label`) }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t(`style.${value.visualStyle}.tagline`) })
 				]
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -70,6 +70,7 @@ function ThemePreview({ value, t }) {
 function SettingSection({ eyebrow, title, description, children, className = "" }) {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 		className: ["dsh-kinich-settings__section", className].filter(Boolean).join(" "),
+		id: eyebrow ? `dsh-kinich-settings-section-${eyebrow}` : undefined,
 		children: [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SectionHeader, { eyebrow, title, description }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__section-body", children })
@@ -244,6 +245,7 @@ export function KinichSettingsRow({ settings, t }) {
 		className: "dsh-kinich-settings",
 		"aria-labelledby": "dsh-kinich-settings-title",
 		children: [
+			/* @__PURE__ */ (0,react_jsx_runtime.jsx)("nav",{className:"dsh-kinich-settings__navigation","aria-label":wallpaperText("settings.navigation","Kinich 设置分区"),children:[["01",t("visualIntensity.section")],["02",t("ajaw.section")],["03",t("balance.section")],["04",t("environment.section")],["05",t("background.section")],["06",wallpaperText("section","复杂动态壁纸")]].map(([id,label])=>(0,react_jsx_runtime.jsx)("button",{type:"button",onClick:()=>{if(typeof document!=="undefined")document.getElementById(`dsh-kinich-settings-section-${id}`)?.scrollIntoView({block:"start",behavior:"auto"});},children:`${id} ${label}`},id))}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "dsh-kinich-settings__hero",
 				children: [
@@ -270,19 +272,12 @@ export function KinichSettingsRow({ settings, t }) {
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, { disabled, label: t("state.retry"), onClick: () => updateMany(failed.label, failed.patch) })
 			] }),
 
-			value.visualStyle !== "jungle" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-				className: "dsh-kinich-settings__legacy",
-				children: [
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t("jungle.legacy") }),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ActionButton, { disabled, label: t("jungle.activate"), onClick: () => update("visualStyle", "jungle"), tone: "accent" })
-				]
-			}),
 
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SettingSection, {
 				eyebrow: "01",
 				title: t("visualIntensity.section"),
 				description: t("visualIntensity.description"),
-				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChoiceGroup, {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment,{children:[(0,react_jsx_runtime.jsx)(ChoiceGroup,{disabled,label:t("style.label"),value:value.visualStyle,onChange:next=>update("visualStyle",next),options:[{value:"jungle",label:t("style.jungle.label")},{value:"phlogiston",label:t("style.phlogiston.label")},{value:"sunlit",label:t("style.sunlit.label")}]}),(0, react_jsx_runtime.jsx)(ChoiceGroup, {
 					disabled,
 					label: t("visualIntensity.label"),
 					onChange: next => update("visualIntensity", next),
@@ -292,7 +287,7 @@ export function KinichSettingsRow({ settings, t }) {
 						{ value: "immersive", label: t("visualIntensity.immersive") }
 					],
 					value: value.visualIntensity
-				})
+				})]})
 			}),
 
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SettingSection, {

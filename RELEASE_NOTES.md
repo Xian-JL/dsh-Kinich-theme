@@ -1,20 +1,17 @@
-# Kinich Theme v2.0.0
+# Kinich Theme v2.0.1
 
-Confirmed by the user on 2026-10-14 after reviewing the latest implementation. This is the final Kinich 2.0.0 plugin release. The verified DSH Desktop host remains **0.2.0-rc.2**; stable DSH 0.2.0 environment verification is not implied.
+Fixes the three issues reported after Desktop acceptance of 2.0.0:
 
-- Complete local Work, Overview, project detail/gallery/footer, About and loading templates, with eight projects and 278 bundled image/font assets.
-- Four independent 0–100 wallpaper controls, default 50, with explicit zero behavior; a separate per-Profile enable switch preserves assets, parameters and sampled accents when dynamic display is turned off.
-- Local wallpaper creation, selection, recoverable history, current/selected/all export, multi-volume import and exclusive static/dynamic display. Accents are sampled once and retained across settings, theme and history changes.
-- Transaction-safe Profile storage and coherent multi-window reads; exports remain complete during clearing and release temporary references on completion or cancellation.
-- Wall-clock rhythm timing, correct explicit project selection, frozen About redraws and explicit rendering/data retry actions.
-- Existing Kinich/Ajaw effects and settings remain available. Specification 1.0.5 records final acceptance; data schema stays 1.
+- Ordinary backgrounds no longer draw reference titles, navigation or loading annotations, and do not overlap the visible wallpaper with legacy welcome copy. Explicit browsing/calibration retains complete reference text.
+- All six Kinich settings sections have direct navigation and normal scrolling. Jungle, Phlogiston and Sunlit can be selected without resetting other preferences.
+- Settings dialogs, alert dialogs, menus, listboxes and popovers use opaque surfaces in light/dark modes, independently of wallpaper visibility. Workspace transparency and existing effects remain available.
 
-Source checks and exact-tarball isolated installation/lifecycle checks supplement the user's Desktop acceptance. Cancelled long-running, multi-size, performance and dedicated regression gates remain cancelled.
+Version 2.0.1 and publication are explicitly authorized by the user; Specification 1.0.6 records the scope. Existing histories, assets, parameters and sampled accents are preserved. Verified Desktop host remains **DSH 0.2.0-rc.2**, not stable DSH 0.2.0.
 
-After fully exiting Desktop, install through its bundled CLI:
+Targeted settings/renderer checks, isolated headless browser scrolling/opacity checks and exact packed installation supplement the user's reported Desktop results. No Computer Use or cancelled broad regression gate is required for this maintenance release.
+
+After fully exiting Desktop:
 
 ```powershell
 dsh plugin --profile desktop add dsh-kinich-theme@latest
 ```
-
-GitHub Release v2.0.0 includes the exact installation tarball, a latest alias and SHA-256 checksums. npm latest selects 2.0.0. Final plugin and host version identities remain separate.

@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web and Desktop with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -76,7 +76,8 @@
     "test:wallpaper-renderer": "node scripts/test-wallpaper-renderer.mjs",
     "test:wallpaper-boundaries": "node scripts/test-wallpaper-boundaries.mjs",
     "test:wallpaper-switch": "node scripts/test-wallpaper-switch.mjs",
-    "test:wallpaper-consistency": "node scripts/test-wallpaper-consistency.mjs"
+    "test:wallpaper-consistency": "node scripts/test-wallpaper-consistency.mjs",
+    "test:release-201-ui": "node scripts/test-release-201-ui.mjs"
   },
   "keywords": [
     "deepseek",
@@ -110,7 +111,7 @@
   },
   "kinich": {
     "wallpaperReleaseStage": "confirmed",
-    "wallpaperSpecVersion": "1.0.5"
+    "wallpaperSpecVersion": "1.0.6"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

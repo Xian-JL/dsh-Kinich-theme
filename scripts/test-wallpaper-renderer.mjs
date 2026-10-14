@@ -46,12 +46,12 @@ const react={createElement:(type,props,...children)=>({type,props,children}),Fra
 	useState:initial=>{const index=hookIndex++;hooks[index]??={value:initial};return [hooks[index].value,value=>{hooks[index].value=typeof value==="function"?value(hooks[index].value):value;}];},
 	useEffect:(effect,deps)=>{const index=hookIndex++,old=hooks[index];if(!old||deps.some((value,i)=>value!==old.deps[i]))effects.push(()=>{old?.cleanup?.();hooks[index]={deps,cleanup:effect()};});}
 };
-let currentTexture,crop,opacity,viewport,draws=[],clearAlpha,blendFactors;
+let currentTexture,crop,opacity,viewport,draws=[],clearAlpha,blendFactors,textCalls=[];
 const gl=new Proxy({blendFuncSeparate:(...values)=>{blendFactors=values;},createShader:()=>({}),createProgram:()=>({}),createBuffer:()=>({}),createTexture:()=>({}),getShaderParameter:()=>true,getProgramParameter:()=>true,getUniformLocation:(_,name)=>name,getAttribLocation:()=>0,
 	bindTexture:(_,texture)=>{currentTexture=texture;},texImage2D:(...args)=>{currentTexture.id=args.at(-1).src;},uniform1f:(_,value)=>{opacity=value;},uniform4fv:(_,value)=>{crop=Array.from(value);},viewport:(...values)=>{viewport=values;},clearColor:(_r,_g,_b,a)=>{clearAlpha=a;},clear:()=>{draws=[];},drawArrays:()=>{draws.push({id:currentTexture.id,crop:[...crop],opacity,viewport:[...viewport]});}
 },{get:(target,key)=>key in target?target[key]:typeof key==="string"&&key===key.toUpperCase()?key:()=>{}});
 function element(tag){const result={tag,style:{},dataset:{},children:[],width:1920,height:1080,setAttribute:()=>{},append(...children){for(const child of children){child.parentNode=this;this.children.push(child);}},insertBefore(child){child.parentNode=this;this.children.push(child);if(!layers.includes(child))layers.push(child);},remove(){const index=layers.indexOf(this);if(index>=0)layers.splice(index,1);},addEventListener(type,fn){this.events??=new Map();this.events.set(type,fn);},removeEventListener(type){this.events?.delete(type);}};
-	const ink=new Proxy({canvas:result,measureText:text=>({width:String(text).length*10})},{get:(target,key)=>key in target?target[key]:()=>{}});
+	const ink=new Proxy({canvas:result,measureText:text=>({width:String(text).length*10}),fillText:text=>textCalls.push(text)},{get:(target,key)=>key in target?target[key]:()=>{}});
 	result.getContext=type=>{if(type==="webgl"){rendererCount++;return gl;}return ink;};return result;
 }
 const body=element("body"),document={body,documentElement:{lang:"en"},fonts:{add:()=>{},delete:()=>{}},createElement:element,getElementById:()=>null,querySelector:()=>null,activeElement:null,addEventListener:()=>{},removeEventListener:()=>{}};
@@ -67,6 +67,7 @@ function render(){hookIndex=0;module.exports.KinichWallpaperStage({wallpaper,amb
 async function tick(count=1){for(let i=0;i<count;i++){now+=20;const pending=[...frames.values()];frames.clear();for(const callback of pending)callback(now);await new Promise(resolve=>setImmediate(resolve));}}
 async function advance(milliseconds){now+=milliseconds;const pending=[...frames.values()];frames.clear();for(const callback of pending)callback(now);await new Promise(resolve=>setImmediate(resolve));}
 render();await tick(1000);assert.deepEqual(blendFactors,["SRC_ALPHA","ONE_MINUS_SRC_ALPHA","ONE","ONE_MINUS_SRC_ALPHA"]);assert.equal(rendererCount,1);assert.ok(draws.length>0);
+assert.equal(textCalls.length,0,"Passive wallpaper must not draw titles, reference navigation or loading annotations");
 wallpaper={...wallpaper,current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,rhythm:0}}}};render();await tick();const frozen=JSON.stringify(draws);await tick(200);assert.equal(JSON.stringify(draws),frozen);assert.equal(frames.size,0);
 wallpaper={...wallpaper,page:1,current:{...wallpaper.current,active:{...wallpaper.current.active,projectId:"two"}}};render();await tick();
 assert.ok(draws.some(draw=>draw.id.endsWith(ids[1])&&draw.viewport[2]===2880&&draw.viewport[3]===1620),"Explicit project selection must show the chosen stable cover without an old autoplay offset");
@@ -82,6 +83,7 @@ for(const rhythm of [1,25,50,75,100]){
 wallpaper={...wallpaper,current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,visibility:0}}}};render();await tick();assert.equal(body.children[0].style.opacity,"0");assert.equal(clearAlpha,1);assert.equal(draws.length,0);assert.equal(rendererCount,1);
 wallpaper={...wallpaper,browsing:true,view:"work"};render();await tick(2);assert.equal(rendererCount,1);
 wallpaper={...wallpaper,calibration:true};render();await tick(2);assert.equal(wallpaper.current.active.parameters.visibility,0);assert.equal(body.children[0].style.opacity,"1");
+assert.ok(textCalls.some(text=>text==="One"||text==="Two"),"Explicit calibration must retain reference template titles");
 wallpaper={...wallpaper,calibration:false,browsing:true,view:"detail",current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,visibility:100}}}};render();await tick(20);assert.equal(rendererCount,1);assert.ok(draws.length>0);
 const canvas=body.children[0].children[1];let prevented=false;canvas.events.get("webglcontextlost")({preventDefault:()=>{prevented=true;}});assert.equal(prevented,true);assert.equal(frames.size,0);canvas.events.get("webglcontextrestored")();await tick();assert.equal(rendererCount,1);assert.ok(draws.length>0);
 wallpaper={...wallpaper,renderRevision:1};render();await tick(20);

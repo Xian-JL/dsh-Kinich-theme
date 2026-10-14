@@ -1,5 +1,9 @@
 # Publishing
 
+## Authorized maintenance release 2.0.1 (2026-10-14)
+
+The user reported three Desktop UI defects and explicitly authorized fixing and publishing 2.0.1 without another publication-permission request. Specification 1.0.6 and PATCH-2.0.1 raise the authorized ceiling to 2.0.1 only. Use GitHub latest and npm latest with the checked maintenance tarball. Targeted settings/renderer/headless popup checks and packed isolation supplement the reported defects; host verification remains 0.2.0-rc.2. The historical instructions below do not replace this authorization.
+
 ## Confirmed 2.0.0 release (2026-10-14)
 
 The user completed final review and explicitly authorized GitHub/npm publication as 2.0.0. Package release stage is now `confirmed`; use npm `latest` and a non-prerelease GitHub Release marked latest. Specification 1.0.5 records this confirmation. The verified Desktop host remains 0.2.0-rc.2; stable-host verification is not implied by the plugin's final version. Candidate instructions below describe historical releases.

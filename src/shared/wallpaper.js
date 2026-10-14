@@ -1,5 +1,5 @@
 export const WALLPAPER_SCHEMA_VERSION = 1;
-export const WALLPAPER_SPEC_VERSION = "1.0.5";
+export const WALLPAPER_SPEC_VERSION = "1.0.6";
 export const WALLPAPER_ASSET_PATH = "/api/kinich-wallpaper/asset";
 export const WALLPAPER_STATE_PATH = "/api/kinich-wallpaper/state";
 export const WALLPAPER_APPLY_PATH = "/api/kinich-wallpaper/apply";

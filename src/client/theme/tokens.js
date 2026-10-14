@@ -172,13 +172,11 @@ const BACKGROUND_SURFACE_ALPHA = Object.freeze({
 	"--dsw-alias-bg-layer-1": { from: [0.94, 0.92], to: [0.50, 0.44] },
 	"--dsw-alias-bg-layer-2": { from: [0.96, 0.94], to: [0.56, 0.50] },
 	"--dsw-alias-bg-layer-3": { from: [0.97, 0.96], to: [0.62, 0.56] },
-	"--dsw-alias-bg-overlay": { from: [0.98, 0.97], to: [0.68, 0.62] },
 	"--dsw-alias-bg-module-platform": { from: [0.95, 0.93], to: [0.56, 0.50] },
 	"--dsw-alias-bg-multi-select": { from: [0.94, 0.92], to: [0.52, 0.46] },
 	"--dsw-specific-sidebar-fill": { from: [0.88, 0.85], to: [0.45, 0.40] },
 	"--dsw-specific-bubble": { from: [0.96, 0.94], to: [0.60, 0.54] },
 	"--dsw-specific-bubble-highlight": { from: [0.94, 0.92], to: [0.56, 0.50] },
-	"--dsw-specific-menu": { from: [0.98, 0.97], to: [0.72, 0.66] },
 	"--dsw-specific-selector": { from: [0.96, 0.94], to: [0.60, 0.54] }
 });
 
@@ -214,7 +212,6 @@ export function getKinichAccentPalette(style, accentHex) {
 
 export function getKinichThemeTokens(style, accentHex = "", customBackground = false, backgroundVisibility = 75, savedPalette) {
 	const base = KINICH_THEME_PRESETS[style] ?? JUNGLE_TOKENS;
-	if (!accentHex && !customBackground) return base;
 	const result = { ...base };
 	if (customBackground) {
 		const safeVisibility = typeof backgroundVisibility === "number" && Number.isFinite(backgroundVisibility)
@@ -223,6 +220,8 @@ export function getKinichThemeTokens(style, accentHex = "", customBackground = f
 			if (result[key]) result[key] = transparentSurface(result[key], surfaceAlpha(alpha, safeVisibility));
 		}
 	}
+	// Supply opaque dialog-local surface aliases independently of wallpaper visibility.
+	for(const [key,value] of Object.entries(base))if(key.startsWith("--dsw-alias-bg-")||key.startsWith("--dsw-specific-"))result["--kinich-opaque"+key.slice(5)]=value;
 	if (accentHex) {
 		const palette = savedPalette === undefined ? getKinichAccentPalette(style, accentHex) : savedPalette;
 		if (palette) {

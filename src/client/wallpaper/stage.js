@@ -38,6 +38,7 @@ function drawTexture(gl,renderer,image,box,viewport,opacity,magnitude=0,offset=0
 	gl.uniform4fv(renderer.crop,safeCoverCrop(image.width,image.height,w,h,1+0.25*magnitude,offset,offsetY));gl.bindTexture(gl.TEXTURE_2D,image.texture);gl.drawArrays(gl.TRIANGLES,0,6);
 }
 function drawText(ctx,text,x,y) {
+	if(ctx.wallpaperLabelsVisible===false)return;
 	if(ctx.wallpaperLabels&&ctx.globalAlpha>0&&y>-200&&y<innerHeight+200)ctx.wallpaperLabels.push({text,x,y,font:ctx.font,opacity:ctx.globalAlpha,align:ctx.textAlign,baseline:ctx.textBaseline,tracking:ctx.letterSpacing,color:ctx.fillStyle});
 	ctx.fillText(text,x,y);
 }
@@ -187,6 +188,8 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 			drawTexture(gl,engine,images.get(id),{x:x/cssWidth,y:y/cssHeight,w:w/cssWidth,h:h/cssHeight},viewport,opacity,magnitude,offset);}};
 			gl.viewport(0,0,width,height);gl.clearColor(20/255,20/255,20/255,alpha);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(engine.program);gl.bindBuffer(gl.ARRAY_BUFFER,engine.buffer);engine.collect=[];
 			ink.setTransform(pixelRatio,0,0,pixelRatio,0,0);ink.clearRect(0,0,cssWidth,cssHeight);ink.wallpaperViewportHeight=cssHeight;ink.wallpaperLabels=[];ink.wallpaperLineReveals=null;ink.wallpaperAmplitude=amount;ink.wallpaperReveal=1;
+			// Ordinary backgrounds are image-only; retain reference copy in explicit browsing/calibration.
+			ink.wallpaperLabelsVisible=model.browsing||model.calibration;
 			const introReveal=delay=>loaderStartedAt===null?1:clamp01((loaderStartedAt-delay)/1500);
 			if(!loaded){
 				const loaderIds=firstBundleLoad?manifest.loaderAssetIds:[];const tiles=loaderIds.length?loaderIds.map(id=>images.get(id)).filter(Boolean):[...engine.textures.values()].slice(0,25),gap=8*wallpaperScale(cssWidth,cssHeight).image,tileWidth=Math.min(cssWidth/5,cssHeight/5),tileHeight=tileWidth*9/16;

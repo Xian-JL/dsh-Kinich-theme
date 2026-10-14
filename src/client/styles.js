@@ -6,7 +6,7 @@ export const KINICH_STYLE_ID = "dsh-kinich-theme/enhanced-layer.css";
 		export function installKinichStyles(ctx) {
 			if (typeof document === "undefined") return;
 			ctx.effect(() => {
-				if (document.querySelector(`style[data-plugin-css="dsh-kinich-theme/enhanced-layer.css"]`) !== null) return () => {};
+				// Hot replacement may mount before the old fiber disposes. Each fiber owns its tag.
 				const tag = document.createElement("style");
 				tag.dataset.plugin = "dsh-kinich-theme";
 				tag.dataset.pluginCss = KINICH_STYLE_ID;

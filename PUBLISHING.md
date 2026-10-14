@@ -1,5 +1,11 @@
 # Publishing
 
+## Confirmed 2.0.0 release (2026-10-14)
+
+The user completed final review and explicitly authorized GitHub/npm publication as 2.0.0. Package release stage is now `confirmed`; use npm `latest` and a non-prerelease GitHub Release marked latest. Specification 1.0.5 records this confirmation. The verified Desktop host remains 0.2.0-rc.2; stable-host verification is not implied by the plugin's final version. Candidate instructions below describe historical releases.
+
+Use the targeted checks and exact packed installation already defined for the accepted implementation. Do not invoke the legacy full regression command or reinstate cancelled gates. Publish the checked tarball, preserve source/history/evidence during cleanup, then wait ten minutes before downloading npm latest to verify the final distribution.
+
 ## Complex-wallpaper candidates (2026-10-13)
 
 The current candidate is `2.0.0-alpha.12`; final `2.0.0` remains reserved. Publish prereleases to npm `next`, and create GitHub releases with `--prerelease --latest=false`. Do not replace the stable npm/GitHub latest channels with a candidate. DSH Desktop remains `0.2.0-rc.2`, not a confirmed stable 0.2.0 environment.

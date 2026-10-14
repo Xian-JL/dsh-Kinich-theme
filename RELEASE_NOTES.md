@@ -1,16 +1,20 @@
-# Kinich 2.0.0-alpha.12 — Complex wallpaper prerelease
+# Kinich Theme v2.0.0
 
-This is a prerelease candidate, not the final Kinich 2.0.0 release. The verified Desktop host is DSH 0.2.0-rc.2; stable DSH 0.2.0 compatibility has not been confirmed.
+Confirmed by the user on 2026-10-14 after reviewing the latest implementation. This is the final Kinich 2.0.0 plugin release. The verified DSH Desktop host remains **0.2.0-rc.2**; stable DSH 0.2.0 environment verification is not implied.
 
-- Add an explicit **Enable dynamic wallpaper** switch in section 06, saved independently per Profile. Off stops dynamic display and playback while retaining the selected assets, parameters and sampled accent. On restores the selected wallpaper. Toggling does not create history.
-- Static backgrounds, visibility, accent matching and existing Kinich/Ajaw animations retain their separate controls.
-- Include Work, Overview, project detail/gallery/footer, About and loading templates with the local eight-project reference assets.
-- Provide local wallpaper creation, selection, recoverable history, current/history/all export and multi-volume import. Static and dynamic backgrounds remain exclusive; accents are sampled once and retained.
-- Include Desktop transport, footer geometry, thumbnail rail and frozen About-row corrections developed in the preceding candidates.
-- Specification is now **1.0.3**. The user confirmed the preceding visual/parameter/management acceptance groups; the new enable switch has code, isolated persistence and renderer checks, with Desktop review left to the user.
+- Complete local Work, Overview, project detail/gallery/footer, About and loading templates, with eight projects and 278 bundled image/font assets.
+- Four independent 0–100 wallpaper controls, default 50, with explicit zero behavior; a separate per-Profile enable switch preserves assets, parameters and sampled accents when dynamic display is turned off.
+- Local wallpaper creation, selection, recoverable history, current/selected/all export, multi-volume import and exclusive static/dynamic display. Accents are sampled once and retained across settings, theme and history changes.
+- Transaction-safe Profile storage and coherent multi-window reads; exports remain complete during clearing and release temporary references on completion or cancellation.
+- Wall-clock rhythm timing, correct explicit project selection, frozen About redraws and explicit rendering/data retry actions.
+- Existing Kinich/Ajaw effects and settings remain available. Specification 1.0.5 records final acceptance; data schema stays 1.
 
-Build, package contracts, version policy, settings writes, the isolated switch/store checks, renderer harness and clean package installation are the publication checks. They do not claim a real Desktop restart or stable-host acceptance.
+Source checks and exact-tarball isolated installation/lifecycle checks supplement the user's Desktop acceptance. Cancelled long-running, multi-size, performance and dedicated regression gates remain cancelled.
 
-Install this candidate with `dsh plugin --profile desktop add dsh-kinich-theme@2.0.0-alpha.12` after fully exiting Desktop.
+After fully exiting Desktop, install through its bundled CLI:
 
-The npm `next` tag selects the candidate. The `latest` tag remains on the stable baseline. Final 2.0.0 remains reserved for final confirmation.
+```powershell
+dsh plugin --profile desktop add dsh-kinich-theme@latest
+```
+
+GitHub Release v2.0.0 includes the exact installation tarball, a latest alias and SHA-256 checksums. npm latest selects 2.0.0. Final plugin and host version identities remain separate.

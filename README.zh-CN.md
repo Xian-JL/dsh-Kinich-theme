@@ -4,14 +4,14 @@
 
 - GitHub：https://github.com/Xian-JL/dsh-Kinich-theme
 - 分发方式：npm（GitHub Release 安装包可作备用）
-- 稳定插件版本：`1.8.1`（npm `latest`）；当前候选：`2.0.0-alpha.12`（npm `next`）
+- 当前正式插件版本：`2.0.0`（npm `latest`）
 - 目标运行环境：声明兼容范围内的 DSH Web，以及桌面端 `0.2.0-rc.2`
 
 > 本项目是独立社区插件，与 DeepSeek、HoYoverse 无官方关联，也不代表其认可或背书。
 
 自定义背景支持自动配色，并提供 0%–100% 的背景可见度滑条（默认 75%）；数值越高，界面表面越通透，背景图片越清晰。
 
-alpha.12 提供复杂动态壁纸、壁纸包制作/管理/导入导出，以及按 Profile 保存的“启用动态壁纸”开关。新壁纸四项参数默认均为 50；关闭动态壁纸保留素材、参数和采色，静态背景与已有动效不受影响。候选安装：`dsh plugin --profile desktop add dsh-kinich-theme@next`。本机宿主仍为 **0.2.0-rc.2**，未确认稳定版 DSH 0.2.0；插件最终 2.0.0 尚未定版。详见 [规格 1.0.3](docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md) 和 [候选状态](docs/CANDIDATE_ALPHA12.md)。
+v2.0.0 提供复杂动态壁纸、壁纸包制作/管理/导入导出，以及按 Profile 保存的“启用动态壁纸”开关。新壁纸四项参数默认均为 50；关闭动态壁纸保留素材、参数和采色，静态背景与已有动效不受影响。本机已核实的宿主仍为 **0.2.0-rc.2**，未确认稳定版 DSH 0.2.0。详见 [规格 1.0.5](docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md) 和 [正式发布确认](docs/RELEASE_2.0.0.md)。
 
 ## 安装
 

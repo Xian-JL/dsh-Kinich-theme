@@ -65,13 +65,27 @@ runInNewContext(compiled.outputFiles[0].text,{module,exports:module.exports,requ
 let wallpaper={status:"ready",current:{activeHash:"a",active:{mode:"dynamic",bundleHash:"pack",projectId:"one",parameters:{...WALLPAPER_DEFAULT_PARAMETERS,visibility:100},autoPalette:true,paletteCaptured:true},manifest,assets},view:"work",page:0,viewPosition:0,browsing:false,calibration:false,browseAutoPlay:false,capturePalette:async()=>{throw new Error("Already sampled");}};
 function render(){hookIndex=0;module.exports.KinichWallpaperStage({wallpaper,ambientMotion:true});while(effects.length)effects.shift()();}
 async function tick(count=1){for(let i=0;i<count;i++){now+=20;const pending=[...frames.values()];frames.clear();for(const callback of pending)callback(now);await new Promise(resolve=>setImmediate(resolve));}}
+async function advance(milliseconds){now+=milliseconds;const pending=[...frames.values()];frames.clear();for(const callback of pending)callback(now);await new Promise(resolve=>setImmediate(resolve));}
 render();await tick(1000);assert.deepEqual(blendFactors,["SRC_ALPHA","ONE_MINUS_SRC_ALPHA","ONE","ONE_MINUS_SRC_ALPHA"]);assert.equal(rendererCount,1);assert.ok(draws.length>0);
 wallpaper={...wallpaper,current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,rhythm:0}}}};render();await tick();const frozen=JSON.stringify(draws);await tick(200);assert.equal(JSON.stringify(draws),frozen);assert.equal(frames.size,0);
+wallpaper={...wallpaper,page:1,current:{...wallpaper.current,active:{...wallpaper.current.active,projectId:"two"}}};render();await tick();
+assert.ok(draws.some(draw=>draw.id.endsWith(ids[1])&&draw.viewport[2]===2880&&draw.viewport[3]===1620),"Explicit project selection must show the chosen stable cover without an old autoplay offset");
+assert.equal(rendererCount,1,"Project selection must retain the renderer");
+for(const rhythm of [1,25,50,75,100]){
+	const selected=wallpaper.current.active.projectId==="one"?1:0,dwell=12000/(rhythm<=50?rhythm/50:1+2*(rhythm-50)/50);
+	wallpaper={...wallpaper,page:selected,browsing:false,calibration:false,current:{...wallpaper.current,active:{...wallpaper.current.active,projectId:selected?"two":"one",parameters:{rhythm,amplitude:0,elementDensity:50,visibility:100}}}};
+	render();await tick();await advance(dwell-40);
+	assert.ok(draws.some(draw=>draw.id.endsWith(ids[selected])&&draw.viewport[2]===2880),`R=${rhythm} retains its selected cover before the wall-clock dwell`);
+	await advance(40);
+	assert.ok(draws.some(draw=>draw.id.endsWith(ids[1-selected])&&draw.viewport[2]===2880),`R=${rhythm} advances after its wall-clock dwell even with sparse frames`);
+}
 wallpaper={...wallpaper,current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,visibility:0}}}};render();await tick();assert.equal(body.children[0].style.opacity,"0");assert.equal(clearAlpha,1);assert.equal(draws.length,0);assert.equal(rendererCount,1);
 wallpaper={...wallpaper,browsing:true,view:"work"};render();await tick(2);assert.equal(rendererCount,1);
 wallpaper={...wallpaper,calibration:true};render();await tick(2);assert.equal(wallpaper.current.active.parameters.visibility,0);assert.equal(body.children[0].style.opacity,"1");
 wallpaper={...wallpaper,calibration:false,browsing:true,view:"detail",current:{...wallpaper.current,active:{...wallpaper.current.active,parameters:{...wallpaper.current.active.parameters,visibility:100}}}};render();await tick(20);assert.equal(rendererCount,1);assert.ok(draws.length>0);
 const canvas=body.children[0].children[1];let prevented=false;canvas.events.get("webglcontextlost")({preventDefault:()=>{prevented=true;}});assert.equal(prevented,true);assert.equal(frames.size,0);canvas.events.get("webglcontextrestored")();await tick();assert.equal(rendererCount,1);assert.ok(draws.length>0);
+wallpaper={...wallpaper,renderRevision:1};render();await tick(20);
+assert.equal(rendererCount,2,"Explicit render retry rebuilds graphics resources");assert.equal(layers.length,1);assert.ok(draws.length>0);
 const savedCurrent=JSON.stringify(wallpaper.current);
 wallpaper={...wallpaper,dynamicEnabled:false};render();await tick();
 assert.equal(layers.length,0,"Disabled dynamic wallpaper must remove its layer");
@@ -79,7 +93,7 @@ assert.equal(frames.size,0,"Disabled dynamic wallpaper must stop its RAF");
 assert.ok([...listeners.values()].every(set=>set.size===0),"Disabled renderer listeners must be released");
 assert.equal(JSON.stringify(wallpaper.current),savedCurrent,"Toggling must retain the selected snapshot and palette");
 wallpaper={...wallpaper,dynamicEnabled:true,browsing:false};render();await tick(20);
-assert.equal(layers.length,1);assert.equal(rendererCount,2);assert.ok(draws.length>0);
+assert.equal(layers.length,1);assert.equal(rendererCount,3);assert.ok(draws.length>0);
 assert.equal(JSON.stringify(wallpaper.current),savedCurrent);
 wallpaper={...wallpaper,current:{...wallpaper.current,active:{...wallpaper.current.active,mode:"static"}},dynamicEnabled:false};render();await tick(20);
 assert.equal(layers.length,1,"Disabling dynamic wallpaper must not remove static wallpaper");assert.ok(draws.length>0);

@@ -70,7 +70,9 @@ export class WallpaperStore {
 					let owner; try { owner = await this.readJSON(lockPath); } catch (readError) { if (!isMissing(readError) && readError.code !== "corrupt-record") throw readError; }
 					let alive = true;
 					if (Number.isInteger(owner?.pid) && owner.pid > 0) { try { process.kill(owner.pid, 0); } catch (probeError) { alive = probeError.code !== "ESRCH"; } }
-					if (!alive || (!owner && Date.now() - (await stat(lockPath)).mtimeMs > 30000)) { await unlink(lockPath).catch(unlinkError => { if (!isMissing(unlinkError)) throw unlinkError; }); continue; }
+					let abandoned=false;
+					if(!owner){try{abandoned=Date.now()-(await stat(lockPath)).mtimeMs>30000;}catch(statError){if(isMissing(statError))continue;throw statError;}}
+					if (!alive || abandoned) { await unlink(lockPath).catch(unlinkError => { if (!isMissing(unlinkError)) throw unlinkError; }); continue; }
 					if (Date.now() >= deadline) throw new WallpaperError("profile-busy", "Wallpaper storage is busy in another Desktop process", 409);
 					await delay(30);
 				}
@@ -158,6 +160,14 @@ export class WallpaperStore {
 		let unresolvedReference=false;
 		for(const name of await readdir(this.folder("leases"))){
 			const id=name.endsWith(".json")?name.slice(0,-5):"";if(!WALLPAPER_HASH.test(id))continue;
+			const lease=await this.readJSON(this.path("leases",id)).catch(error=>{if(!isMissing(error))unresolvedReference=true;return null;});
+			if(lease?.kind==="export"){
+				let alive=Number.isInteger(lease.pid)&&lease.pid>0;
+				if(alive)try{process.kill(lease.pid,0);}catch(error){alive=error.code!=="ESRCH";}
+				if(alive&&Array.isArray(lease.assetIds)&&lease.assetIds.every(hash=>WALLPAPER_HASH.test(hash)))for(const hash of lease.assetIds)liveAssets.add(hash);
+				else await unlink(this.path("leases",id)).catch(error=>{if(!isMissing(error))throw error;});
+				continue;
+			}
 			try {const lease=await this.readJSON(this.path("leases",id));if(lease.assetId===id&&Date.now()-Date.parse(lease.updatedAtUtc)<10*60_000)liveAssets.add(id);else await unlink(this.path("leases",id));}catch(error){if(!isMissing(error))unresolvedReference=true;}
 		}
 		for (const name of await readdir(this.folder("imports"))) {
@@ -318,15 +328,20 @@ export class WallpaperStore {
 			if (!state.history.includes(id)) throw new WallpaperError("history-not-found", "History entry has been cleared", 404);
 			const next = structuredClone(state); next.history = next.history.filter(candidate => candidate !== id); return this.commit(state, next); });
 	}
-	async getState() { const state = await this.recover(); if (!state) throw new WallpaperError("not-initialized", "Wallpaper storage is not ready", 503); return state; }
+	/** Caller must hold the Profile lock: journal recovery also writes to disk. */
+	async readStateLocked() { const state = await this.recover(); if (!state) throw new WallpaperError("not-initialized", "Wallpaper storage is not ready", 503); return state; }
+	async getState() { return this.locked(() => this.readStateLocked()); }
 	async current() {
-		const state = await this.getState(); const active = await this.snapshot(state.active); let manifest = null, assets = {};
+		return this.locked(async () => {
+		const state = await this.readStateLocked(); const active = await this.snapshot(state.active); let manifest = null, assets = {};
 		if (active.bundleHash) { manifest = await this.readBundle(active.bundleHash); for (const id of [...manifest.assetIds, ...manifest.fontAssetIds]) assets[id] = await this.readAssetInfo(id); }
 		return { revision: state.revision, profileName: this.profileName, activeHash: state.active, active, manifest, assets, historyCount: state.history.length };
+		});
 	}
 	async readAssetInfo(id) { const metadata = await this.readJSON(this.path("blobs", id)); return metadata; }
 	async history(cursor = 0, limit = 30) {
-		const state = await this.getState(); if (!Number.isSafeInteger(cursor) || cursor < 0) throw new WallpaperError("invalid-cursor");
+		return this.locked(async () => {
+		const state = await this.readStateLocked(); if (!Number.isSafeInteger(cursor) || cursor < 0) throw new WallpaperError("invalid-cursor");
 		const entries = [];
 		for (const id of state.history.slice(cursor, cursor + Math.min(30, limit))) {
 			let item, bundle;
@@ -334,6 +349,7 @@ export class WallpaperStore {
 			catch(error) { entries.push({...item,hash:id,name:bundle?.name??"记录或素材缺失",representativeAssetId:bundle?.representativeAssetId??"",recoverable:false,errorCode:error.code??"record-unavailable"}); }
 		}
 		return { revision: state.revision, entries, total: state.history.length, nextCursor: cursor + entries.length < state.history.length ? cursor + entries.length : null };
+		});
 	}
 	async close() { await this.queue; this.closed = true; }
 }

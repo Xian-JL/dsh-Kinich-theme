@@ -1,6 +1,7 @@
 import { strToU8, Unzip, UnzipInflate, Zip, ZipPassThrough } from "fflate";
 import { readFile, unlink } from "node:fs/promises";
 import { join } from "node:path";
+import { randomUUID } from "node:crypto";
 import { canonicalWallpaperJson, WALLPAPER_HASH, WALLPAPER_SCHEMA_VERSION, WALLPAPER_SPEC_VERSION, WallpaperError, validateWallpaperManifest, validateWallpaperSnapshot, wallpaperParameters } from "../../shared/wallpaper.js";
 import { inspectWallpaperAsset, wallpaperHash } from "./assets.js";
 
@@ -59,14 +60,18 @@ async function readArchiveEntries(store, input) {
 	return entries;
 }
 
-export async function exportWallpaperArchive(store, { scope = "current", historyHash = "", volumeIndex = 0, expectedDatasetId = "", planOnly = false } = {}) {
+export async function exportWallpaperArchive(store, options = {}) {
+	return store.locked(() => prepareWallpaperExport(store, options));
+}
+async function prepareWallpaperExport(store, { scope = "current", historyHash = "", volumeIndex = 0, expectedDatasetId = "", planOnly = false } = {}) {
 	if (!["current", "history", "all"].includes(scope)) throw new WallpaperError("invalid-export-scope");
-	const state = await store.getState(); const currentId = state.active;
+	const state = await store.readStateLocked(); const currentId = state.active;
 	if (scope === "history" && (!WALLPAPER_HASH.test(historyHash) || !state.history.includes(historyHash))) throw new WallpaperError("history-not-found", "历史记录不存在", 404);
 	const snapshotIds = scope === "current" ? [currentId] : scope === "history" ? [historyHash] : [currentId, ...state.history];
-	const snapshots = [], bundles = new Map(), assets = new Map();
+	const snapshots = [], snapshotRecords = new Map(), bundles = new Map(), assets = new Map();
 	for (const id of snapshotIds) {
 		const snapshot = await store.snapshot(id);
+		snapshotRecords.set(id,snapshot);
 		let bundle = null;
 		if (snapshot.bundleHash) {
 			if (!bundles.has(snapshot.bundleHash)) bundles.set(snapshot.bundleHash, await store.readBundle(snapshot.bundleHash));
@@ -128,26 +133,32 @@ export async function exportWallpaperArchive(store, { scope = "current", history
 		volume: { index: volumeIndex, count: groups.length }, datasetCounts,
 		counts: { snapshots: selected.snapshotHashes.length, bundles: selectedBundles.length, assets: selectedAssets.length }, snapshotHashes: selected.snapshotHashes, bundleHashes: selectedBundles, assetHashes: selectedAssets };
 	if (Buffer.byteLength(canonicalWallpaperJson(manifest)) > 16 * 1024 * 1024) throw new WallpaperError("archive-manifest-size", "该分卷清单超过 16 MiB", 413);
+	const leaseId=digest({export:randomUUID()}),leasePath=store.path("leases",leaseId);
+	await store.writeJSON(leasePath,{kind:"export",pid:process.pid,assetIds:selectedAssets,createdAtUtc:new Date().toISOString()});
+	let cancelled=false,zip;
+	const release=()=>unlink(leasePath).catch(error=>{if(error.code!=="ENOENT")throw error;});
 	return new ReadableStream({ start(controller) {
-		const zip = new Zip((error, chunk, final) => { if (error) { controller.error(error); return; } controller.enqueue(chunk); if (final) controller.close(); });
-		const waitForDrain = async () => { while (controller.desiredSize <= 0) await new Promise(resolve => setTimeout(resolve, 0)); };
+		zip = new Zip((error, chunk, final) => { if(cancelled)return; if (error) { controller.error(error); return; } controller.enqueue(chunk); if (final) controller.close(); });
+		const check=()=>{if(cancelled)throw new WallpaperError("export-cancelled");};
+		const waitForDrain = async () => { while (!cancelled&&controller.desiredSize <= 0) await new Promise(resolve => setTimeout(resolve, 0)); check(); };
 		const add = async (name, getBytes) => {
-			const entry = new ZipPassThrough(name); zip.add(entry); const bytes = await getBytes();
+			check();const entry = new ZipPassThrough(name); zip.add(entry); const bytes = await getBytes();check();
 			for (let offset = 0; offset < bytes.length; offset += 64 * 1024) { const end = Math.min(bytes.length, offset + 64 * 1024); entry.push(bytes.subarray(offset, end), end === bytes.length); await waitForDrain(); }
 		};
 		void (async () => {
 			try {
 				await add("manifest.json", async () => strToU8(canonicalWallpaperJson(manifest)));
-				for (const hash of selected.snapshotHashes) await add(`records/snapshots/${hash}.json`, async () => strToU8(canonicalWallpaperJson(await store.snapshot(hash))));
-				for (const hash of selectedBundles) await add(`records/bundles/${hash}.json`, async () => strToU8(canonicalWallpaperJson(await store.readBundle(hash))));
+				for (const hash of selected.snapshotHashes) await add(`records/snapshots/${hash}.json`, async () => strToU8(canonicalWallpaperJson(snapshotRecords.get(hash))));
+				for (const hash of selectedBundles) await add(`records/bundles/${hash}.json`, async () => strToU8(canonicalWallpaperJson(bundles.get(hash))));
 				for (const hash of selectedAssets) { const info=assets.get(hash);
 					await add(`blobs/${hash}.json`, async () => strToU8(canonicalWallpaperJson(info)));
 					await add(`blobs/${hash}.${info.extension}`, async () => { const file = await store.readAsset(hash); if (file.info.sha256 !== hash) throw new WallpaperError("archive-asset-hash"); return new Uint8Array(file.bytes); });
 				}
 				zip.end();
-			} catch (error) { controller.error(error); }
+			} catch (error) { if(!cancelled)controller.error(error); }
+			finally { await release().catch(()=>{}); }
 		})();
-	} });
+	},async cancel(){cancelled=true;zip?.terminate();await release();} });
 }
 
 export async function importWallpaperArchive(store, input) {

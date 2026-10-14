@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.0.0 — Confirmed complex wallpaper release
+
+- Finalize the accepted alpha.13 implementation as 2.0.0 following the user's final review and explicit publication authorization on 2026-10-14.
+- Include complete local wallpaper templates, Profile-owned enable controls, recoverable management/import/export, one-time accent sampling, transaction-safe reads and cancellable exports.
+- Preserve existing Kinich/Ajaw effects and settings. Specification 1.0.5 records final confirmation; data schema remains unchanged.
+- Verified Desktop host remains 0.2.0-rc.2. This plugin release does not claim stable DSH 0.2.0 environment verification.
+
+## 2.0.0-alpha.13 — Specification completion checks
+
+- Keep rhythm timing tied to elapsed wall-clock time even with sparse frames; reset the autoplay offset on an explicit project selection without recreating the renderer.
+- Use CSS viewport height for About row reveals, and keep the miniature stable after a zero-rhythm seek.
+- Provide explicit rendering retry and data reload actions while retaining the last known wallpaper state.
+- Read current/history only under the Profile transaction lock and retry mismatched client revisions; readers cannot recover a live writer's journal.
+- Pin exported assets through clear/replacement, retain immutable export record copies, and release export references on completion/cancellation.
+- Add targeted consistency and renderer checks; Specification 1.0.4 includes the previously omitted AC-60 in the completion matrix. DSH remains 0.2.0-rc.2; final 2.0.0 is not confirmed.
+
 ## 2.0.0-alpha.12 — Dynamic wallpaper enable switch
 
 - Add an explicit Profile-owned enable switch in section 06. Off removes dynamic rendering and browse controls while retaining assets, parameters and saved accents; it does not create wallpaper history.

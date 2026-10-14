@@ -180,7 +180,7 @@ try {
 	const hugeAssetIds=Array.from({length:130},(_,index)=>index.toString(16).padStart(64,"0"));
 	const hugeBundle={assetIds:hugeAssetIds,fontAssetIds:[],projects:[]};
 	const hugeSnapshot={bundleHash:"b".repeat(64),mode:"dynamic",projectId:"large"};
-	const hugeStore={getState:async()=>({active:"a".repeat(64),history:[]}),snapshot:async()=>hugeSnapshot,readBundle:async()=>hugeBundle,readAssetInfo:async hash=>({sha256:hash,byteLength:2*1024*1024,extension:"webp"})};
+	const hugeStore={locked:action=>action(),readStateLocked:async()=>({active:"a".repeat(64),history:[]}),snapshot:async()=>hugeSnapshot,readBundle:async()=>hugeBundle,readAssetInfo:async hash=>({sha256:hash,byteLength:2*1024*1024,extension:"webp"})};
 	const hugePlan=await exportWallpaperArchive(hugeStore,{scope:"current",planOnly:true});
 	assert.equal(hugePlan.volumes.length,3); assert.equal(hugePlan.volumes.reduce((sum,item)=>sum+item.assetCount,0),130);
 	assert.equal(hugePlan.volumes.reduce((sum,item)=>sum+item.snapshotCount,0),1);

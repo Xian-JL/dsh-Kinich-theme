@@ -58,7 +58,7 @@ function wrapTextRows(ctx,text,maxWidth,px,letterSpacing="0px") {
 function drawCascadeText(ctx,text,x,y,maxWidth,px,opacity,lineHeight,align,letterSpacing,timeMs,staggerMs,durationMs,offsetPx) {
 	const rows=wrapTextRows(ctx,text,maxWidth,px,letterSpacing),linePx=px*lineHeight;ctx.save();ctx.fillStyle=ctx.wallpaperTextColor??"#fff";ctx.textAlign=align;ctx.textBaseline="top";ctx.letterSpacing=letterSpacing;ctx.font="400 "+px+"px 'Sohne Buch','Helvetica Neue',Arial,sans-serif";
 	for(let i=0;i<rows.length;i++){const rowY=y+i*linePx,key=`${ctx.wallpaperRevealScope??""}:${text}:${i}`;let age=timeMs;
-		if(typeof ctx.wallpaperLineReveals?.has==="function"&&opacity>0){if(rowY<ctx.canvas.height/(devicePixelRatio||1)&&rowY+linePx>0&&!ctx.wallpaperLineReveals.has(key))ctx.wallpaperLineReveals.set(key,ctx.wallpaperRevealStatic?ctx.wallpaperRevealClock-durationMs-i*staggerMs:ctx.wallpaperRevealClock);age=ctx.wallpaperLineReveals.has(key)?ctx.wallpaperRevealClock-ctx.wallpaperLineReveals.get(key):0;}
+		if(typeof ctx.wallpaperLineReveals?.has==="function"&&opacity>0){if(rowY<(ctx.wallpaperViewportHeight??innerHeight)&&rowY+linePx>0&&!ctx.wallpaperLineReveals.has(key))ctx.wallpaperLineReveals.set(key,ctx.wallpaperRevealStatic?ctx.wallpaperRevealClock-durationMs-i*staggerMs:ctx.wallpaperRevealClock);age=ctx.wallpaperLineReveals.has(key)?ctx.wallpaperRevealClock-ctx.wallpaperLineReveals.get(key):0;}
 		const local=Math.max(0,Math.min(1,(age-i*staggerMs)/durationMs));if(local<1&&opacity>0&&rowY+linePx>0&&rowY<innerHeight)ctx.wallpaperRevealPending=true;const ease=1-(1-local)**3;ctx.save();ctx.beginPath();ctx.rect(0,y+i*linePx,ctx.canvas.width,linePx);ctx.clip();ctx.globalAlpha=opacity*ease;drawText(ctx,rows[i],x,y+i*linePx+offsetPx*(1-ease));ctx.restore();}
 	ctx.restore();return {bottom:y+rows.length*linePx,rows:rows.length};
 }
@@ -106,6 +106,8 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 		let paletteToCapture=null,transition=null,lastPlanes=[],lastLabels=[],hoverProgress=0,loaderStartedAt=null,contextLost=false,aboutClock=0,detailClock=0,previousView=null;
 		const aboutRowReveals=new Map();
 		let lastAboutPosition=null;
+		let aboutMiniStable=false;
+		let lastConfiguredProject=active.projectId;
 		const pendingImages=new Map();
 		const failedImages=new Set();
 		const navigate=event=>{const detail=event.detail,model=live.current;if(!detail||!model?.browsing||model.active?.mode!=="dynamic")return;
@@ -132,6 +134,7 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 		const draw=time=>{
 			frame=0;if(closed)return;
 			const model=live.current;if(!model?.manifest)return;
+			if(model.active.projectId!==lastConfiguredProject){elapsed=0;transition=null;lastConfiguredProject=model.active.projectId;}
 			const visibility=model.calibration?100:model.active.parameters.visibility;layer.style.opacity=String(visibility/100);body.dataset.kinichWallpaperMode=visibility>0?model.active.mode:"none";if(contextLost)return;
 			const browseHost=model.browsing?document.querySelector(".dsh-kinich-wallpaper-hit-area"):null;
 			if(browseHost&&layer.parentNode!==browseHost)browseHost.appendChild(layer);else if(!model.browsing&&layer.parentNode!==body)body.insertBefore(layer,body.firstChild);
@@ -142,10 +145,10 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 			body.dataset.kinichWallpaperMode=values.visibility>0?model.active.mode:"none";
 			const renderActive=model.calibration?{...model.active,parameters:values}:model.active;
 			const moving=wallpaperMotionAllowed(renderActive,{ambientMotion:model.ambientMotion,reducedMotion:reduced})&&(!model.browsing||model.browseAutoPlay);
-			const dt=Math.min(50,Math.max(0,time-last));last=time;
+			const dt=Math.max(0,time-last);last=time;
 			const animationAllowed=wallpaperMotionAllowed(renderActive,{ambientMotion:model.ambientMotion,reducedMotion:reduced});
 			if(loaded&&loaderStartedAt!==null&&animationAllowed)loaderStartedAt+=dt*wallpaperMultiplier(values.rhythm);
-			if(`${model.view}:${model.page}`!==previousView){aboutRowReveals.clear();aboutClock=animationAllowed?0:Infinity;detailClock=animationAllowed?0:Infinity;previousView=`${model.view}:${model.page}`;}
+			if(`${model.view}:${model.page}`!==previousView){aboutRowReveals.clear();lastAboutPosition=null;aboutMiniStable=false;aboutClock=animationAllowed?0:Infinity;detailClock=animationAllowed?0:Infinity;previousView=`${model.view}:${model.page}`;}
 			if(reduced||!model.ambientMotion||values.amplitude===0)loaderStartedAt=null;
 			if(animationAllowed){if(model.view==="about")aboutClock+=dt*wallpaperMultiplier(values.rhythm);if(model.view==="detail")detailClock+=dt*wallpaperMultiplier(values.rhythm);}
 			if(loaded&&moving&&(loaderStartedAt===null||loaderStartedAt>=5300))elapsed+=dt/1000*wallpaperMultiplier(values.rhythm);
@@ -183,7 +186,7 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 			const drawOverviewCards=(mode="stable",progress=1)=>{const eased=dampedProgress(progress);for(let i=0;i<overviewIds.length;i++){const id=overviewIds[i],targetX=cardX(i);let x=targetX,y=cardY,w=cardWidth,h=cardHeight,opacity=alpha,magnitude=amount,offset=-Math.max(-1,Math.min(1,i-activeSlot))*.25*amount;if(mode==="enter"){const delay=i===activeSlot?0:Math.min(.24,i*.04),local=Math.max(0,Math.min(1,(progress*transitionDuration-delay)/Math.max(.01,transitionDuration-delay))),localEase=dampedProgress(local);if(i===activeSlot){x=(cssWidth-cardWidth)/2*localEase;y=cardY*localEase;w=cssWidth+(cardWidth-cssWidth)*localEase;h=cssHeight+(cardHeight-cssHeight)*localEase;}else{const startX=i<activeSlot?-cardWidth-12+i*6:cssWidth+12+(i-activeSlot)*6,startY=cardY+(i%2?-cardHeight*.15:cardHeight*.15);x=startX+(targetX-startX)*localEase;y=startY+(cardY-startY)*localEase;opacity=alpha*localEase;offset=(i-activeSlot)*.25*(1-localEase);}}else if(mode==="move"){x=targetX-eased*(cardWidth+cardGap);offset=-(i-activeSlot)*.25*amount;}else if(mode==="leave"){x=targetX-(cardWidth+cardGap);opacity=alpha*(1-progress);}
 			drawTexture(gl,engine,images.get(id),{x:x/cssWidth,y:y/cssHeight,w:w/cssWidth,h:h/cssHeight},viewport,opacity,magnitude,offset);}};
 			gl.viewport(0,0,width,height);gl.clearColor(20/255,20/255,20/255,alpha);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(engine.program);gl.bindBuffer(gl.ARRAY_BUFFER,engine.buffer);engine.collect=[];
-			ink.setTransform(pixelRatio,0,0,pixelRatio,0,0);ink.clearRect(0,0,cssWidth,cssHeight);ink.wallpaperLabels=[];ink.wallpaperLineReveals=null;ink.wallpaperAmplitude=amount;ink.wallpaperReveal=1;
+			ink.setTransform(pixelRatio,0,0,pixelRatio,0,0);ink.clearRect(0,0,cssWidth,cssHeight);ink.wallpaperViewportHeight=cssHeight;ink.wallpaperLabels=[];ink.wallpaperLineReveals=null;ink.wallpaperAmplitude=amount;ink.wallpaperReveal=1;
 			const introReveal=delay=>loaderStartedAt===null?1:clamp01((loaderStartedAt-delay)/1500);
 			if(!loaded){
 				const loaderIds=firstBundleLoad?manifest.loaderAssetIds:[];const tiles=loaderIds.length?loaderIds.map(id=>images.get(id)).filter(Boolean):[...engine.textures.values()].slice(0,25),gap=8*wallpaperScale(cssWidth,cssHeight).image,tileWidth=Math.min(cssWidth/5,cssHeight/5),tileHeight=tileWidth*9/16;
@@ -233,6 +236,7 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 			let aboutRevealRemaining=false;
 			if(model.view==="about"){
 				ink.wallpaperRevealStatic=values.rhythm===0&&model.viewPosition!==lastAboutPosition;lastAboutPosition=model.viewPosition;
+				if(ink.wallpaperRevealStatic)aboutMiniStable=true;
 				ink.wallpaperReveal=1;drawLabel(ink,"Work",cssWidth/2-43,47,16,alpha*.3);drawLabel(ink,"About",cssWidth/2+43,47,16,alpha);
 				const sections=model.manifest.about,progress=model.viewPosition??0,rightX=cssWidth*0.5-64,rightWidth=cssWidth*0.501042,mainTop=cssWidth*0.177083;
 				const headingSize=cssWidth*0.028125,headingLine=cssWidth*0.036458,bodySize=cssWidth*0.022917,bodyLine=cssWidth*0.027604,sectionGap=cssWidth*0.145833,bottomGap=cssWidth*0.177083;
@@ -242,10 +246,11 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 					for(let linkIndex=0;linkIndex<(section.links??[]).length;linkIndex++){const link=section.links[linkIndex],linkY=y;y=draw(link.label,rightX,y,rightWidth,cssWidth*.0125,opacity*.85,1.33336,"left","0px");if(opacity>0){const anchor=document.querySelector(`[data-wallpaper-link="${i}-${linkIndex}"]`);if(anchor){anchor.style.left=`${rightX}px`;anchor.style.top=`${linkY}px`;anchor.style.width=`${rightWidth}px`;anchor.style.height=`${cssWidth*.016667}px`;anchor.style.pointerEvents=linkY>=0&&linkY<cssHeight?"auto":"none";anchor.tabIndex=linkY>=0&&linkY<cssHeight?0:-1;}}}if(i<sections.length-1)y+=sectionGap;}return {end:y,rows:rowIndex};};
 				const measuredMain=renderMain(0,0),scrollOffset=progress*Math.max(0,measuredMain.end+bottomGap-cssHeight),drawnMain=renderMain(scrollOffset,alpha,revealTime);
 				ink.wallpaperLineReveals=null;
+				const miniRevealTime=aboutMiniStable?Infinity:revealTime;
 				const miniX=40+cssWidth*0.032813,miniWidth=cssWidth*0.096354,miniTop=cssWidth*0.153446,miniSize=cssWidth*0.005409,miniLine=cssWidth*0.007011,miniFactor=miniWidth/rightWidth,miniBodySize=bodySize*miniFactor,miniBodyLine=bodyLine*miniFactor,miniSectionGap=sectionGap*miniFactor;
 				let miniEnd=miniTop;ink.save();for(let i=0;i<sections.length;i++){const section=sections[i];miniEnd=drawWrapped(ink,section.heading,miniX,miniEnd,miniWidth,miniSize,0,miniLine/miniSize,"left");for(const paragraph of section.paragraphs)miniEnd=drawWrapped(ink,paragraph,miniX,miniEnd,miniWidth,i===5?cssWidth*.0125*miniFactor:i===0?headingSize*miniFactor:miniBodySize,0,i===5?1.33336:i===0?headingLine/headingSize:miniBodyLine/miniBodySize,"left");for(const link of section.links??[])miniEnd=drawWrapped(ink,link.label,miniX,miniEnd,miniWidth,cssWidth*.0125*miniFactor,0,1.33336,"left");if(i<sections.length-1)miniEnd+=miniSectionGap;}ink.restore();
 				const frameHeight=cssHeight*0.192308,miniRange=Math.max(0,miniEnd-miniTop-frameHeight),miniOffset=progress*miniRange;let miniY=miniTop-miniOffset;
-				let miniRows=0;for(let i=0;i<sections.length;i++){const section=sections[i],drawMini=(value,top,px=miniSize,lineHeight=miniLine/miniSize)=>{if(revealTime===Infinity){const rows=wrapTextRows(ink,value,miniWidth,px).length;miniRows+=rows;return drawWrapped(ink,value,miniX,top,miniWidth,px,alpha*0.85,lineHeight,"left");}const result=drawCascadeText(ink,value,miniX,top,miniWidth,px,alpha*0.85,lineHeight,"left","0px",revealTime-miniRows*50,50,1500,80*amount);miniRows+=result.rows;return result.bottom;};miniY=drawMini(section.heading,miniY);for(const paragraph of section.paragraphs)miniY=drawMini(paragraph,miniY,i===5?cssWidth*.0125*miniFactor:i===0?headingSize*miniFactor:miniBodySize,i===5?1.33336:i===0?headingLine/headingSize:miniBodyLine/miniBodySize);for(const link of section.links??[])miniY=drawMini(link.label,miniY,cssWidth*.0125*miniFactor,1.33336);if(i<sections.length-1)miniY+=miniSectionGap;}
+				let miniRows=0;for(let i=0;i<sections.length;i++){const section=sections[i],drawMini=(value,top,px=miniSize,lineHeight=miniLine/miniSize)=>{if(miniRevealTime===Infinity){const rows=wrapTextRows(ink,value,miniWidth,px).length;miniRows+=rows;return drawWrapped(ink,value,miniX,top,miniWidth,px,alpha*0.85,lineHeight,"left");}const result=drawCascadeText(ink,value,miniX,top,miniWidth,px,alpha*0.85,lineHeight,"left","0px",miniRevealTime-miniRows*50,50,1500,80*amount);miniRows+=result.rows;return result.bottom;};miniY=drawMini(section.heading,miniY);for(const paragraph of section.paragraphs)miniY=drawMini(paragraph,miniY,i===5?cssWidth*.0125*miniFactor:i===0?headingSize*miniFactor:miniBodySize,i===5?1.33336:i===0?headingLine/headingSize:miniBodyLine/miniBodySize);for(const link of section.links??[])miniY=drawMini(link.label,miniY,cssWidth*.0125*miniFactor,1.33336);if(i<sections.length-1)miniY+=miniSectionGap;}
 				const frameY=miniTop+progress*miniRange;ink.strokeStyle="rgba(255,255,255,"+(0.2*alpha)+")";ink.lineWidth=1.34;ink.strokeRect(40,frameY,cssWidth*0.15,frameHeight);
 				const revealComplete=Math.max(Math.max(0,drawnMain.rows-1)*100+1500,Math.max(0,miniRows-1)*50+1500);aboutRevealRemaining=revealAllowed&&(revealTime<revealComplete||ink.wallpaperRevealPending);
 			}
@@ -272,7 +277,7 @@ export function KinichWallpaperStage({ wallpaper, ambientMotion=true, visualStyl
 		const restore=()=>{try{contextLost=false;engine=createRenderer(gl);images.clear();for(const [hash,image] of decodedImages)images.set(hash,getTexture(gl,engine,hash,image));fallback.style.display="none";canvas.style.visibility="visible";text.style.visibility="visible";reportFailure("");resize();}catch(error){fallback.style.display="block";canvas.style.visibility="hidden";reportFailure(error.message||"Wallpaper graphics context could not be restored");}};
 		canvas.addEventListener("webglcontextlost",lose);canvas.addEventListener("webglcontextrestored",restore);addEventListener("resize",resize);motionQuery.addEventListener("change",motionChange);reportFailure("");frame=requestAnimationFrame(draw);void load();
 		return()=>{closed=true;redraw.current=null;if(frame)cancelAnimationFrame(frame);removeEventListener("resize",resize);removeEventListener("kinich-wallpaper-transition-start",navigate);motionQuery.removeEventListener("change",motionChange);canvas.removeEventListener("webglcontextlost",lose);canvas.removeEventListener("webglcontextrestored",restore);for(const face of fontFaces)document.fonts.delete(face);for(const texture of engine.textures.values())gl.deleteTexture(texture.texture);gl.deleteBuffer(engine.buffer);gl.deleteProgram(engine.program);layer.remove();if(previous===undefined)delete body.dataset.kinichWallpaperMode;else body.dataset.kinichWallpaperMode=previous;};
-	},[mounted,active?.bundleHash,active?.mode]);
+	},[mounted,active?.bundleHash,active?.mode,wallpaper.renderRevision]);
 	(0,react.useEffect)(()=>{redraw.current?.();},[current?.activeHash,active?.parameters,view,page,ambientMotion,wallpaper.viewPosition,wallpaper.browsing,wallpaper.calibration,wallpaper.browseAutoPlay,titleHovered]);
 	(0,react.useEffect)(()=>{
 		if(!mounted||!wallpaper.browsing||typeof document==="undefined")return;

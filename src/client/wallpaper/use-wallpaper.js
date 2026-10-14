@@ -1,4 +1,5 @@
 import * as react from "react";
+import { readConsistentWallpaperState } from "./read-state.js";
 import {
 	WALLPAPER_APPLY_PATH, WALLPAPER_ASSET_PATH, WALLPAPER_BUNDLE_PATH,
 	WALLPAPER_CLEAR_HISTORY_PATH, WALLPAPER_DEFAULT_PARAMETERS,
@@ -37,6 +38,7 @@ export function useKinichWallpaper({ dynamicEnabled = true } = {}) {
 	const [browsing, setBrowsing] = react.useState(false);
 	const [calibration, setCalibrationState] = react.useState(false);
 	const [browseAutoPlay, setBrowseAutoPlayState] = react.useState(false);
+	const [renderRevision, setRenderRevision] = react.useState(0);
 	(0, react.useEffect)(() => {
 		if (dynamicEnabled !== false) return;
 		setBrowsing(false); setCalibrationState(false); setBrowseAutoPlayState(false);
@@ -46,8 +48,8 @@ export function useKinichWallpaper({ dynamicEnabled = true } = {}) {
 	const reload = react.useCallback(async (signal, allHistory = false) => {
 		const mine = ++generation.current;
 		try {
-			const current = await request(WALLPAPER_STATE_PATH, { signal });
-			const page = await request(WALLPAPER_HISTORY_PATH, { signal });
+			const { current, history: page } = await readConsistentWallpaperState(
+				() => request(WALLPAPER_STATE_PATH, { signal }), () => request(WALLPAPER_HISTORY_PATH, { signal }));
 			if (mine === generation.current) {
 				pageCursor.current = page.nextCursor;
 				setState(value => ({ ...value, status: "ready", error: "", current, history: page.entries, total: page.total, revision: current.revision }));
@@ -76,6 +78,7 @@ export function useKinichWallpaper({ dynamicEnabled = true } = {}) {
 	(0, react.useEffect)(() => {
 		if (typeof window === "undefined") return;
 		const renderStatus = event => setState(value => ({ ...value, renderError: typeof event.detail?.error === "string" ? event.detail.error : "" }));
+		const renderRetry = () => setRenderRevision(value => value + 1);
 		const receive = event => {
 			if (event.detail && Object.hasOwn(event.detail,"parameterPreview")) setParameterPreview(event.detail.parameterPreview);
 			if (["work", "overview", "detail", "about"].includes(event.detail?.view)) setView(event.detail.view);
@@ -87,7 +90,8 @@ export function useKinichWallpaper({ dynamicEnabled = true } = {}) {
 		};
 		window.addEventListener("kinich-wallpaper-view", receive);
 		window.addEventListener("kinich-wallpaper-render-status", renderStatus);
-		return () => { window.removeEventListener("kinich-wallpaper-view", receive); window.removeEventListener("kinich-wallpaper-render-status", renderStatus); };
+		window.addEventListener("kinich-wallpaper-render-retry", renderRetry);
+		return () => { window.removeEventListener("kinich-wallpaper-view", receive); window.removeEventListener("kinich-wallpaper-render-status", renderStatus); window.removeEventListener("kinich-wallpaper-render-retry", renderRetry); };
 	}, []);
 	(0, react.useEffect)(() => {
 		if (state.status === "ready" && state.current?.active?.mode !== "dynamic" && browsing) {
@@ -169,6 +173,8 @@ export function useKinichWallpaper({ dynamicEnabled = true } = {}) {
 
 	return {
 		dynamicEnabled,
+		renderRevision,
+		retryRenderer: () => { if (typeof window !== "undefined") window.dispatchEvent(new Event("kinich-wallpaper-render-retry")); },
 		...state, retry:()=>reload(), committedCurrent:state.current, current:parameterPreview&&state.current?{...state.current,active:{...state.current.active,parameters:{...state.current.active.parameters,...parameterPreview}}}:state.current, previewParameters, upload, uploadBundle, exportPlan, exportUrl, importArchive, nextHistoryPage, view, setView: changeView, page, setPage: changePage, viewPosition, setViewPosition: changeViewPosition, enterBrowse, setCalibration, setBrowseAutoPlay, exitBrowse,
 		apply: payload => mutate(WALLPAPER_APPLY_PATH, payload),
 		restoreDefault: () => mutate(WALLPAPER_DEFAULT_PATH, {}),

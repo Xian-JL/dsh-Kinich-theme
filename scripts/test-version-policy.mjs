@@ -19,4 +19,4 @@ const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.me
 assertKinichVersionPolicy(pkg.version, pkg.kinich?.wallpaperReleaseStage);
 assert.equal(lock.version, pkg.version);
 assert.equal(lock.packages[""].version, pkg.version);
-console.log(`Version policy passed: ${pkg.version}; final 2.0.0 remains reserved.`);
+console.log(`Version policy passed: ${pkg.version}; ${pkg.kinich?.wallpaperReleaseStage === "confirmed" ? "final 2.0.0 confirmed by user" : "final 2.0.0 remains reserved"}.`);

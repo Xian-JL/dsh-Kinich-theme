@@ -35,6 +35,7 @@ jobs:
           npm run test:version
           npm run test:settings
           npm run test:wallpaper-switch
+          npm run test:wallpaper-consistency
           npm run test:wallpaper-renderer
 
       - name: Select npm distribution tag

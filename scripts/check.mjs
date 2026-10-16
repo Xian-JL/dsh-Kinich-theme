@@ -97,8 +97,8 @@ assert(packageJson.dsh?.client?.platform === "web", "DSH client platform must re
 assert(packageJson.dsh?.bundle?.patch === "./cordis.patch.yml", "Bundle patch path changed unexpectedly");
 assert(packageJson.dependencies?.["@deepseek-ai/schemastery"] === "3.18.4", "@deepseek-ai/schemastery must support DSH 0.1.7 live Config fields");
 assert(packageJson.devDependencies?.esbuild === "0.28.2", "esbuild 0.28.2 must remain the development bundler");
-assert(packageJson.engines?.dsh === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2", "Top-level DSH compatibility range must cover 0.1.5 through 0.2.0-rc.2");
-assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"] === "^0.1.5-rc.1 || ^0.1.6-alpha.1 || ^0.1.7-rc.2 || ^0.2.0-rc.2", "Settings peer range must cover DSH 0.2.0-rc.2");
+assert(packageJson.engines?.dsh === ">=0.2.0-rc.2 <0.3.0", "DSH range must retain the local rc.2 baseline and exclude 0.1.x");
+assert(packageJson.peerDependencies?.["@deepseek-ai/dsh-settings"]===packageJson.engines.dsh,"Settings peer range must match the declared host range");
 assert(!packageJson.dsh?.client?.inject?.includes("@deepseek-ai/dsh-client-runtime"), "Removed DSH client-runtime package must not be injected");
 
 assert(packageJson.files?.includes("assets/wallpapers/camille-reference"), "Offline Camille reference package must be included in plugin releases");
@@ -269,5 +269,5 @@ console.log("- settings: shared schema + backwards-compatible decode");
 console.log("- product UI: Jungle workspace with legacy mode data compatibility");
 console.log("- product UI: modern settings hierarchy + branded sidebar + visual intensity");
 console.log("- Ajaw: live official balance, CNY<10 red tint + 2x motion, full interaction, and rAF drag");
-console.log("- compatibility: DSH 0.1.5-0.2.0-rc.2 settings/session APIs supported");
+console.log(`- declared host/settings range: ${packageJson.engines.dsh}; verified local baseline 0.2.0-rc.2`);
 console.log("- DSH slots/settings/theme/assets contract preserved");

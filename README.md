@@ -4,14 +4,17 @@ Interactive **Kinich & Ajaw** themed UI experience for DeepSeek Harness Web / De
 
 - Repository: https://github.com/Xian-JL/dsh-Kinich-theme
 - Distribution: npm, with a GitHub Release tarball as a fallback
-- Current confirmed plugin release: `2.0.1` (npm `latest`)
+- Current confirmed plugin release: `2.0.2` (npm `latest`)
 - Target runtimes: the declared DSH Web compatibility ranges and Desktop `0.2.0-rc.2`
 
 > This is an independent community plugin and is not affiliated with or endorsed by DeepSeek or HoYoverse.
 
 Custom backgrounds support automatic accents and a background-visibility slider from 0% to 100% (default 75%). Higher values make DSH surfaces more transparent so the image is clearly visible.
 
-v2.0.1 includes complex wallpaper templates, creation/history/import/export and a Profile-owned **Enable dynamic wallpaper** switch. Passive wallpapers omit explanatory text; all six settings sections and three styles are directly accessible, and popup surfaces stay opaque. Wallpaper parameters default to 50. Off retains assets, parameters and sampled accents; static backgrounds and existing effects are independent. The verified host is still **DSH 0.2.0-rc.2**, not stable DSH 0.2.0. See [Specification 1.0.6](docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md) and [maintenance release notes](docs/RELEASE_2.0.1.md).
+v2.0.2 includes complex wallpaper templates, creation/history/import/export and a Profile-owned **Enable dynamic wallpaper** switch. Passive wallpapers omit explanatory text; all six settings sections and three styles are directly accessible, and popup surfaces stay opaque. Wallpaper parameters default to 50. Off retains assets, parameters and sampled accents; static backgrounds and existing effects are independent. The verified host is still **DSH 0.2.0-rc.2**, not stable DSH 0.2.0. See [Specification 1.0.7](docs/KINICH_COMPLEX_WALLPAPER_SPECIFICATION.md) and [maintenance release notes](docs/RELEASE_2.0.1.md).
+
+
+Since 2.0.2, DSH and settings-peer declarations are `>=0.2.0-rc.2 <0.3.0`, matching Xiao and retaining the local RC.2 baseline; 0.1.x is no longer declared supported.
 
 ## Install
 

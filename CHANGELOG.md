@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2 — npm distribution and current-host declarations
+
+- Restrict DSH and optional settings-peer declarations to `>=0.2.0-rc.2 <0.3.0`, matching Xiao and retaining the verified local host while removing 0.1.x declarations.
+- Publish the metadata revision before replacing local file installs with registry installs through the market's npm installation chain. No animation, wallpaper data or saved settings are reset.
+
 ## 2.0.1 — Background copy and settings popup fixes
 
 - Suppress reference titles/navigation/loading copy in passive wallpapers and hide the legacy welcome annotation when a background is visible; explicit browsing/calibration retains the full reference template text.

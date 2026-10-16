@@ -1,5 +1,9 @@
 # Publishing
 
+## Metadata releases and npm migration (2026-10-16)
+
+The user selected local RC.2 compatibility and the proposed Kinich 2.0.2 / Xiao 1.2.1 revisions. Publish registry metadata with `>=0.2.0-rc.2 <0.3.0` for host/settings peers, then replace file dependencies through the market's npm installation chain. Preserve saved settings and wallpaper data, and distinguish catalog indexing delay from installed registry source. This instruction raises the Kinich ceiling only to 2.0.2.
+
 ## Authorized maintenance release 2.0.1 (2026-10-14)
 
 The user reported three Desktop UI defects and explicitly authorized fixing and publishing 2.0.1 without another publication-permission request. Specification 1.0.6 and PATCH-2.0.1 raise the authorized ceiling to 2.0.1 only. Use GitHub latest and npm latest with the checked maintenance tarball. Targeted settings/renderer/headless popup checks and packed isolation supplement the reported defects; host verification remains 0.2.0-rc.2. The historical instructions below do not replace this authorization.

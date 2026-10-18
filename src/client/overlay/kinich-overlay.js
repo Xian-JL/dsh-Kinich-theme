@@ -161,6 +161,12 @@ function text(t, key, fallback) { return typeof t === "function" ? t(key) : fall
 
 export function KinichOverlay({ settings, theme, t, useSessions }) {
 	const snapshot = useKinichSettings(settings);
+	if (snapshot.value?.enabled !== true) return null;
+	return (0, react.createElement)(KinichOverlayContent, { settings, theme, t, useSessions });
+}
+
+function KinichOverlayContent({ settings, theme, t, useSessions }) {
+	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	const dynamicWallpaperEnabled = Boolean(snapshot.value) && value.dynamicWallpaperEnabled;
 	const wallpaper = useKinichWallpaper({ dynamicEnabled: dynamicWallpaperEnabled });

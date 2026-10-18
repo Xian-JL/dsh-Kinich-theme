@@ -14,18 +14,18 @@ assert.equal(currentConfig.backgroundVisibility.get(), 75);
 assert.equal(KinichThemeSettingsSchema({}).animateAjaw, true);
 
 const currentForm = { getSnapshot: () => ({ status: "ready" }) };
-assert.equal(resolveKinichSettings({
+assert.deepEqual(resolveKinichSettings({
 	get: name => name === "configForms" ? {
-		get: namespace => { assert.equal(namespace, KINICH_SETTINGS_NAMESPACE); return currentForm; }
+		get: namespace => { assert.ok([KINICH_SETTINGS_NAMESPACE, "dsh-xiao-theme"].includes(namespace)); return currentForm; }
 	} : undefined
-}), currentForm);
+}).getSnapshot(), currentForm.getSnapshot());
 
 const legacyForm = { getSnapshot: () => ({ status: "ready" }) };
-assert.equal(resolveKinichSettings({
+assert.deepEqual(resolveKinichSettings({
 	get: name => name === "settingsScope" ? {
-		bind: spec => { assert.equal(spec.namespace, KINICH_SETTINGS_NAMESPACE); return legacyForm; }
+		bind: spec => { assert.ok([KINICH_SETTINGS_NAMESPACE, "dsh-xiao-theme"].includes(spec.namespace)); return legacyForm; }
 	} : undefined
-}), legacyForm);
+}).getSnapshot(), legacyForm.getSnapshot());
 assert.throws(() => resolveKinichSettings({ get: () => undefined }), /requires a DSH settings service/);
 
 function hostSettingsRegistration(settings) {

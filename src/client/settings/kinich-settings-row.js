@@ -16,6 +16,7 @@ import { wallpaperElementCount } from "../../shared/wallpaper.js";
 import { normalizeKinichStaticWallpaperImage } from "../wallpaper/image.js";
 
 const SETTING_LABEL_KEYS = {
+	enabled: "theme.enable",
 	visualStyle: "style.jungle.label", visualIntensity: "visualIntensity.label",
 	animateAjaw: "ajaw.label", ajawPosition: "ajaw.position", ajawRotation: "ajaw.rotation",
 	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
@@ -265,6 +266,10 @@ export function KinichSettingsRow({ settings, t }) {
 					}),
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ThemePreview, { value, t })
 				]
+			}),
+			(0, react_jsx_runtime.jsx)(Toggle, {
+				disabled, checked: value.enabled, label: t("theme.enable"), description: t("theme.exclusive"),
+				stateLabel: t(value.enabled ? "state.on" : "state.off"), onChange: () => update("enabled", !value.enabled)
 			}),
 			pending !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { className: "dsh-kinich-settings__pending", role: "status", children: `${t("state.saving")} ${t(SETTING_LABEL_KEYS[pending] ?? "state.setting")}` }),
 			failed !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { className: "dsh-kinich-settings__error", role: "alert", children: [

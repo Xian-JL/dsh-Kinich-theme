@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { KINICH_SETTINGS_NAMESPACE } from "../shared/settings.js";
 
 const BALANCE_PATH = "/api/kinich-balance";
 const OFFICIAL_HOST = "api.deepseek.com";
@@ -162,7 +163,15 @@ async function queryBalance(binding) {
 }
 
 async function readBalance(ctx, force) {
+	const enabled = () => {
+		const section = typeof ctx.settings.get === "function"
+			? ctx.settings.get(KINICH_SETTINGS_NAMESPACE)
+			: ctx.settings.describe({ redactSecrets: true }).find(entry => entry.ns === KINICH_SETTINGS_NAMESPACE)?.value;
+		return section?.enabled !== false && section?.balanceEnabled !== false;
+	};
+	if (!enabled()) return errorSnapshot("disabled");
 	const binding = await resolveBalanceBinding(ctx);
+	if (!enabled()) return errorSnapshot("disabled");
 	if (binding.status) return errorSnapshot(binding.status);
 	const now = Date.now();
 	if (cached?.bindingId === binding.bindingId) {

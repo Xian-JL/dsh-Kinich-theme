@@ -7,6 +7,8 @@ export function useKinichSettings(scope) {
 	const snapshot = (0, react.useSyncExternalStore)(subscribe, getSnapshot, getSnapshot);
 	return (0, react.useMemo)(() => {
 		if (!snapshot?.value || typeof snapshot.value !== "object") return snapshot;
+		const balanceEnabled = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.balanceEnabled, snapshot.value.balanceEnabled)
+			? snapshot.value.balanceEnabled : DEFAULT_KINICH_SETTINGS.balanceEnabled;
 		const customBackgroundImage = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundImage, snapshot.value.customBackgroundImage)
 			? snapshot.value.customBackgroundImage : DEFAULT_KINICH_SETTINGS.customBackgroundImage;
 		const customBackgroundAccent = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.customBackgroundAccent, snapshot.value.customBackgroundAccent)
@@ -17,10 +19,10 @@ export function useKinichSettings(scope) {
 			? snapshot.value.backgroundVisibility : DEFAULT_KINICH_SETTINGS.backgroundVisibility;
 		const dynamicWallpaperEnabled = isKinichSettingValue(KINICH_SETTING_DEFINITIONS.dynamicWallpaperEnabled, snapshot.value.dynamicWallpaperEnabled)
 			? snapshot.value.dynamicWallpaperEnabled : DEFAULT_KINICH_SETTINGS.dynamicWallpaperEnabled;
-		if (customBackgroundImage === snapshot.value.customBackgroundImage &&
+		if (balanceEnabled === snapshot.value.balanceEnabled && customBackgroundImage === snapshot.value.customBackgroundImage &&
 			customBackgroundAccent === snapshot.value.customBackgroundAccent &&
 			backgroundAutoPalette === snapshot.value.backgroundAutoPalette &&
 			backgroundVisibility === snapshot.value.backgroundVisibility && dynamicWallpaperEnabled === snapshot.value.dynamicWallpaperEnabled) return snapshot;
-		return { ...snapshot, value: { ...snapshot.value, customBackgroundImage, customBackgroundAccent, backgroundAutoPalette, backgroundVisibility, dynamicWallpaperEnabled } };
+		return { ...snapshot, value: { ...snapshot.value, balanceEnabled, customBackgroundImage, customBackgroundAccent, backgroundAutoPalette, backgroundVisibility, dynamicWallpaperEnabled } };
 	}, [snapshot]);
 }

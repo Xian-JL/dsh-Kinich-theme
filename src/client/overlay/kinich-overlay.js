@@ -183,7 +183,10 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	const mainSessionId = typeof useSessions === "function" ? useSessions(selectMainViewSessionId) : undefined;
 	const sessionState = useSessionFeedback(mainSessionId);
 	const interactionFeedback = useInteractionFeedback(sessionState);
-	const balance = useBalance();
+	const balanceEnabled = value.enabled && value.balanceEnabled;
+	const balance = useBalance(balanceEnabled);
+	const balanceEnabledRef = (0, react.useRef)(balanceEnabled);
+	balanceEnabledRef.current = balanceEnabled;
 	const overheated = balance.overheated === true;
 	const pagePhase = useKinichPagePhase();
 	const heroTarget = isKinichHeroTarget(pagePhase);
@@ -195,6 +198,7 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	const [idleMood, setIdleMood] = (0, react.useState)("idle");
 	const [balanceOpen, setBalanceOpen] = (0, react.useState)(false);
 	const [manualRefreshStatus, setManualRefreshStatus] = (0, react.useState)("idle");
+	(0, react.useEffect)(() => { if (!balanceEnabled) setManualRefreshStatus("idle"); }, [balanceEnabled]);
 	const overlayRef = (0, react.useRef)(null);
 	useKinichImmersiveParallax(overlayRef, value.visualIntensity === "immersive" && value.ambientMotion && pagePhase === "hero");
 	const clickLayerRef = useClickBurstLayer(overlayRef);
@@ -353,13 +357,15 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	};
 	const toggleBalance = () => {
 		if (ignoreClickRef.current) { ignoreClickRef.current = false; return; }
-		if (!balanceOpen) { setManualRefreshStatus("idle"); void refreshBalance({ force: true }); }
+		if (!balanceOpen) { setManualRefreshStatus("idle"); if (balanceEnabled) void refreshBalance({ force: true }); }
 		setBalanceOpen(open => !open);
 		triggerReaction();
 	};
 	const refreshBalanceManually = async () => {
+		if (!balanceEnabledRef.current) return;
 		setManualRefreshStatus("loading");
 		const next = await refreshBalance({ force: true });
+		if (!balanceEnabledRef.current) return;
 		setManualRefreshStatus(next.status === "rate-limited" ? "limited" : next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
 	};
 
@@ -372,7 +378,7 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
 	const statusFallback = balance.status === "ready" ? "余额已同步" : balance.status === "loading" ? "正在读取余额" : "余额暂不可用";
 	const retryMinutes = getBalanceRetryMinutes(balance);
-	const balanceNote = retryMinutes !== null
+	const balanceNote = !balanceEnabled ? text(t, "balance.disabled", "余额监控已关闭；阿乔的互动和会话反馈仍可使用。") : retryMinutes !== null
 		? `${text(t, "balance.retry.before", "预计 ")}${retryMinutes}${text(t, "balance.retry.after", " 分钟后可重试。")} ${balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : ""} ${overheated ? text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。") : ""}`
 		: overheated ? balance.stale ? `${text(t, "balance.stale", "显示最近一次成功读取的余额。")} ${text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")}` : text(t, "balance.overheated", "余额低于 ¥10，阿乔已进入红温加速。")
 		: balance.stale ? text(t, "balance.stale", "显示最近一次成功读取的余额。") : text(t, "balance.live", "每 60 秒自动刷新；点击阿乔立即检查。");
@@ -518,7 +524,7 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 									text(t, "balance.provider", "DeepSeek API")
 								] }),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { className: "dsh-kinich-balance-bubble__actions", children: [
-									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.refresh", "Refresh balance"), className: "dsh-kinich-balance-bubble__refresh", disabled: manualRefreshStatus === "loading", onClick: () => void refreshBalanceManually(), type: "button", children: "↻" }),
+									balanceEnabled && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.refresh", "Refresh balance"), className: "dsh-kinich-balance-bubble__refresh", disabled: manualRefreshStatus === "loading", onClick: () => void refreshBalanceManually(), type: "button", children: "↻" }),
 									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", { "aria-label": text(t, "balance.close", "Close"), className: "dsh-kinich-balance-bubble__close", onClick: () => { setBalanceOpen(false); ajawButtonRef.current?.focus(); }, type: "button", children: "×" })
 								] })
 							] }),

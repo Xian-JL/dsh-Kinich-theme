@@ -1,8 +1,10 @@
 import * as react from "react";
 import { getBalanceSnapshot, retainBalancePolling, subscribeBalance } from "./balance-store.js";
 
-export function useBalance() {
+const DISABLED = Object.freeze({ status: "disabled", stale: false, overheated: false });
+
+export function useBalance(enabled = true) {
 	const value = (0, react.useSyncExternalStore)(subscribeBalance, getBalanceSnapshot, getBalanceSnapshot);
-	(0, react.useEffect)(retainBalancePolling, []);
-	return value;
+	(0, react.useEffect)(() => enabled ? retainBalancePolling() : undefined, [enabled]);
+	return enabled ? value : DISABLED;
 }

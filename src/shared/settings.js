@@ -15,6 +15,7 @@ const AJAW_DEFAULT_POSITION = Object.freeze({ x: 94, y: 84 });
 /** Single source of truth for every persisted setting. */
 export const KINICH_SETTING_DEFINITIONS = Object.freeze({
 	enabled: Object.freeze({ kind: "boolean", default: true, recoverInvalid: true }),
+	balanceEnabled: Object.freeze({ kind: "boolean", default: true, recoverInvalid: true }),
 	visualStyle: Object.freeze({ kind: "choice", default: "jungle", options: VISUAL_STYLES }),
 	visualIntensity: Object.freeze({ kind: "choice", default: "balanced", options: VISUAL_INTENSITIES }),
 	ambientMotion: Object.freeze({ kind: "boolean", default: true }),

@@ -33,6 +33,20 @@ providerNotify();
 assert.equal(newProviderRefreshes, 1, "Adding the first provider configuration must refresh balance");
 
 const originalFetch = globalThis.fetch;
+const oldDocument = globalThis.document;
+const oldWindow = globalThis.window;
+const documentListeners = new Map();
+const windowListeners = new Map();
+globalThis.document = {
+	visibilityState: "visible",
+	addEventListener: (type, listener) => documentListeners.set(type, listener),
+	removeEventListener: type => documentListeners.delete(type)
+};
+globalThis.window = {
+	addEventListener: (type, listener) => windowListeners.set(type, listener),
+	removeEventListener: type => windowListeners.delete(type)
+};
+let releaseActive;
 try {
 	let oldSignal;
 	let calls = 0;
@@ -47,6 +61,7 @@ try {
 			else oldSignal.addEventListener("abort", abort, { once: true });
 		});
 	};
+	releaseActive = retainBalancePolling();
 	const oldRequest = refreshBalance();
 	const credentialChange = refreshBalanceForCredentialChange();
 	assert.equal(getBalanceSnapshot().status, "loading");
@@ -74,20 +89,11 @@ try {
 	assert.equal(getBalanceSnapshot().status, "loading", "A late response must not restore data from the previous credential");
 	await ignoredCredentialChange;
 	assert.equal(getBalanceSnapshot().totalBalance, "34.00");
+	releaseActive(); releaseActive = undefined;
+	await refreshBalanceForCredentialChange();
+	assert.equal(ignoredCalls, 2, "Credential changes while monitoring is off must not make requests");
+	assert.equal(getBalanceSnapshot().totalBalance, undefined, "Disabled monitoring must still invalidate the old account cache");
 
-	const oldDocument = globalThis.document;
-	const oldWindow = globalThis.window;
-	const documentListeners = new Map();
-	const windowListeners = new Map();
-	globalThis.document = {
-		visibilityState: "visible",
-		addEventListener: (type, listener) => documentListeners.set(type, listener),
-		removeEventListener: type => documentListeners.delete(type)
-	};
-	globalThis.window = {
-		addEventListener: (type, listener) => windowListeners.set(type, listener),
-		removeEventListener: type => windowListeners.delete(type)
-	};
 	let unmountedSignal;
 	globalThis.fetch = (_url, options) => {
 		unmountedSignal = options.signal;
@@ -101,9 +107,10 @@ try {
 	await new Promise(resolve => setTimeout(resolve, 0));
 	assert.equal(documentListeners.size, 0);
 	assert.equal(windowListeners.size, 0);
+} finally {
+	releaseActive?.();
 	if (oldDocument === undefined) delete globalThis.document; else globalThis.document = oldDocument;
 	if (oldWindow === undefined) delete globalThis.window; else globalThis.window = oldWindow;
-} finally {
 	globalThis.fetch = originalFetch;
 }
 

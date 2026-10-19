@@ -56,7 +56,9 @@ export async function refreshBalanceForCredentialChange() {
 	requestController?.abort();
 	publish({ status: "loading", stale: false });
 	if (previous !== undefined) await previous;
-	return refreshBalance({ force: true });
+	// Credential changes still invalidate cached data while the feature is off.
+	// Re-check after awaiting: the final consumer may have disabled it meanwhile.
+	return consumers > 0 ? refreshBalance({ force: true }) : snapshot;
 }
 
 function schedulePoll() {

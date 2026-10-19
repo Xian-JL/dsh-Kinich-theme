@@ -17,6 +17,7 @@ import { normalizeKinichStaticWallpaperImage } from "../wallpaper/image.js";
 
 const SETTING_LABEL_KEYS = {
 	enabled: "theme.enable",
+	balanceEnabled: "balance.enable",
 	visualStyle: "style.jungle.label", visualIntensity: "visualIntensity.label",
 	animateAjaw: "ajaw.label", ajawPosition: "ajaw.position", ajawRotation: "ajaw.rotation",
 	ajawFlipped: "ajaw.flip", "ajaw-reset": "ajaw.reset", showCharacter: "character.label",
@@ -89,8 +90,8 @@ function MoreControls({ label, children }) {
 	});
 }
 
-function BalanceMonitorPreview({ t }) {
-	const balance = useBalance();
+function BalanceMonitorPreview({ t, enabled }) {
+	const balance = useBalance(enabled);
 	const statusKey = `balance.status.${balance.status ?? "unavailable"}`;
 	const retryMinutes = getBalanceRetryMinutes(balance);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -102,7 +103,7 @@ function BalanceMonitorPreview({ t }) {
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-hidden": "true", className: "dsh-kinich-balance-setting__diamond" }),
 					t("balance.provider")
 				] }),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-setting__badge", children: t(balance.status === "ready" && !balance.stale ? "balance.live.badge" : "balance.unavailable.badge") })
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: "dsh-kinich-balance-setting__badge", children: t(!enabled ? "balance.disabled.badge" : balance.status === "ready" && !balance.stale ? "balance.live.badge" : "balance.unavailable.badge") })
 			] }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { className: "dsh-kinich-balance-setting__readout", children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: settingBalanceAmount(balance) }),
@@ -111,7 +112,7 @@ function BalanceMonitorPreview({ t }) {
 					t(statusKey)
 				] })
 			] }),
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: retryMinutes !== null ? `${t("balance.retry.before")}${retryMinutes}${t("balance.retry.after")}` : balance.stale && balance.overheated === true ? `${t("balance.stale")} ${t("balance.overheated")}` : balance.stale ? t("balance.stale") : balance.overheated === true ? t("balance.overheated") : t("balance.live") })
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: !enabled ? t("balance.disabled") : retryMinutes !== null ? `${t("balance.retry.before")}${retryMinutes}${t("balance.retry.after")}` : balance.stale && balance.overheated === true ? `${t("balance.stale")} ${t("balance.overheated")}` : balance.stale ? t("balance.stale") : balance.overheated === true ? t("balance.overheated") : t("balance.live") })
 		]
 	});
 }
@@ -357,7 +358,18 @@ export function KinichSettingsRow({ settings, t }) {
 				title: t("balance.section"),
 				description: t("balance.section.description"),
 				className: "dsh-kinich-settings__section--balance",
-				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BalanceMonitorPreview, { t })
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
+						checked: value.balanceEnabled,
+						description: t("balance.enable.description"), disabled,
+						label: t("balance.enable"),
+						onChange: () => update("balanceEnabled", !value.balanceEnabled),
+						stateLabel: stateLabel(value.balanceEnabled)
+					}, "balance-toggle"),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BalanceMonitorPreview, {
+						t, enabled: Boolean(snapshot.value) && value.enabled && value.balanceEnabled
+					}, "balance-preview")
+				]
 			}),
 
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SettingSection, {

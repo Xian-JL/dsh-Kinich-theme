@@ -90,6 +90,8 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 设置入口
 
+GitHub 开发版新增 **API 余额 → 启用官方余额监控**，按 Profile 保存，默认开启以保留既有行为。关闭后隐藏余额、停止自动与手动查询，并取消低余额红温加速；阿乔点击、拖动、待机与会话反馈继续可用。该改动尚未发布到 npm。
+
 进入 **Settings → Kinich**，可调整：
 
 - Jungle（旧模式只保留配置兼容）

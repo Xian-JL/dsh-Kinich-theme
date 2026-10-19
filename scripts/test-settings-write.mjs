@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
 import { writeKinichSettings } from "../src/client/settings/write.js";
+import { decodeKinichSettings } from "../src/client/settings/decode.js";
+import { KinichThemeSettingsSchema } from "../src/host/settings-schema.js";
+
+assert.equal(decodeKinichSettings({}).balanceEnabled, true, "Old profiles preserve enabled balance monitoring");
+assert.equal(decodeKinichSettings({ balanceEnabled: false }).balanceEnabled, false, "An explicit balance off setting survives decoding");
+assert.equal(KinichThemeSettingsSchema({}).balanceEnabled, true);
+assert.equal(KinichThemeSettingsSchema({ balanceEnabled: false }).balanceEnabled, false);
 
 const patch = { ajawPosition: { x: 30, y: 40 }, ajawRotation: 45 };
 let atomicCalls = 0;

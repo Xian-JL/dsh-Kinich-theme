@@ -13,12 +13,13 @@ assert.equal(isBelowCnyThreshold({ currency: "CNY", totalBalance: "invalid" }), 
 assert.equal(getBalanceRetryMinutes({ status: "rate-limited", retryAt: new Date(120_000).toISOString() }, 0), 2);
 assert.equal(getBalanceRetryMinutes({ status: "ready", retryAt: new Date(120_000).toISOString() }, 0), null);
 
-async function mountedRoute(label, { settings = {}, credential = { value: "sk-test", source: "test" } } = {}) {
+async function mountedRoute(label, { settings = {}, theme = {}, modern = false, credential = { value: "sk-test", source: "test" }, onCredential = () => {} } = {}) {
 	const { installBalanceRoute } = await import(`../src/host/balance-route.js?test=${label}`);
 	let route;
 	const service = {
-		settings: { get: () => settings },
-		credentials: { resolve: async () => credential },
+		settings: modern ? { describe: () => [{ ns: "dsh-kinich-theme", value: theme }, { ns: "llm-deepseek-api-key", value: settings }] }
+			: { get: ns => ns === "dsh-kinich-theme" ? theme : settings },
+		credentials: { resolve: async () => { onCredential(); return credential; } },
 		connection: { fetch: { register: value => { route = value; return () => {}; } } },
 		effect: activate => activate()
 	};
@@ -46,6 +47,24 @@ try {
 	assert.match(first.bindingId, /^deepseek-[a-f0-9]{16}$/);
 	await route.fetch(new Request("http://dsh.test/api/kinich-balance"));
 	assert.equal(providerCalls, 1, "Host cache must deduplicate balance reads inside 60 seconds");
+	for (const modern of [false, true]) {
+		const theme = { enabled: true, balanceEnabled: false };
+		let credentialReads = 0;
+		const switchRoute = await mountedRoute(`balance-switch-${modern}`, { theme, modern, onCredential: () => credentialReads++ });
+		const before = providerCalls;
+		const read = async () => (await switchRoute.fetch(new Request("http://dsh.test/api/kinich-balance?force=1"))).json();
+		assert.equal((await read()).status, "disabled");
+		assert.equal(credentialReads, 0, "Disabled balance must not resolve credentials");
+		assert.equal(providerCalls, before, "Disabled balance must not query the provider");
+		theme.balanceEnabled = true;
+		assert.equal((await read()).status, "ready", "Re-enabling balance restores checks");
+		theme.balanceEnabled = false;
+		const hidden = await read();
+		assert.equal(hidden.status, "disabled");
+		assert.equal(hidden.totalBalance, undefined, "Turning balance off must hide even a cached amount");
+		theme.balanceEnabled = true; theme.enabled = false;
+		assert.equal((await read()).status, "disabled", "A disabled theme cannot query balance");
+	}
 
 	const unboundRoute = await mountedRoute("unbound", { credential: { value: "", source: "test" } });
 	const unbound = await (await unboundRoute.fetch(new Request("http://dsh.test/api/kinich-balance"))).json();

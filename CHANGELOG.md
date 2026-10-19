@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-10-19
+
+- Add a Profile-local official balance switch, enabled by default to preserve existing installations. Turning it off hides balance amounts, stops polling/manual refresh and suppresses low-balance colouring and acceleration, while keeping all Ajaw interactions and session feedback.
+- Gate the Host balance route before credential resolution; credential-form changes invalidate the old cache without starting a request when no balance consumer is active.
+- Development changes on GitHub only; no new npm version, tag or Release.
+
 ## 2.0.2 — npm distribution and current-host declarations
 
 - Restrict DSH and optional settings-peer declarations to `>=0.2.0-rc.2 <0.3.0`, matching Xiao and retaining the verified local host while removing 0.1.x declarations.

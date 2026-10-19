@@ -18,7 +18,7 @@ Since 2.0.2, DSH and settings-peer declarations are `>=0.2.0-rc.2 <0.3.0`, match
 
 ## Install
 
-GitHub development adds a Profile-local **API balance → Enable official balance monitoring** switch. It defaults to on for backwards compatibility. Turning it off hides balance data, stops automatic/manual checks and removes low-balance red tint and acceleration; Ajaw interactions and session feedback remain available. This change is not yet on npm.
+`2.0.3-rc.2` adds a Profile-local **API balance → Enable official balance monitoring** switch. It defaults to on for backwards compatibility. Turning it off hides balance data, stops automatic/manual checks and removes low-balance red tint and acceleration; Ajaw interactions and session feedback remain available. Candidates use npm `next`, leaving `latest` unchanged.
 
 For Desktop, open it once to initialize its profile, then fully quit it. Use the CLI bundled with that Desktop installation:
 

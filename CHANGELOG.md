@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased — 2026-10-19
+## 2.0.3-rc.2 — 2026-10-19
 
 - Add a Profile-local official balance switch, enabled by default to preserve existing installations. Turning it off hides balance amounts, stops polling/manual refresh and suppresses low-balance colouring and acceleration, while keeping all Ajaw interactions and session feedback.
 - Gate the Host balance route before credential resolution; credential-form changes invalidate the old cache without starting a request when no balance consumer is active.
-- Development changes on GitHub only; no new npm version, tag or Release.
+- Publish the new RC through npm `next`, leaving `latest` unchanged; no Desktop replacement. Align the package wallpaper specification metadata with the existing 1.0.8 source constant.
 
 ## 2.0.2 — npm distribution and current-host declarations
 

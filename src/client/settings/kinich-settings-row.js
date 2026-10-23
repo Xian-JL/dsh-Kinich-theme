@@ -14,6 +14,8 @@ import { wallpaperAssetUrl } from "../../shared/wallpaper.js";
 import { WallpaperBundleBuilder } from "../wallpaper/bundle-builder.js";
 import { wallpaperElementCount } from "../../shared/wallpaper.js";
 import { normalizeKinichStaticWallpaperImage } from "../wallpaper/image.js";
+import { getKinichThemeTokens } from "../theme/tokens.js";
+import { ThemeColorPreview } from "./color-preview.js";
 
 const SETTING_LABEL_KEYS = {
 	enabled: "theme.enable",
@@ -122,11 +124,20 @@ export function KinichSettingsRow({ settings, t }) {
 	const snapshot = useKinichSettings(settings);
 	const value = snapshot.value ?? DEFAULT_KINICH_SETTINGS;
 	const wallpaper = useKinichWallpaper({ dynamicEnabled: Boolean(snapshot.value) && value.dynamicWallpaperEnabled });
+	const previewActive = wallpaper.current?.active;
+	const previewUsesWallpaper = previewActive && previewActive.mode !== "none";
+	const previewAccent = previewUsesWallpaper
+		? (previewActive.autoPalette ? previewActive.sampledAccent : "")
+		: (value.backgroundAutoPalette ? value.customBackgroundAccent : "");
+	const previewTokens = getKinichThemeTokens(value.visualStyle, previewAccent, false, 75,
+		previewUsesWallpaper ? previewActive.derivedPalette?.[value.visualStyle] : undefined);
 	const [pending, setPending] = (0, react.useState)(null);
 	const [failed, setFailed] = (0, react.useState)(null);
 	const [backgroundProcessing, setBackgroundProcessing] = (0, react.useState)(false);
 	const [backgroundMessage, setBackgroundMessage] = (0, react.useState)("");
 	const [backgroundError, setBackgroundError] = (0, react.useState)("");
+	const backgroundGeneration = (0, react.useRef)(0);
+	(0, react.useEffect)(() => () => { backgroundGeneration.current += 1; }, []);
 	const [wallpaperError, setWallpaperError] = (0, react.useState)("");
 	const [wallpaperMessage, setWallpaperMessage] = (0, react.useState)("");
 	const [wallpaperExportParts, setWallpaperExportParts] = (0, react.useState)([]);
@@ -152,43 +163,50 @@ export function KinichSettingsRow({ settings, t }) {
 		const file = event.currentTarget.files?.[0];
 		event.currentTarget.value = "";
 		if (!file) return;
+		const generation = backgroundGeneration.current;
 		setBackgroundProcessing(true);
 		setBackgroundError("");
 		setBackgroundMessage("");
 		try {
 			if (wallpaper.current) {
-				await importStaticWallpaper(file);
-				setBackgroundMessage(t("background.saved"));
+				const saved = await importStaticWallpaper(file, generation);
+				if (saved && generation === backgroundGeneration.current) setBackgroundMessage(t("background.saved"));
 				return;
 			}
 			const optimized = await normalizeKinichBackgroundFile(file);
+			if (generation !== backgroundGeneration.current) return;
 			const saved = await updateMany("custom-background", {
 				customBackgroundImage: optimized.dataUrl,
 				customBackgroundAccent: optimized.accent ?? ""
 			});
-			if (saved) setBackgroundMessage(t("background.saved"));
+			if (saved && generation === backgroundGeneration.current) setBackgroundMessage(t("background.saved"));
 		} catch (error) {
+			if (generation !== backgroundGeneration.current) return;
 			const key = error instanceof KinichBackgroundError ? `background.error.${error.code}` : "background.error.invalid-image";
 			setBackgroundError(t(key));
 		} finally {
-			setBackgroundProcessing(false);
+			if (generation === backgroundGeneration.current) setBackgroundProcessing(false);
 		}
 	};
-	const importStaticWallpaper = async file => {
+	const importStaticWallpaper = async (file, generation) => {
 		const image = await normalizeKinichStaticWallpaperImage(file);
+		// Once upload starts, finish the initiated persistence sequence consistently.
+		if (generation !== backgroundGeneration.current) return false;
 		const asset = await wallpaper.upload(image.blob, "static-webp-v1");
 		const name = "本地壁纸";
 		const pack = await wallpaper.uploadBundle({ schemaVersion: 1, id: `local-${asset.sha256.slice(0, 20)}`, version: "1", name, sampledAccent: image.accent ?? "", representativeAssetId: asset.sha256,
 			projects: [{ id: "local-image", title: name, headline: name, assetIds: [asset.sha256], coverId: asset.sha256, heroId: asset.sha256 }] });
 		await wallpaper.apply({ mode: "static", bundleHash: pack.bundleHash, projectId: "local-image", templateId: "work", parameters: wallpaper.committedCurrent.active.parameters, autoPalette: true, paletteCaptured: true, reason: "import-static" });
+		return true;
 	};
 	const handleWallpaperSelection = async event => {
 		const file = event.currentTarget.files?.[0]; event.currentTarget.value = ""; if (!file) return;
+		const generation = backgroundGeneration.current;
 		setWallpaperProcessing(true); setWallpaperError("");
 		try {
-			await importStaticWallpaper(file);
-		} catch (error) { setWallpaperError(error.message || "壁纸素材未能导入"); }
-		finally { setWallpaperProcessing(false); }
+			await importStaticWallpaper(file, generation);
+		} catch (error) { if (generation === backgroundGeneration.current) setWallpaperError(error.message || "壁纸素材未能导入"); }
+		finally { if (generation === backgroundGeneration.current) setWallpaperProcessing(false); }
 	};
 	const handleWallpaperArchive = async event => {
 		const files = Array.from(event.currentTarget.files ?? []); event.currentTarget.value = ""; if (!files.length) return;
@@ -268,6 +286,7 @@ export function KinichSettingsRow({ settings, t }) {
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ThemePreview, { value, t })
 				]
 			}),
+			(0, react_jsx_runtime.jsx)(ThemeColorPreview, { tokens: previewTokens, t, className: "dsh-kinich-color-preview" }),
 			(0, react_jsx_runtime.jsx)(Toggle, {
 				disabled, checked: value.enabled, label: t("theme.enable"), description: t("theme.exclusive"),
 				stateLabel: t(value.enabled ? "state.on" : "state.off"), onChange: () => update("enabled", !value.enabled)

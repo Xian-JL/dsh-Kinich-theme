@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3-rc.3 — 2026-10-23
+
+Add independent checks for emitted text/button contrast and repair failing presentation roles without rewriting sampled accents, historical palettes or semantic status colours. Complete Phlogiston's dark menu and code surfaces, and show read-only light/dark palette samples using the live token generator.
+
+Discard image conversion results after the settings view unmounts, while finishing uploads that have already started. Reject stale manual balance feedback after disable/re-enable or teardown. Existing effects and wallpaper controls remain available. Research, scope and validation are recorded in docs/ECOSYSTEM_OPTIMIZATION_2026-10-23.md. Publish as a prerelease and npm next; latest and Desktop remain unchanged.
+
 ## 2.0.3-rc.2 — 2026-10-19
 
 - Add a Profile-local official balance switch, enabled by default to preserve existing installations. Turning it off hides balance amounts, stops polling/manual refresh and suppresses low-balance colouring and acceleration, while keeping all Ajaw interactions and session feedback.

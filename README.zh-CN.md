@@ -90,6 +90,8 @@ dsh plugin --profile web remove dsh-kinich-theme
 
 ## 设置入口
 
+`2.0.3-rc.3`（2026-10-23）增加明暗配色预览和文字／按钮对比度保护，完善焚曜风格的菜单与代码底色，并补强图片导入、余额反馈的异步退出处理。候选版使用 npm `next`，不覆盖 `latest`；详见 [开发记录](docs/ECOSYSTEM_OPTIMIZATION_2026-10-23.md)。
+
 `2.0.3-rc.2` 新增 **API 余额 → 启用官方余额监控**，按 Profile 保存，默认开启以保留既有行为。关闭后隐藏余额、停止自动与手动查询，并取消低余额红温加速；阿乔点击、拖动、待机与会话反馈继续可用。候选版使用 npm `next`，不覆盖 `latest`。
 
 进入 **Settings → Kinich**，可调整：

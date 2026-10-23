@@ -1,4 +1,5 @@
 import { deriveKinichAccentPalette } from "../background/palette.js";
+import { enforceReadableThemeTokens } from "./readability.js";
 
 function token(light, dark) {
 	return Object.freeze({
@@ -104,6 +105,14 @@ const PHLOGISTON_TOKENS = Object.freeze({
 	"--dsw-alias-bg-layer-3": token("#303924", "#1D2517"),
 	"--dsw-alias-bg-overlay": token("#22281C", "#252C1D"),
 	"--dsw-alias-bg-module-platform": token("#252C1C", "#12170F"),
+	"--dsw-alias-bg-multi-select": token("#33411F", "#243119"),
+	"--dsw-specific-menu": token("#22281C", "#252C1D"),
+	"--dsw-specific-login-input": token("#1E2418", "#111810"),
+	"--dsw-alias-markdown-code-block": token("#151B10", "#0A100A"),
+	"--dsw-alias-markdown-code-block-banner": token("#202918", "#141D10"),
+	"--dsw-alias-markdown-inline-code": token("#29321D", "#202B1A"),
+	"--dsw-alias-markdown-code-segment-selected": token("#303924", "#25321B"),
+	"--dsw-alias-markdown-code-segment-unselected": token("#202918", "#141D10"),
 	"--dsw-specific-sidebar-fill": token("#141910", "#0B100B"),
 	"--dsw-specific-sidebar-nav-item-active": token("#33411F", "#243119"),
 	"--dsw-specific-sidebar-nav-item-active-accent": token("#D7FF5B", "#CEFF58"),
@@ -227,6 +236,8 @@ export function getKinichThemeTokens(style, accentHex = "", customBackground = f
 		if (palette) {
 			result["--dsw-alias-brand-primary"] = token(palette.light, palette.dark);
 			result["--dsw-alias-brand-primary-invert"] = token(palette.foregroundLight, palette.foregroundDark);
+			result["--dsw-alias-brand-primary-new-colorprimary-new-color"] = token(palette.strongLight, palette.strongDark);
+			result["--dsw-alias-label-primary-bluish"] = token(palette.strongLight, palette.strongDark);
 			result["--dsw-alias-brand-text"] = token(palette.strongLight, palette.strongDark);
 			result["--dsw-alias-button-primary-fill"] = token(palette.light, palette.dark);
 			result["--dsw-alias-button-primary-hover"] = token(palette.strongLight, palette.strongDark);
@@ -238,5 +249,5 @@ export function getKinichThemeTokens(style, accentHex = "", customBackground = f
 			}
 		}
 	}
-	return Object.freeze(result);
+	return Object.freeze(enforceReadableThemeTokens(result, base));
 }

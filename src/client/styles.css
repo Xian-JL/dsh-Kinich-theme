@@ -2412,3 +2412,48 @@ body[data-kinich-style] :is([role='dialog'],[role='alertdialog'],[aria-modal='tr
 .dsh-kinich-overlay[data-wallpaper-displayed='true'] .dsh-kinich-welcome { visibility:hidden; pointer-events:none; }
 body:has([aria-modal='true']) :is(.dsh-kinich-wallpaper-hit-area,.dsh-kinich-wallpaper-project-hit,.dsh-kinich-wallpaper-overview-hit,.dsh-kinich-wallpaper-scroll-hit,.dsh-kinich-wallpaper-card-hit,.dsh-kinich-wallpaper-nav,.dsh-kinich-wallpaper-play,.dsh-kinich-wallpaper-browse-exit,.dsh-kinich-wallpaper-thumb-rail,.dsh-kinich-wallpaper-work-thumb-rail,.dsh-kinich-wallpaper-about-mini-map,.dsh-kinich-wallpaper-about-link) { pointer-events:none !important; }
 body:has([aria-modal='true']) .dsh-kinich-wallpaper-reference-nav button { pointer-events:none !important; }
+
+/* Read-only light/dark samples use the live theme's emitted colour tokens. */
+.dsh-kinich-color-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.dsh-kinich-color-preview__scheme {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--preview-text) 22%, transparent);
+  border-radius: 10px;
+  background: var(--preview-bg);
+  color: var(--preview-text);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.dsh-kinich-color-preview__message {
+  margin: 0;
+  padding: 10px;
+  border-radius: 7px;
+  background: var(--preview-bubble);
+  color: var(--preview-text);
+}
+
+.dsh-kinich-color-preview__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dsh-kinich-color-preview__caption { color: var(--preview-muted); font-size: 12px; }
+.dsh-kinich-color-preview__action {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--preview-fill);
+  color: var(--preview-on-fill);
+}

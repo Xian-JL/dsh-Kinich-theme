@@ -186,7 +186,10 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	const balanceEnabled = value.enabled && value.balanceEnabled;
 	const balance = useBalance(balanceEnabled);
 	const balanceEnabledRef = (0, react.useRef)(balanceEnabled);
+	const balanceGeneration = (0, react.useRef)(0);
+	if (balanceEnabledRef.current !== balanceEnabled) balanceGeneration.current += 1;
 	balanceEnabledRef.current = balanceEnabled;
+	(0, react.useEffect)(() => () => { balanceGeneration.current += 1; }, []);
 	const overheated = balance.overheated === true;
 	const pagePhase = useKinichPagePhase();
 	const heroTarget = isKinichHeroTarget(pagePhase);
@@ -363,9 +366,10 @@ function KinichOverlayContent({ settings, theme, t, useSessions }) {
 	};
 	const refreshBalanceManually = async () => {
 		if (!balanceEnabledRef.current) return;
+		const generation = balanceGeneration.current;
 		setManualRefreshStatus("loading");
 		const next = await refreshBalance({ force: true });
-		if (!balanceEnabledRef.current) return;
+		if (!balanceEnabledRef.current || generation !== balanceGeneration.current) return;
 		setManualRefreshStatus(next.status === "rate-limited" ? "limited" : next.status === "unbound" || next.status === "unsupported" ? "idle" : next.stale || next.status !== "ready" ? "failed" : "done");
 	};
 

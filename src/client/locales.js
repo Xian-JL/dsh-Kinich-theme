@@ -1,6 +1,12 @@
 export const KINICH_LOCALE_NAMESPACE = "settings.kinich-theme";
 export const KINICH_LOCALES = {
 	zh: {
+		"preview.colors": "主题配色预览",
+		"preview.light": "浅色配色",
+		"preview.dark": "深色配色",
+		"preview.message": "正文与消息层次",
+		"preview.caption": "辅助说明",
+		"preview.action": "主要操作",
 		"wallpaper.retry":"重新加载壁纸数据",
 		"wallpaper.history.unrecoverable":"素材或记录损坏，暂不可恢复（保留原记录）",
 		"wallpaper.scale.none": "无",
@@ -211,6 +217,12 @@ export const KINICH_LOCALES = {
 		"state.retry": "重试"
 	},
 	en: {
+		"preview.colors": "Theme colour preview",
+		"preview.light": "Light palette",
+		"preview.dark": "Dark palette",
+		"preview.message": "Message and text hierarchy",
+		"preview.caption": "Supporting text",
+		"preview.action": "Primary action",
 		"wallpaper.retry":"Reload wallpaper data",
 		"wallpaper.history.unrecoverable":"Missing or damaged data; temporarily unrecoverable. The record is preserved.",
 		"wallpaper.scale.none": "None",

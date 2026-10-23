@@ -1,3 +1,11 @@
+# Kinich 2.0.3-rc.3 — readability and lifecycle improvements
+
+2026-10-23. Adds read-only light/dark palette previews drawn from the emitted theme tokens and repairs failing text/button contrast on opaque theme surfaces. Saved wallpaper samples, historical derived palettes, semantic status colours and existing motion remain intact.
+
+Completes Phlogiston menu/code surfaces, drops image conversion results when settings unmounts before persistence starts, and guards stale manual balance feedback. Already-started uploads continue their persistence sequence.
+
+Paired candidates: Kinich 2.0.3-rc.3 / Xiao 1.3.0-rc.3. Distribute through GitHub prerelease and npm next without changing latest. No Desktop download or replacement is included. Full checks, 20,544 contrast pairs, controlled lifecycle cases and isolated DSH 0.2.1-rc.2 startup/restart checks support this candidate; they do not constitute a new user Desktop visual acceptance or whole-page WCAG claim over arbitrary wallpaper pixels. See docs/ECOSYSTEM_OPTIMIZATION_2026-10-23.md. Earlier notes below are historical snapshots.
+
 # Kinich 2.0.3-rc.2 — independent balance control
 
 2026-10-19. Adds a Profile-local official balance switch (default on for existing behaviour). Off hides account amounts and low-balance red tint/acceleration, stops client polling/manual checks, and rejects Host balance reads before credential resolution. Ajaw interactions, session feedback, wallpaper history and motion preferences remain available.

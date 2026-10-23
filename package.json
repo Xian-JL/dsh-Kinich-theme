@@ -1,6 +1,6 @@
 {
   "name": "dsh-kinich-theme",
-  "version": "2.0.3-rc.2",
+  "version": "2.0.3-rc.3",
   "description": "Modern Jungle Kinich & Ajaw UI for DeepSeek Harness Web and Desktop with live official DeepSeek balance monitoring and a CNY low-balance alert state.",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -20,7 +20,8 @@
     "LICENSE",
     "THIRD_PARTY_ASSETS.md",
     "RELEASE_NOTES.md",
-    "docs/DESIGN_AND_MOTION.md"
+    "docs/DESIGN_AND_MOTION.md",
+    "docs/ECOSYSTEM_OPTIMIZATION_2026-10-23.md"
   ],
   "dsh": {
     "manifestVersion": 1,
@@ -61,7 +62,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "verify": "npm run test:version && npm run test:wallpaper && npm run build && npm run check && npm run test:stage4 && npm run test:balance-client && npm run test:settings && npm run test:background && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017",
+    "verify": "npm run test:version && npm run test:wallpaper && npm run build && npm run check && npm run test:stage4 && npm run test:balance-client && npm run test:settings && npm run test:background && npm run test:interaction && npm run test:presentation && npm run test:compat && npm run test:dsh017 && npm run test:readability",
     "test:version": "node scripts/test-version-policy.mjs",
     "test:wallpaper": "node scripts/test-wallpaper.mjs",
     "test:stage4": "node scripts/test-stage4.mjs",
@@ -77,7 +78,8 @@
     "test:wallpaper-boundaries": "node scripts/test-wallpaper-boundaries.mjs",
     "test:wallpaper-switch": "node scripts/test-wallpaper-switch.mjs",
     "test:wallpaper-consistency": "node scripts/test-wallpaper-consistency.mjs",
-    "test:release-201-ui": "node scripts/test-release-201-ui.mjs"
+    "test:release-201-ui": "node scripts/test-release-201-ui.mjs",
+    "test:readability": "node scripts/test-theme-readability.mjs"
   },
   "keywords": [
     "deepseek",
